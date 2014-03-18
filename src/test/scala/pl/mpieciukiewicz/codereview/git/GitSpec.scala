@@ -8,9 +8,9 @@ import org.apache.commons.io.FileUtils
 /**
  * @author Marcin Pieciukiewicz
  */
-class GitTest extends FeatureSpec with GivenWhenThen {
+class GitSpec extends FeatureSpec with GivenWhenThen {
 
-  feature("GIT repository cloning") {
+  feature("GIT repository support") {
     scenario("Clone GitHub repository") {
       Given("Local directory")
       val directory = File.createTempFile("TestGitRepository", "")
@@ -27,8 +27,6 @@ class GitTest extends FeatureSpec with GivenWhenThen {
       directory.list().contains("index.html")
 
       FileUtils.deleteDirectory(directory)
-
-
     }
   }
 
