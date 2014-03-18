@@ -3,6 +3,8 @@ package pl.mpieciukiewicz.codereview
 /**
  * @author Marcin Pieciukiewicz
  */
-class Main {
+object Main extends App {
+
+  Playground.start()
 
 }
