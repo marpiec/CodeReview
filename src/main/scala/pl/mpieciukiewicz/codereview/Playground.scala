@@ -41,7 +41,7 @@ object Playground {
     val diffs = df.scan(commit.getParent(0).getId, commit.getTree).asScala.toList
 
 
-    df.format(diffs.head)
+    df.format(diffs.tail.head)
 
     println(diffs)
     println(out.toString("UTF-8"))
