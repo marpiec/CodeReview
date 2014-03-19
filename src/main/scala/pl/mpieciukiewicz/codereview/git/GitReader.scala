@@ -1,6 +1,6 @@
 package pl.mpieciukiewicz.codereview.git
 
-import pl.mpieciukiewicz.codereview.vcs.Commit
+import pl.mpieciukiewicz.codereview.vcs._
 import org.eclipse.jgit.api.Git
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder
 import java.io.{ByteArrayOutputStream, File}
@@ -8,7 +8,10 @@ import collection.JavaConverters._
 import org.eclipse.jgit.revwalk.RevCommit
 import org.eclipse.jgit.lib.{ObjectId, Repository}
 import org.eclipse.jgit.treewalk.TreeWalk
-import org.eclipse.jgit.diff.{RawTextComparator, DiffFormatter}
+import org.eclipse.jgit.diff.{DiffEntry, RawTextComparator, DiffFormatter}
+import pl.mpieciukiewicz.codereview.vcs.FileDelete
+import pl.mpieciukiewicz.codereview.vcs.Commit
+import pl.mpieciukiewicz.codereview.vcs.FileAdd
 
 /**
  *
@@ -34,12 +37,12 @@ class GitReader(val repoDir: String) {
   }
 
 
-  def readFilesFromCommit(commitId: String): List[String] = {
+  def readFilesFromCommit(commitId: String): List[FileChange] = {
     val commit = new Git(repository).log().add(ObjectId.fromString(commitId)).setMaxCount(1).call().iterator().next()
     getFilePathsFromCommit(commit)
   }
 
-  private def getFilePathsFromCommit(commit: RevCommit): List[String] = {
+  private def getFilePathsFromCommit(commit: RevCommit): List[FileChange] = {
     val out = new ByteArrayOutputStream()
     val df = new DiffFormatter(out)
     df.setRepository(repository)
@@ -48,7 +51,17 @@ class GitReader(val repoDir: String) {
 
     val diffs = df.scan(commit.getParent(0).getId, commit.getTree).asScala.toList
 
-    diffs.map(_.getOldPath)
+    diffs.map(convertDiffToFileChange)
+  }
+
+  private def convertDiffToFileChange(diff: DiffEntry): FileChange = {
+    diff.getChangeType match {
+      case DiffEntry.ChangeType.ADD => FileAdd(diff.getNewPath)
+      case DiffEntry.ChangeType.COPY => FileCopy(diff.getOldPath, diff.getNewPath)
+      case DiffEntry.ChangeType.DELETE => FileDelete(diff.getOldPath)
+      case DiffEntry.ChangeType.MODIFY => FileModify(diff.getOldPath)
+      case DiffEntry.ChangeType.RENAME => FileRename(diff.getOldPath, diff.getNewPath)
+    }
   }
 
 }

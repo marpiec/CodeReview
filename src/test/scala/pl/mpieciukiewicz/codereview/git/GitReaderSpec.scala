@@ -1,14 +1,14 @@
 package pl.mpieciukiewicz.codereview.git
 
 import org.scalatest.{GivenWhenThen, FeatureSpec}
-import pl.mpieciukiewicz.codereview.vcs.Commit
+import pl.mpieciukiewicz.codereview.vcs.{FileModify, FileChange, Commit}
 import org.fest.assertions.api.Assertions._
 import collection.JavaConverters._
 
 /**
  *
  */
-class GitSpec extends FeatureSpec with GivenWhenThen {
+class GitReaderSpec extends FeatureSpec with GivenWhenThen {
 
   feature("GIT repository analysis support") {
 
@@ -40,11 +40,13 @@ class GitSpec extends FeatureSpec with GivenWhenThen {
 
       When("Getting committed files")
 
-      val files: List[String] = gitReader.readFilesFromCommit(commitId)
+      val files: List[FileChange] = gitReader.readFilesFromCommit(commitId)
 
       Then("Have correct files")
 
-      assertThat(files.asJava).containsExactly("app/style/default.css", "app/view/calculator.html", "app/view/home.html")
+      assertThat(files.asJava).containsExactly(FileModify("app/style/default.css"),
+                                               FileModify("app/view/calculator.html"),
+                                               FileModify("app/view/home.html"))
     }
 
 
