@@ -2,7 +2,7 @@ package pl.mpieciukiewicz.codereview.git
 
 import org.scalatest.{GivenWhenThen, FeatureSpec}
 import scala.io.Source
-import org.fest.assertions.api.Assertions.assertThat
+import pl.mpieciukiewicz.codereview.vcs.{AddedLine, RemovedLine, ChangedLine}
 
 /**
  *
@@ -21,9 +21,23 @@ class GitDiffParserSpec extends FeatureSpec with GivenWhenThen {
       val parsed = parser.parse(diff)
 
       Then("Has correct content")
-      assertThat(parsed.fromFileName).isEqualTo("app/js/app.js")
-      assertThat(parsed.toFileName).isEqualTo("app/js/app.js")
-      
+      assert(parsed.fromFileName == "app/js/app.js")
+      assert(parsed.toFileName == "app/js/app.js")
+
+      assert(parsed.changedLines == List(RemovedLine(11, "    $scope.valueA = 0;                          //first value for given operation"),
+                                        RemovedLine(12, "    $scope.valueB = 0;                          //second value for given operation"),
+                                        AddedLine(11, "    $scope.valueA = 0;                          //first (left) value that will be used for computation"),
+                                        AddedLine(12, "    $scope.valueB = 0;                          //second (right) value that will be used for computation"),
+                                        RemovedLine(85, "        $scope.displayValue = Math.floor($scope.selectedOperation($scope.valueA, $scope.valueB));"),
+                                        RemovedLine(86, "        $scope.clearValue = true;"),
+                                        RemovedLine(87, "        $scope.valueA = $scope.displayValue;"),
+                                        AddedLine(85, "        if($scope.selectedOperation!=null) {"),
+                                        AddedLine(86, "            $scope.displayValue = Math.floor($scope.selectedOperation($scope.valueA, $scope.valueB));"),
+                                        AddedLine(87, "            $scope.clearValue = true;"),
+                                        AddedLine(88, "            $scope.valueA = $scope.displayValue;"),
+                                        AddedLine(89, "        }")
+      ))
+
     }
     
   }
