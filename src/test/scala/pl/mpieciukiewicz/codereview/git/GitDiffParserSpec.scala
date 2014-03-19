@@ -2,7 +2,7 @@ package pl.mpieciukiewicz.codereview.git
 
 import org.scalatest.{GivenWhenThen, FeatureSpec}
 import scala.io.Source
-import pl.mpieciukiewicz.codereview.vcs.{AddedLine, RemovedLine, ChangedLine}
+import pl.mpieciukiewicz.codereview.vcs.diff.{RemovedLine, AddedLine}
 
 /**
  *
@@ -24,10 +24,10 @@ class GitDiffParserSpec extends FeatureSpec with GivenWhenThen {
       assert(parsed.fromFileName == "app/js/app.js")
       assert(parsed.toFileName == "app/js/app.js")
 
-      assert(parsed.changedLines == List(RemovedLine(11, "    $scope.valueA = 0;                          //first value for given operation"),
-                                        RemovedLine(12, "    $scope.valueB = 0;                          //second value for given operation"),
-                                        AddedLine(11, "    $scope.valueA = 0;                          //first (left) value that will be used for computation"),
-                                        AddedLine(12, "    $scope.valueB = 0;                          //second (right) value that will be used for computation"),
+      assert(parsed.changedLines == List(RemovedLine(26, "    $scope.valueA = 0;                          //first value for given operation"),
+                                        RemovedLine(27, "    $scope.valueB = 0;                          //second value for given operation"),
+                                        AddedLine(26, "    $scope.valueA = 0;                          //first (left) value that will be used for computation"),
+                                        AddedLine(27, "    $scope.valueB = 0;                          //second (right) value that will be used for computation"),
                                         RemovedLine(85, "        $scope.displayValue = Math.floor($scope.selectedOperation($scope.valueA, $scope.valueB));"),
                                         RemovedLine(86, "        $scope.clearValue = true;"),
                                         RemovedLine(87, "        $scope.valueA = $scope.displayValue;"),
