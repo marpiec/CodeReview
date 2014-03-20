@@ -12,11 +12,13 @@ import org.eclipse.jgit.diff.{DiffEntry, RawTextComparator, DiffFormatter}
 import pl.mpieciukiewicz.codereview.vcs.FileDelete
 import pl.mpieciukiewicz.codereview.vcs.Commit
 import pl.mpieciukiewicz.codereview.vcs.FileAdd
+import org.eclipse.jgit.treewalk.filter.PathFilter
 
 /**
  *
  */
 class GitReader(val repoDir: String) {
+
 
   val builder = new FileRepositoryBuilder()
   val repository = builder.findGitDir(new File(repoDir)).build()
@@ -38,8 +40,12 @@ class GitReader(val repoDir: String) {
 
 
   def readFilesFromCommit(commitId: String): List[FileChange] = {
-    val commit = new Git(repository).log().add(ObjectId.fromString(commitId)).setMaxCount(1).call().iterator().next()
+    val commit = getCommitById(commitId)
     getFilePathsFromCommit(commit)
+  }
+
+  private def getCommitById(commitId: String): RevCommit = {
+    new Git(repository).log().add(ObjectId.fromString(commitId)).setMaxCount(1).call().iterator().next()
   }
 
   private def getFilePathsFromCommit(commit: RevCommit): List[FileChange] = {
@@ -63,5 +69,52 @@ class GitReader(val repoDir: String) {
       case DiffEntry.ChangeType.RENAME => FileRename(diff.getOldPath, diff.getNewPath)
     }
   }
+
+
+  def readFilesContentFromCommit(commitId: String): List[FileContent] = {
+    val commit = getCommitById(commitId)
+
+    val out = new ByteArrayOutputStream()
+    val df = new DiffFormatter(out)
+    df.setRepository(repository)
+    df.setDiffComparator(RawTextComparator.DEFAULT)
+    df.setDetectRenames(true)
+
+    val diffs = df.scan(commit.getParent(0).getId, commit.getTree).asScala.toList
+
+    val fileChanges = diffs.map(convertDiffToFileChange)
+
+    fileChanges.map(readFileContent(commit))
+
+  }
+
+  private def readFileContent(commit: RevCommit)(fileChange: FileChange): FileContent = {
+
+    fileChange match {
+      case change: FileAdd => FileContentAdd(readFileContentAfterCommit(commit, change.newPath))
+      case change: FileModify => FileContentModify(readFileContentAfterCommit(commit.getParent(0), change.path), readFileContentAfterCommit(commit, change.path))
+      case change: FileDelete => FileContentDelete(readFileContentAfterCommit(commit.getParent(0), change.oldPath))
+      case change: FileRename => FileContentRename(readFileContentAfterCommit(commit.getParent(0), change.oldPath), readFileContentAfterCommit(commit, change.newPath))
+      case change: FileCopy => FileContentCopy(readFileContentAfterCommit(commit.getParent(0), change.oldPath), readFileContentAfterCommit(commit, change.newPath))
+    }
+
+  }
+
+  private def readFileContentAfterCommit(commit: RevCommit, filePath: String): Array[Byte] = {
+    val treeWalk = new TreeWalk(repository)
+    treeWalk.addTree(commit.getTree)
+    treeWalk.setRecursive(true)
+    treeWalk.setFilter(PathFilter.create(filePath))
+
+    if (!treeWalk.next()) {
+      throw new IllegalStateException(s"Did not find expected file ${filePath}")
+    }
+
+    val objectId = treeWalk.getObjectId(0)
+    val loader = repository.open(objectId)
+
+    loader.getBytes
+  }
+
 
 }

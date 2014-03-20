@@ -1,9 +1,11 @@
 package pl.mpieciukiewicz.codereview.git
 
 import org.scalatest.{GivenWhenThen, FeatureSpec}
-import pl.mpieciukiewicz.codereview.vcs.{FileModify, FileChange, Commit}
+import pl.mpieciukiewicz.codereview.vcs._
 import org.fest.assertions.api.Assertions._
 import collection.JavaConverters._
+import pl.mpieciukiewicz.codereview.vcs.Commit
+import pl.mpieciukiewicz.codereview.vcs.FileModify
 
 /**
  *
@@ -32,7 +34,7 @@ class GitReaderSpec extends FeatureSpec with GivenWhenThen {
     }
 
 
-    scenario("Get files from commit") {
+    scenario("Get files names from commit") {
       Given("Repository and GitReader instance, and commit id")
 
       val gitReader = new GitReader("c:/TmpRepo/")
@@ -49,6 +51,46 @@ class GitReaderSpec extends FeatureSpec with GivenWhenThen {
                                                FileModify("app/view/home.html"))
     }
 
+
+    scenario("Get files content from commit") {
+      Given("Repository and GitReader instance, and commit id")
+
+      val gitReader = new GitReader("c:/TmpRepo/")
+      val commitId = "e20b7e4df6d4b7df4816a75981331201317e90e8"
+
+      When("Getting committed files")
+
+      val files: List[FileContent] = gitReader.readFilesContentFromCommit(commitId)
+
+      Then("Have correct files")
+
+      val homeFile = files(2).asInstanceOf[FileContentModify]
+
+      assertThat(new String(homeFile.fromContent)).isEqualTo(
+        "<div>\n"+
+          "    <div>\n"+
+          "        This is home page:\n"+
+          "    </div>\n"+
+          "    <div>\n"+
+          "        You can go to <a href=\"#/calculator\">Calculator</a>.\n"+
+          "    </div>\n"+
+          "</div>")
+
+      assertThat(new String(homeFile.toContent)).isEqualTo(
+        "<div>\n" +
+        "    <div>\n" +
+        "        This is a home page:\n" +
+        "    </div>\n" +
+        "    <div>\n" +
+        "        You can go to a <a href=\"#/calculator\">Calculator</a>.\n" +
+        "    </div>\n" +
+        "</div>")
+
+
+
+
+
+    }
 
   }
 
