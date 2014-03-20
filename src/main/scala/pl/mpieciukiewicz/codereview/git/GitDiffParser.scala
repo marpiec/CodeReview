@@ -1,6 +1,6 @@
 package pl.mpieciukiewicz.codereview.git
 
-import pl.mpieciukiewicz.codereview.vcs.{LineAdded, LineDeleted, LineChange, Diff}
+import pl.mpieciukiewicz.codereview.vcs.{LineAdded, LineDeleted, LineChange, FileDiff}
 import scala.annotation.switch
 
 
@@ -8,11 +8,11 @@ class GitDiffParser {
 
   case class ChangeBlock(removeFrom: Int, removeCount: Int, addFrom: Int, addCount: Int)
 
-  def parse(diffLines: Iterator[String]):Diff = {
-    val lines = diffLines.dropWhile(!_.startsWith("---"))
+  def parse(lines: Iterator[String]):FileDiff = {
+   //val lines = diffLines.dropWhile(!_.startsWith("---"))
 
-    val fromFileName = extractRelativeFileName(lines.next())
-    val toFileName = extractRelativeFileName(lines.next())
+ //   val fromFileName = extractRelativeFileName(lines.next())
+   // val toFileName = extractRelativeFileName(lines.next())
 
     var changedLines = List[LineChange]()
 
@@ -20,7 +20,7 @@ class GitDiffParser {
       changedLines :::= parseChangeBlock(lines)
     }
 
-    Diff(fromFileName, toFileName, changedLines.reverse)
+    FileDiff(changedLines.reverse)
   }
 
   private def extractRelativeFileName(fileNameEntryLine: String): String = {
@@ -35,33 +35,37 @@ class GitDiffParser {
   }
 
   private def parseChangeBlock(lines: Iterator[String]): List[LineChange] = {
-    val changeBlock = parseChangeBlockDescription(lines.next())
-    var addCounter = 0
-    var removeCounter = 0
-    var firstChar:Char = 0
-    var changedLines = List[LineChange]()
-    var line:String = null
+    val headerLine = lines.next()
+    if(headerLine == "\\ No newline at end of file") {
+      List()
+    } else {
+      val changeBlock = parseChangeBlockDescription(headerLine)
+      var addCounter = 0
+      var removeCounter = 0
+      var firstChar: Char = 0
+      var changedLines = List[LineChange]()
+      var line: String = null
 
-    do {
-      line = lines.next()
-      firstChar = if(line.nonEmpty) line(0) else ' '
+      do {
+        line = lines.next()
+        firstChar = if (line.nonEmpty) line(0) else ' '
 
-      (firstChar: @switch) match {
-        case '+' =>
-          changedLines ::= LineAdded(changeBlock.addFrom + addCounter, line.tail)
-          addCounter += 1
-        case '-' =>
-          changedLines ::= LineDeleted(changeBlock.removeFrom + removeCounter, line.tail)
-          removeCounter +=1
-        case ' ' =>
-          addCounter += 1
-          removeCounter += 1
-        case _ => ()
-      }
-    } while(addCounter < changeBlock.addCount || removeCounter < changeBlock.removeCount)
+        (firstChar: @switch) match {
+          case '+' =>
+            changedLines ::= LineAdded(changeBlock.addFrom + addCounter, line.tail)
+            addCounter += 1
+          case '-' =>
+            changedLines ::= LineDeleted(changeBlock.removeFrom + removeCounter, line.tail)
+            removeCounter += 1
+          case ' ' =>
+            addCounter += 1
+            removeCounter += 1
+          case _ => ()
+        }
+      } while (addCounter < changeBlock.addCount || removeCounter < changeBlock.removeCount)
 
-    changedLines
-
+      changedLines
+    }
   }
 
 }

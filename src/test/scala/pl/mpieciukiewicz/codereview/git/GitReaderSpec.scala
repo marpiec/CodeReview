@@ -86,12 +86,35 @@ class GitReaderSpec extends FeatureSpec with GivenWhenThen {
         "    </div>\n" +
         "</div>")
 
+    }
 
 
+    scenario("Get files diff from commit") {
+      Given("Repository and GitReader instance, and commit id")
+
+      val gitReader = new GitReader("c:/TmpRepo/")
+      val commitId = "e20b7e4df6d4b7df4816a75981331201317e90e8"
+
+      When("Getting committed files")
+
+      val files: List[FileDiff] = gitReader.readFilesDiffFromCommit(commitId)
+
+      Then("Have correct diffs")
+
+      val homeFileDiff = files(2)
+
+
+      assertThat(homeFileDiff.changedLines.asJava).containsExactly(
+        LineDeleted(3,"        This is home page:"),
+        LineAdded(3,"        This is a home page:"),
+        LineDeleted(6,"        You can go to <a href=\"#/calculator\">Calculator</a>."),
+        LineAdded(6,"        You can go to a <a href=\"#/calculator\">Calculator</a>."))
 
 
     }
 
   }
+
+
 
 }
