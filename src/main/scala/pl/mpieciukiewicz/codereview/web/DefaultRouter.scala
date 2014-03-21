@@ -9,8 +9,6 @@ import pl.mpieciukiewicz.codereview.web.json.JsonDirectives
 
 class DefaultRouter extends HttpService with Actor with JsonDirectives {
 
-  var listenerCounter = 0
-
   // we use the enclosing ActorContext's or ActorSystem's dispatcher for our Futures and Scheduler
   implicit def executionContext = actorRefFactory.dispatcher
 

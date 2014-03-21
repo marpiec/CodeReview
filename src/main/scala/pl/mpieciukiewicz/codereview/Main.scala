@@ -5,6 +5,7 @@ import java.{util, net}
 import java.io.IOException
 import pl.mpieciukiewicz.codereview.web.WebServer
 import pl.mpieciukiewicz.codereview.database.DataStorage
+import pl.mpieciukiewicz.codereview.model.User
 
 /**
  * @author Marcin Pieciukiewicz
@@ -15,7 +16,12 @@ object Main {
 
     defineProxy()
 
-    new DataStorage("jdbc:h2:data/database", "sa", "sa").initDatabaseStructure()
+    val storage: DataStorage = new DataStorage("jdbc:h2:data/database", "sa", "sa")
+    storage.initDatabaseStructure()
+
+    storage.addUser(User("Marcin", "AAA", "BBB", "m.p@g.pl", "admin"))
+
+    println(storage.getUserByName("Marcin"))
 
     new WebServer().start()
     //Playground.start()

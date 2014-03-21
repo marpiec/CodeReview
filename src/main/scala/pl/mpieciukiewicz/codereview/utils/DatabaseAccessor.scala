@@ -14,32 +14,42 @@ class DatabaseAccessor(url: String, user: String, password: String) {
     }
   }
 
-  def update(connection: Connection)(query: String)(codeBlock: PreparedStatement => Unit) {
-    tryWith(connection.prepareStatement(query)) { preparedStatement =>
-      codeBlock(preparedStatement)
-      preparedStatement.execute()
-    }
+  def updateNoParams(query: String) {
+    update(query)({ps => ()})
   }
 
-  def withStatement(connection: Connection)(codeBlock: (Statement) => Unit) {
-    tryWith(connection.createStatement()) { statement =>
-        codeBlock(statement)
-    }
-  }
-
-  def selectNoParams[T](connection: Connection)(query: String)(codeBlock: ResultSet => T):T = {
-    tryWith(connection.prepareStatement(query)) { preparedStatement =>
-      tryWith(preparedStatement.executeQuery()) { resultSet =>
-        codeBlock(resultSet)
+  def update(query: String)(codeBlock: PreparedStatement => Unit) {
+    db { connection =>
+      tryWith(connection.prepareStatement(query)) {
+        preparedStatement =>
+          codeBlock(preparedStatement)
+          preparedStatement.execute()
       }
     }
   }
 
-  def select[T](connection: Connection)(query: String)(paramsBlock: PreparedStatement => Unit)(codeBlock: ResultSet => T):T = {
-    tryWith(connection.prepareStatement(query)) { preparedStatement =>
-      paramsBlock(preparedStatement)
-      tryWith(preparedStatement.executeQuery()) { resultSet =>
-        codeBlock(resultSet)
+  def withStatement(codeBlock: (Statement) => Unit) {
+    db { connection =>
+      tryWith(connection.createStatement()) {
+        statement =>
+          codeBlock(statement)
+      }
+    }
+  }
+
+  def selectNoParams[T](query: String)(codeBlock: ResultSet => T):T = {
+    select(query)({ps => ()})(codeBlock)
+  }
+
+  def select[T](query: String)(paramsBlock: PreparedStatement => Unit)(codeBlock: ResultSet => T):T = {
+    db { connection =>
+      tryWith(connection.prepareStatement(query)) {
+        preparedStatement =>
+          paramsBlock(preparedStatement)
+          tryWith(preparedStatement.executeQuery()) {
+            resultSet =>
+              codeBlock(resultSet)
+          }
       }
     }
   }
