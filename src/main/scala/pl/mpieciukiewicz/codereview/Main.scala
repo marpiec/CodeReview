@@ -3,6 +3,7 @@ package pl.mpieciukiewicz.codereview
 import java.net.{InetSocketAddress, SocketAddress, URI, ProxySelector}
 import java.{util, net}
 import java.io.IOException
+import pl.mpieciukiewicz.codereview.web.WebServer
 
 /**
  * @author Marcin Pieciukiewicz
@@ -13,13 +14,14 @@ object Main {
 
     defineProxy()
 
-    Playground.start()
+    (new WebServer).start()
+    //Playground.start()
   }
 
 
 
 
-  def defineProxy() {
+  private def defineProxy() {
 
     System.setProperty("http.proxyHost", "webproxy.ssmb.com")
     System.setProperty("http.proxyPort", "8080")

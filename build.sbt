@@ -16,7 +16,7 @@ libraryDependencies ++= Seq("org.eclipse.jetty" % "jetty-server" % "9.0.6.v20130
   "com.typesafe.akka" %% "akka-actor" % "2.3.0",
   "com.typesafe.akka" %% "akka-slf4j" % "2.3.0",
   "commons-io" % "commons-io" % "2.4",
-  //"pl.mpieciukiewicz.mpjsons" % "mpjsons" % "0.5-SNAPSHOT",
+  "pl.mpieciukiewicz.mpjsons" % "mpjsons" % "0.5", //clone from: https://github.com/marpiec/mpjsons and then mvn install
   "org.eclipse.jgit" % "org.eclipse.jgit" % "3.3.0.201403021825-r",
   "ch.qos.logback" % "logback-classic" % "1.1.1",
   "org.easytesting" % "fest-assert-core" % "2.0M10" % "test",
