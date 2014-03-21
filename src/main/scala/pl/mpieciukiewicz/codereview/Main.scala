@@ -4,6 +4,7 @@ import java.net.{InetSocketAddress, SocketAddress, URI, ProxySelector}
 import java.{util, net}
 import java.io.IOException
 import pl.mpieciukiewicz.codereview.web.WebServer
+import pl.mpieciukiewicz.codereview.database.DataStorage
 
 /**
  * @author Marcin Pieciukiewicz
@@ -14,7 +15,9 @@ object Main {
 
     defineProxy()
 
-    (new WebServer).start()
+    new DataStorage("jdbc:h2:data/database", "sa", "sa").initDatabaseStructure()
+
+    new WebServer().start()
     //Playground.start()
   }
 

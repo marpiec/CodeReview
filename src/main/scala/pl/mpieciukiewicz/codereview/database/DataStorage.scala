@@ -1,16 +1,12 @@
 package pl.mpieciukiewicz.codereview.database
 
-import java.sql._
-import com.citi.marsrt.totalrecon.config.Configuration
-import scala.Some
-import com.citi.marsrt.totalrecon.utils.SqlUtils._
-import com.citi.marsrt.totalrecon.model.XVar
+import pl.mpieciukiewicz.codereview.utils.DatabaseAccessor
 
-object DataStorage {
-
+class DataStorage(url: String, user: String, password: String) extends DatabaseAccessor(url, user, password) {
+//
 
   def initDatabaseStructure() {
-    mainDB {
+    db {
       connection =>
         withStatement(connection) {
           statement =>
@@ -21,15 +17,6 @@ object DataStorage {
     }
   }
 
-
-  def mainDatabaseUrl = {
-    "jdbc:h2:c:/test"
-  }
-
-
-  private def mainDB[T](codeBlock: (Connection) => T): T = {
-    db(mainDatabaseUrl)(codeBlock)
-  }
 
 
 
