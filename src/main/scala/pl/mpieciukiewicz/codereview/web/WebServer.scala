@@ -57,5 +57,70 @@ class WebServer {
     staticFilesContext
   }
 
+//  val ACCESS_LOGGER_NAME = "accessLogger"
+//
+//  def startWebServer() {
+//    val server = new Server(Configuration.instance.webServer.socket)
+//
+//    val servletContext: ServletContextHandler = createServletContext(server)
+//    val staticFilesContext: ContextHandler = createStaticFilesContext("/*", "/static", "index.html")
+//    val requestLogHandler = createRequestLogHandler()
+//
+//    val handlers = new HandlerList()
+//    handlers.setHandlers(Array(staticFilesContext, requestLogHandler, servletContext))
+//    server.setHandler(handlers)
+//
+//    server.start()
+//    println("Starting jetty...")
+//    server.join()
+//  }
+//
+//
+//  private def createServletContext(server: Server): ServletContextHandler = {
+//    val servletContext = new ServletContextHandler(ServletContextHandler.SESSIONS)
+//
+//    servletContext.addServlet(classOf[RestServlet], "/rest/*")
+//    addH2ConsoleServlet(servletContext, "/h2console/*")
+//
+//    servletContext
+//  }
+//
+//  private def addH2ConsoleServlet(servletContext: ServletContextHandler, path: String) {
+//    val servlet = servletContext.addServlet(classOf[WebServlet], path)
+//    servlet.setInitParameter("webAllowOthers", "")
+//    servlet.setInitParameter("trace", "")
+//    servlet.setInitParameter("db.url", DataStorage.mainDatabaseUrl)
+//    servlet.setInitParameter("db.user", Configuration.instance.database.user)
+//    servlet.setInitParameter("db.password", Configuration.instance.database.password)
+//  }
+//
+//
+//  private def createStaticFilesContext(path: String, classpathPath: String, welcomeFile: String): ContextHandler = {
+//    val resourceHandler = new ResourceHandler()
+//
+//    if (System.getProperty("developmentMode") == "true") {
+//      resourceHandler.setBaseResource(Resource.newResource(new File("src/main/resources/static")))
+//    } else {
+//      resourceHandler.setBaseResource(Resource.newClassPathResource(classpathPath))
+//    }
+//
+//    resourceHandler.setDirectoriesListed(false)
+//    resourceHandler.setWelcomeFiles(Array(welcomeFile))
+//    val staticFilesContext = new ContextHandler(path)
+//    staticFilesContext.setHandler(resourceHandler)
+//    staticFilesContext
+//  }
+//
+//  private def createRequestLogHandler(): RequestLogHandler = {
+//    val requestLog = new Slf4jRequestLog()
+//
+//    requestLog.setLoggerName(ACCESS_LOGGER_NAME)
+//    requestLog.setLogDateFormat("yyyy-MM-dd hh:mm:ss:SSS")
+//    requestLog.setExtended(false)
+//
+//    val requestLogHandler = new RequestLogHandler()
+//    requestLogHandler.setRequestLog(requestLog)
+//    requestLogHandler
+//  }
 
 }
