@@ -1,6 +1,6 @@
 package pl.mpieciukiewicz.codereview.utils
 
-import org.scalatest.{BeforeAndAfter, GivenWhenThen, FeatureSpec, FunSuite}
+import org.scalatest.{BeforeAndAfter, GivenWhenThen, FeatureSpec}
 import org.fest.assertions.api.Assertions._
 import org.h2.jdbc.JdbcSQLException
 
