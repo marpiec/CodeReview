@@ -8,6 +8,10 @@ class DatabaseAccessor(url: String, user: String, password: String) {
 
   val connectionPool = JdbcConnectionPool.create(url, user, password)
 
+  def close() {
+    connectionPool.dispose()
+  }
+
   def db[T](codeBlock: Connection => T):T = {
     tryWith(connectionPool.getConnection) { connection =>
       codeBlock(connection)
@@ -24,15 +28,6 @@ class DatabaseAccessor(url: String, user: String, password: String) {
         preparedStatement =>
           codeBlock(preparedStatement)
           preparedStatement.execute()
-      }
-    }
-  }
-
-  def withStatement(codeBlock: (Statement) => Unit) {
-    db { connection =>
-      tryWith(connection.createStatement()) {
-        statement =>
-          codeBlock(statement)
       }
     }
   }

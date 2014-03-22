@@ -3,7 +3,10 @@ package pl.mpieciukiewicz.codereview.database
 import pl.mpieciukiewicz.codereview.utils.DatabaseAccessor
 import pl.mpieciukiewicz.codereview.model.User
 
-class DataStorage(url: String, user: String, password: String) extends DatabaseAccessor(url, user, password) {
+class DataStorage(url: String, user: String, password: String) {
+
+  val dba = new DatabaseAccessor(url, user, password)
+  import dba._
 
   def initDatabaseStructure() {
     updateNoParams("CREATE TABLE IF NOT EXISTS user (id INT NOT NULL PRIMARY KEY, name VARCHAR(255), password VARCHAR(255), salt VARCHAR(255), email VARCHAR(255), role VARCHAR(255))")
