@@ -1,4 +1,4 @@
-package pl.mpieciukiewicz.codereview.git
+package pl.mpieciukiewicz.codereview.vcs.git
 
 import org.scalatest.{GivenWhenThen, FeatureSpec}
 import scala.io.Source

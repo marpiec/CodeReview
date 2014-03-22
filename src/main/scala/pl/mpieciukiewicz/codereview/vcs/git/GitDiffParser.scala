@@ -1,4 +1,4 @@
-package pl.mpieciukiewicz.codereview.git
+package pl.mpieciukiewicz.codereview.vcs.git
 
 import pl.mpieciukiewicz.codereview.vcs.{LineAdded, LineDeleted, LineChange, FileDiff}
 import scala.annotation.switch
