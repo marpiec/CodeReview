@@ -44,10 +44,10 @@ class DataStorageSpec extends FeatureSpec with GivenWhenThen with BeforeAndAfter
       Given("Initialized data storage")
 
       When("Users are stored")
-      val userA = User("Marcin", "pass123", "abc", "m.p@mp.pl", "admin")
-      val userB = User("John", "321pass", "123", "j.s@mp.pl", "developer")
-      ds.addUser(userA)
-      ds.addUser(userB)
+      val userAPrototype = User("Marcin", "m.p@mp.pl", "pass123", "abc")
+      val userBPrototype = User("John", "j.s@mp.pl", "321pass", "123")
+      val userA = ds.addUser(userAPrototype)
+      val userB = ds.addUser(userBPrototype)
 
       Then("Data storage contains correct users in order they were stored")
       assertThat(ds.loadAllUsers().asJava).containsExactly(userA, userB)
@@ -58,10 +58,10 @@ class DataStorageSpec extends FeatureSpec with GivenWhenThen with BeforeAndAfter
       Given("Initialized data storage")
 
       When("Users are stored")
-      val userA = User("Marcin", "pass123", "abc", "m.p@mp.pl", "admin")
-      val userB = User("John", "321pass", "123", "j.s@mp.pl", "developer")
-      ds.addUser(userA)
-      ds.addUser(userB)
+      val userAPrototype = User("Marcin", "m.p@mp.pl", "pass123", "abc")
+      val userBPrototype = User("John", "j.s@mp.pl", "321pass", "123")
+      val userA = ds.addUser(userAPrototype)
+      val userB = ds.addUser(userBPrototype)
 
       Then("Users can be found by name")
       assertThat(ds.findUserByName("Marcin").get).isEqualTo(userA)

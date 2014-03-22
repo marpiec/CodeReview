@@ -10,8 +10,8 @@ import pl.mpieciukiewicz.codereview.model.User
 class JsonUtilSpec extends FeatureSpec with GivenWhenThen {
 
   val jsonUtil = new JsonUtil
-  val user = User("Marcin", "pass123", "abc", "m.p@mp.pl", "admin")
-  val userJson = """{"name":"Marcin","password":"pass123","salt":"abc","email":"m.p@mp.pl","role":"admin"}"""
+  val user = User("Marcin", "m.p@mp.pl", "pass123", "abc", 12)
+  val userJson = """{"name":"Marcin","password":"pass123","salt":"abc","email":"m.p@mp.pl","id":12}"""
 
   feature("Should serialize to and deserialize from Json correctly") {
 

@@ -19,7 +19,7 @@ object Main {
     val storage: DataStorage = new DataStorage("jdbc:h2:data/database", "sa", "sa")
     storage.initDatabaseStructure()
 
-    storage.addUser(User("Marcin", "AAA", "BBB", "m.p@g.pl", "admin"))
+    storage.addUser(User("Marcin", "m.p@g.pl", "AAA", "BBB"))
 
     println(storage.findUserByName("Marcin"))
 
