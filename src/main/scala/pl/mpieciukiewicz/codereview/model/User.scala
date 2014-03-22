@@ -3,4 +3,8 @@ package pl.mpieciukiewicz.codereview.model
 /**
  *
  */
-case class User(name: String, password: String, salt: String, email: String, role: String)
+case class User(id: Int,
+                name: String,
+                email: String,
+                password: String,
+                salt: String)
