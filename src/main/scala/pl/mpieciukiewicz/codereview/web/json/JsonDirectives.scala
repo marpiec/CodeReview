@@ -5,9 +5,9 @@ import akka.util.Timeout
 import akka.actor.{ActorSelection, ActorRef}
 import scala.reflect.ClassTag
 import scala.concurrent.ExecutionContext
-import pl.mpieciukiewicz.codereview.utils.JsonUtil._
 import akka.pattern.ask
 import scala.concurrent.duration._
+import pl.mpieciukiewicz.codereview.utils.JsonUtil
 
 
 /**
@@ -21,6 +21,8 @@ trait JsonDirectives {
   implicit val defaultTimeout = Timeout(30 seconds)
   val emptyJsonObject = "{}"
 
+  val jsonUtil = new JsonUtil
+  import jsonUtil._
 
 
   def askActorWithMessage[T](actor: ActorSelection)(implicit messageType: ClassTag[T], ec: ExecutionContext) = {

@@ -5,7 +5,7 @@ import pl.marpiec.mpjsons.MPJson
 /**
  * @author Marcin Pieciukiewicz
  */
-object JsonUtil {
+class JsonUtil {
 
   def toJson(entity:Any):String = MPJson.serialize(entity.asInstanceOf[AnyRef])
 
