@@ -4,6 +4,7 @@ import org.scalatest.{BeforeAndAfter, GivenWhenThen, FeatureSpec, FunSuite}
 import collection.JavaConverters._
 import org.fest.assertions.api.Assertions._
 import pl.mpieciukiewicz.codereview.model.User
+import pl.mpieciukiewicz.codereview.utils.{DatabaseAccessor, JsonUtil}
 
 /**
  *
@@ -13,7 +14,7 @@ class DataStorageSpec extends FeatureSpec with GivenWhenThen with BeforeAndAfter
   var ds:DataStorage = _
 
   before {
-    ds = new DataStorage("jdbc:h2:mem:testdb", "sa", "sa")
+    ds = new DataStorage(new DatabaseAccessor("jdbc:h2:mem:testdb", "sa", "sa"), new JsonUtil)
     ds.initDatabaseStructure()
   }
 

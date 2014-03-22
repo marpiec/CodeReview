@@ -3,11 +3,8 @@ package pl.mpieciukiewicz.codereview.database
 import pl.mpieciukiewicz.codereview.utils.{JsonUtil, DatabaseAccessor}
 import pl.mpieciukiewicz.codereview.model.User
 
-class DataStorage(url: String, user: String, password: String) {
+class DataStorage(val dba: DatabaseAccessor, jsonUtil: JsonUtil) {
 
-  val jsonUtil = new JsonUtil
-
-  val dba = new DatabaseAccessor(url, user, password)
   import dba._
 
   def initDatabaseStructure() {

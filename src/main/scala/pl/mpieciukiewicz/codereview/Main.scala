@@ -6,6 +6,7 @@ import java.io.IOException
 import pl.mpieciukiewicz.codereview.web.WebServer
 import pl.mpieciukiewicz.codereview.database.DataStorage
 import pl.mpieciukiewicz.codereview.model.User
+import pl.mpieciukiewicz.codereview.utils.{JsonUtil, DatabaseAccessor}
 
 /**
  * @author Marcin Pieciukiewicz
@@ -15,8 +16,7 @@ object Main {
   def main(args: Array[String]) {
 
     defineProxy()
-
-    val storage: DataStorage = new DataStorage("jdbc:h2:data/database", "sa", "sa")
+    val storage: DataStorage = new DataStorage(new DatabaseAccessor("jdbc:h2:data/database", "sa", "sa"), new JsonUtil)
     storage.initDatabaseStructure()
 
     storage.addUser(User("Marcin", "m.p@g.pl", "AAA", "BBB"))
