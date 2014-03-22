@@ -6,13 +6,9 @@ import scala.annotation.switch
 
 class GitDiffParser {
 
-  case class ChangeBlock(removeFrom: Int, removeCount: Int, addFrom: Int, addCount: Int)
+  private case class ChangeBlock(removeFrom: Int, removeCount: Int, addFrom: Int, addCount: Int)
 
   def parse(lines: Iterator[String]):FileDiff = {
-   //val lines = diffLines.dropWhile(!_.startsWith("---"))
-
- //   val fromFileName = extractRelativeFileName(lines.next())
-   // val toFileName = extractRelativeFileName(lines.next())
 
     var changedLines = List[LineChange]()
 
@@ -21,10 +17,6 @@ class GitDiffParser {
     }
 
     FileDiff(changedLines.reverse)
-  }
-
-  private def extractRelativeFileName(fileNameEntryLine: String): String = {
-    fileNameEntryLine.substring(6)
   }
 
 
