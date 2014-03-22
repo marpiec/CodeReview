@@ -21,7 +21,7 @@ object Main {
 
     storage.addUser(User("Marcin", "AAA", "BBB", "m.p@g.pl", "admin"))
 
-    println(storage.getUserByName("Marcin"))
+    println(storage.findUserByName("Marcin"))
 
     new WebServer().start()
     //Playground.start()

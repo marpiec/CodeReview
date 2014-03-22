@@ -23,8 +23,18 @@ class DataStorage(url: String, user: String, password: String) {
       preparedStatement.setString(5, user.role)
     }
   }
+  
+  def loadAllUsers():List[User] = {
+    selectNoParams("SELECT name, password, salt, email, role FROM user ORDER BY id") { resultSet =>
+      var users = List[User]()
+      while(resultSet.next()) {
+        users ::= User(resultSet.getString(1), resultSet.getString(2), resultSet.getString(3), resultSet.getString(4), resultSet.getString(5))
+      }
+      users.reverse
+    }
+  }
 
-  def getUserByName(userName: String):Option[User] = {
+  def findUserByName(userName: String):Option[User] = {
     select("SELECT password, salt, email, role FROM user WHERE name = ?") { preparedStatement =>
       preparedStatement.setString(1, userName)
     } { resultSet =>
@@ -34,6 +44,10 @@ class DataStorage(url: String, user: String, password: String) {
         None
       }
     }
+  }
+  
+  def close() {
+    dba.close()
   }
 
 
