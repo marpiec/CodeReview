@@ -9,12 +9,12 @@ import pl.mpieciukiewicz.codereview.utils.{DatabaseAccessor, JsonUtil}
 /**
  *
  */
-class DataStorageSpec extends FeatureSpec with GivenWhenThen with BeforeAndAfter {
+class DocumentDataStorageSpec extends FeatureSpec with GivenWhenThen with BeforeAndAfter {
 
-  var ds:DataStorage = _
+  var ds:DocumentDataStorage = _
 
   before {
-    ds = new DataStorage(new DatabaseAccessor("jdbc:h2:mem:testdb", "sa", "sa"), new JsonUtil)
+    ds = new DocumentDataStorage(new DatabaseAccessor("jdbc:h2:mem:testdb", "sa", "sa"), new JsonUtil)
     ds.initDatabaseStructure()
   }
 
@@ -28,11 +28,15 @@ class DataStorageSpec extends FeatureSpec with GivenWhenThen with BeforeAndAfter
 
       Given("Initialized data storage")
 
-      Then("Contains empty user table")
+      Then("Contains no users in entity table")
+      ds.dba.selectNoParams("SELECT * FROM entity") { resultSet =>
+        assertThat(resultSet.next).isFalse
+      }
+
       assertThat(ds.loadAllUsers().asJava).isEmpty()
 
       Then("Contains initialized user sequence")
-      ds.dba.selectNoParams("SELECT NEXTVAL('user_seq')") { resultSet =>
+      ds.dba.selectNoParams("SELECT NEXTVAL('entity_seq')") { resultSet =>
         assertThat(resultSet.next()).isTrue
         assertThat(resultSet.getInt(1)).isEqualTo(1)
         assertThat(resultSet.next()).isFalse

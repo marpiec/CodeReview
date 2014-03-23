@@ -4,7 +4,7 @@ import java.net.{InetSocketAddress, SocketAddress, URI, ProxySelector}
 import java.{util, net}
 import java.io.IOException
 import pl.mpieciukiewicz.codereview.web.WebServer
-import pl.mpieciukiewicz.codereview.database.DataStorage
+import pl.mpieciukiewicz.codereview.database.DocumentDataStorage
 import pl.mpieciukiewicz.codereview.model.User
 import pl.mpieciukiewicz.codereview.utils.{JsonUtil, DatabaseAccessor}
 
@@ -16,7 +16,7 @@ object Main {
   def main(args: Array[String]) {
 
     defineProxy()
-    val storage: DataStorage = new DataStorage(new DatabaseAccessor("jdbc:h2:data/database", "sa", "sa"), new JsonUtil)
+    val storage: DocumentDataStorage = new DocumentDataStorage(new DatabaseAccessor("jdbc:h2:data/database", "sa", "sa"), new JsonUtil)
     storage.initDatabaseStructure()
 
     storage.addUser(User("Marcin", "m.p@g.pl", "AAA", "BBB"))
