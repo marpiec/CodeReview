@@ -16,12 +16,12 @@ object Main {
   def main(args: Array[String]) {
 
     defineProxy()
-    val storage: DocumentDataStorage = new DocumentDataStorage(new DatabaseAccessor("jdbc:h2:data/database", "sa", "sa"), new JsonUtil)
-    storage.initDatabaseStructure()
+  //  val storage: DocumentDataStorage = new DocumentDataStorage(new DatabaseAccessor("jdbc:h2:data/database", "sa", "sa"), new JsonUtil)
+  //  storage.initDatabaseStructure()
 
-    storage.addUser(User("Marcin", "m.p@g.pl", "AAA", "BBB"))
+   // storage.addUser(User("Marcin", "m.p@g.pl", "AAA", "BBB"))
 
-    println(storage.findUserByName("Marcin"))
+   // println(storage.findUserByName("Marcin"))
 
     new WebServer().start()
     //Playground.start()

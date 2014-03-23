@@ -8,24 +8,13 @@ class DocumentDataStorage(val dba: DatabaseAccessor, jsonUtil: JsonUtil) {
   import dba._
 
 
-  def addUser(user: User): User = {
-    saveNewEntity(user.copy(id = loadNewId()))
-  }
-
-  def loadAllUsers():List[User] = {
-    loadAllEntitiesByType(classOf[User])
-  }
-
-  def findUserByName(userName: String):Option[User] = {
-    loadAllEntitiesByType(classOf[User]).find(_.name == userName)
-  }
 
   def initDatabaseStructure() {
     updateNoParams("CREATE TABLE IF NOT EXISTS entity (id INT NOT NULL PRIMARY KEY, type VARCHAR(255), object CLOB)")
     updateNoParams("CREATE SEQUENCE IF NOT EXISTS entity_seq")
   }
 
-  private def saveNewEntity[T](entity: T {def id:Int}): T = {
+  def saveNewEntity[T](entity: T {def id:Int}): T = {
     update("INSERT INTO entity (id, type, object) VALUES (?, ?, ?)") { preparedStatement =>
       preparedStatement.setInt(1, entity.id)
       preparedStatement.setString(2, entity.getClass.getName)
@@ -34,7 +23,7 @@ class DocumentDataStorage(val dba: DatabaseAccessor, jsonUtil: JsonUtil) {
     entity
   }
 
-  private def loadNewId():Int = {
+  def loadNewId():Int = {
     selectNoParams("SELECT NEXTVAL('entity_seq')") { resultSet =>
       resultSet.next()
       resultSet.getInt(1)
