@@ -1,4 +1,4 @@
-package pl.mpieciukiewicz.codereview.utils
+package pl.mpieciukiewicz.codereview.database.engine
 
 import org.scalatest.{BeforeAndAfter, GivenWhenThen, FeatureSpec}
 import org.fest.assertions.api.Assertions._

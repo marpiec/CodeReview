@@ -1,4 +1,4 @@
-package pl.mpieciukiewicz.codereview.utils
+package pl.mpieciukiewicz.codereview.database.engine
 
 import java.sql._
 import org.h2.jdbcx.JdbcConnectionPool

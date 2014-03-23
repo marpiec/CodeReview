@@ -1,12 +1,13 @@
 package pl.mpieciukiewicz.codereview.database
 
-import pl.mpieciukiewicz.codereview.utils.{JsonUtil, DatabaseAccessor}
-import pl.mpieciukiewicz.codereview.model.User
+import pl.mpieciukiewicz.codereview.utils.JsonUtil
+import pl.mpieciukiewicz.codereview.model.{Project, User}
+import pl.mpieciukiewicz.codereview.database.engine.DocumentDataStorage
 
 /**
  *
  */
-class ModelStorage(val dds: DocumentDataStorage) {
+class UserStorage(val dds: DocumentDataStorage) {
 
   import dds._
 
@@ -21,5 +22,5 @@ class ModelStorage(val dds: DocumentDataStorage) {
   def findUserByName(userName: String):Option[User] = {
     loadAllEntitiesByType(classOf[User]).find(_.name == userName)
   }
-
+  
 }

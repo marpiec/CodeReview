@@ -4,9 +4,9 @@ import java.net.{InetSocketAddress, SocketAddress, URI, ProxySelector}
 import java.{util, net}
 import java.io.IOException
 import pl.mpieciukiewicz.codereview.web.WebServer
-import pl.mpieciukiewicz.codereview.database.DocumentDataStorage
 import pl.mpieciukiewicz.codereview.model.User
-import pl.mpieciukiewicz.codereview.utils.{JsonUtil, DatabaseAccessor}
+import pl.mpieciukiewicz.codereview.utils.JsonUtil
+import pl.mpieciukiewicz.codereview.database.engine.DocumentDataStorage
 
 /**
  * @author Marcin Pieciukiewicz

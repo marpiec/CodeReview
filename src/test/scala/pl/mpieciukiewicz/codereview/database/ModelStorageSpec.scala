@@ -4,17 +4,18 @@ import org.scalatest.{BeforeAndAfter, GivenWhenThen, FeatureSpec, FunSuite}
 import collection.JavaConverters._
 import org.fest.assertions.api.Assertions._
 import pl.mpieciukiewicz.codereview.model.User
-import pl.mpieciukiewicz.codereview.utils.{JsonUtil, DatabaseAccessor}
+import pl.mpieciukiewicz.codereview.utils.JsonUtil
+import pl.mpieciukiewicz.codereview.database.engine.{DatabaseAccessor, DocumentDataStorage}
 
 /**
  *
  */
 class ModelStorageSpec extends FeatureSpec with GivenWhenThen with BeforeAndAfter {
 
-  var ms:ModelStorage = _
+  var ms:UserStorage = _
 
   before {
-    ms = new ModelStorage(new DocumentDataStorage(new DatabaseAccessor("jdbc:h2:mem:testdb", "sa", "sa"), new JsonUtil))
+    ms = new UserStorage(new DocumentDataStorage(new DatabaseAccessor("jdbc:h2:mem:testdb", "sa", "sa"), new JsonUtil))
     ms.dds.initDatabaseStructure()
   }
 

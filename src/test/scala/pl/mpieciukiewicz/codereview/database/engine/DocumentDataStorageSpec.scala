@@ -1,10 +1,9 @@
-package pl.mpieciukiewicz.codereview.database
+package pl.mpieciukiewicz.codereview.database.engine
 
-import org.scalatest.{BeforeAndAfter, GivenWhenThen, FeatureSpec, FunSuite}
-import collection.JavaConverters._
+import org.scalatest.{BeforeAndAfter, GivenWhenThen, FeatureSpec}
 import org.fest.assertions.api.Assertions._
-import pl.mpieciukiewicz.codereview.model.User
-import pl.mpieciukiewicz.codereview.utils.{DatabaseAccessor, JsonUtil}
+import pl.mpieciukiewicz.codereview.utils.JsonUtil
+import pl.mpieciukiewicz.codereview.database.engine.DocumentDataStorage
 
 /**
  *

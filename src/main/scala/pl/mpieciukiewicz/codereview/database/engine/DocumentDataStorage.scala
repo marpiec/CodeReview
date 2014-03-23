@@ -1,7 +1,6 @@
-package pl.mpieciukiewicz.codereview.database
+package pl.mpieciukiewicz.codereview.database.engine
 
-import pl.mpieciukiewicz.codereview.utils.{JsonUtil, DatabaseAccessor}
-import pl.mpieciukiewicz.codereview.model.User
+import pl.mpieciukiewicz.codereview.utils.JsonUtil
 
 class DocumentDataStorage(val dba: DatabaseAccessor, jsonUtil: JsonUtil) {
 
