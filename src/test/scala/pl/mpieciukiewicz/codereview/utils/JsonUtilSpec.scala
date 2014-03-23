@@ -1,8 +1,9 @@
 package pl.mpieciukiewicz.codereview.utils
 
-import org.scalatest.{BeforeAndAfter, GivenWhenThen, FeatureSpec}
+import org.scalatest.{GivenWhenThen, FeatureSpec}
 import org.fest.assertions.api.Assertions._
 import pl.mpieciukiewicz.codereview.model.User
+import pl.mpieciukiewicz.codereview.utils.json.JsonUtil
 
 /**
  *
@@ -10,8 +11,8 @@ import pl.mpieciukiewicz.codereview.model.User
 class JsonUtilSpec extends FeatureSpec with GivenWhenThen {
 
   val jsonUtil = new JsonUtil
-  val user = User("Marcin", "m.p@mp.pl", "pass123", "abc", 12)
-  val userJson = """{"name":"Marcin","password":"pass123","salt":"abc","email":"m.p@mp.pl","id":12}"""
+  val user = User(Some(12), "Marcin", "m.p@mp.pl", "pass123", "abc")
+  val userJson = """{"id":[12], "name":"Marcin","password":"pass123","salt":"abc","email":"m.p@mp.pl"}"""
 
   feature("Should serialize to and deserialize from Json correctly") {
 

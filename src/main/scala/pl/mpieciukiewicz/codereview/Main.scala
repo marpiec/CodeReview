@@ -5,8 +5,8 @@ import java.{util, net}
 import java.io.IOException
 import pl.mpieciukiewicz.codereview.web.WebServer
 import pl.mpieciukiewicz.codereview.model.User
-import pl.mpieciukiewicz.codereview.utils.JsonUtil
 import pl.mpieciukiewicz.codereview.database.engine.DocumentDataStorage
+import pl.mpieciukiewicz.codereview.utils.json.JsonUtil
 
 /**
  * @author Marcin Pieciukiewicz

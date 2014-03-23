@@ -7,7 +7,7 @@ import scala.reflect.ClassTag
 import scala.concurrent.ExecutionContext
 import akka.pattern.ask
 import scala.concurrent.duration._
-import pl.mpieciukiewicz.codereview.utils.JsonUtil
+import pl.mpieciukiewicz.codereview.utils.json.JsonUtil
 
 
 /**

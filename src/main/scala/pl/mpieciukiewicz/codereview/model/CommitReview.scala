@@ -1,11 +1,13 @@
 package pl.mpieciukiewicz.codereview.model
 
 import org.joda.time.DateTime
+import pl.marpiec.mpjsons.annotation.FirstSubType
+import scala.annotation.meta.field
 
 /**
  *
  */
-case class CommitReview(id: String,
+case class CommitReview(@(FirstSubType @field)(classOf[Int]) id: String,
                         commitId: String,
                         reviewerId: String,
                         positive: Boolean,

@@ -1,12 +1,16 @@
 package pl.mpieciukiewicz.codereview.model.constant
 
-class FileChangeType extends Enumeration {
-  type FileChangeType = Value
+import pl.mpieciukiewicz.codereview.utils.enums.{EnumType, EnumHolder}
 
-  val Add = Value("Add")
-  val Modify = Value("Modify")
-  val Delete = Value("Delete")
-  val Rename = Value("Rename")
-  val Copy = Value("Copy")
+final case class FileChangeType(name: String) extends EnumType
 
+object FileChangeType extends EnumHolder[FileChangeType] {
+
+  val Add = new FileChangeType("Add")
+  val Modify = new FileChangeType("Modify")
+  val Delete = new FileChangeType("Delete")
+  val Rename = new FileChangeType("Rename")
+  val Copy = new FileChangeType("Copy")
+
+  val values = List[FileChangeType](Add, Modify, Delete, Rename, Copy)
 }
