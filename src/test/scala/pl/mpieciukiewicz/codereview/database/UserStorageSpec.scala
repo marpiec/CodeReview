@@ -10,7 +10,7 @@ import pl.mpieciukiewicz.codereview.database.engine.{DatabaseAccessor, DocumentD
 /**
  *
  */
-class ModelStorageSpec extends FeatureSpec with GivenWhenThen with BeforeAndAfter {
+class UserStorageSpec extends FeatureSpec with GivenWhenThen with BeforeAndAfter {
 
   var ms:UserStorage = _
 
