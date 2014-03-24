@@ -5,11 +5,11 @@ import akka.actor.{ActorSystem, Props, ActorContext}
 /**
  * @author Marcin Pieciukiewicz
  */
-class MainSystem {
+class ActorSystemInitializator {
 
   def createActors(context: ActorSystem) {
 
-    //context.actorOf(Props[ActorClass], "actorName")
+    context.actorOf(Props[UserManager], "userManager")
 
   }
 

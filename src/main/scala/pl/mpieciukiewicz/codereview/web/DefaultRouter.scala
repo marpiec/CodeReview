@@ -1,7 +1,6 @@
 package pl.mpieciukiewicz.codereview.web
 
 import akka.actor._
-import akka.util.Timeout
 
 import spray.routing._
 import pl.mpieciukiewicz.codereview.web.json.JsonDirectives
@@ -24,6 +23,18 @@ class DefaultRouter extends HttpService with Actor with JsonDirectives {
         } ~
         path("ping") {
           complete("pong")
+        }
+      } ~
+      post {
+        path("register-user") {
+          parameters("name", "email", "password") { (name, email, password) =>
+            complete(name +" "+email+" "+password)
+          }
+        } ~
+        path("authenticate-user") {
+          parameter("name") { name =>
+            complete(name)
+          }
         }
       }
     }
