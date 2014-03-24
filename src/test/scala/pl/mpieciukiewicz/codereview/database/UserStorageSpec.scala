@@ -39,7 +39,7 @@ class UserStorageSpec extends FeatureSpec with GivenWhenThen with BeforeAndAfter
 
     }
 
-    scenario("Storing and getting back correct users by name") {
+    scenario("Storing and getting back correct users by name or email") {
       Given("Initialized data storage")
 
       When("Users are stored")
@@ -53,6 +53,9 @@ class UserStorageSpec extends FeatureSpec with GivenWhenThen with BeforeAndAfter
       assertThat(storage.findByName("John").get).isEqualTo(entityB)
       assertThat(storage.findByName("Jesse").isEmpty).isTrue
 
+      assertThat(storage.findByEmail("m.p@mp.pl").get).isEqualTo(entityA)
+      assertThat(storage.findByEmail("j.s@mp.pl").get).isEqualTo(entityB)
+      assertThat(storage.findByEmail("w.w@mp.pl").isEmpty).isTrue
     }
   }
 }

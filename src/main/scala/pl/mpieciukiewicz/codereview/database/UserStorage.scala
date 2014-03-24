@@ -22,4 +22,8 @@ class UserStorage(val dds: DocumentDataStorage) {
     loadAllEntitiesByType(classOf[User]).find(_.name == name)
   }
 
+  def findByEmail(email: String): Option[User] = {
+    loadAllEntitiesByType(classOf[User]).find(_.email == email)
+  }
+
 }
