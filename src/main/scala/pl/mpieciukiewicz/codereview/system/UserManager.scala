@@ -17,7 +17,6 @@ object UserManager {
   case class UserAuthenticated(userId: Int)
   case object IncorrectUserOrPassword
 
-
 }
 
 
