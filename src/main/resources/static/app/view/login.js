@@ -1,4 +1,4 @@
-app.controller("LoginController", function ($scope, $http) {
+app.controller("LoginController", function ($rootScope, $scope, $http) {
 
     $scope.user = "";
     $scope.password = "";
@@ -25,6 +25,7 @@ app.controller("LoginController", function ($scope, $http) {
 
     function incorrectUserOrPassword() {
         $scope.loginIncorrectVisible = true;
+        $rootScope.session.authenticated = true;
     }
 
     function userAuthenticated() {

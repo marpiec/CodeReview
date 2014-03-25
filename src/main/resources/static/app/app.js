@@ -19,5 +19,18 @@ var app = angular.module("application", ['ngRoute']).config(function ($routeProv
         redirectTo: "/home"
     });
 
+
+
+});
+
+app.run(function($rootScope, $location) {
+
+    $rootScope.session = {authenticated: false};
+
+    $rootScope.$on('$routeChangeStart', function (event, next, current) {
+        if (!$rootScope.session.authenticated) {
+            $location.path('/login');
+        }
+    });
 });
 
