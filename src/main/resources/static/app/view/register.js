@@ -18,6 +18,8 @@ app.controller("RegisterController", function ($scope, $http) {
                         userRegistered();
                     } else if (data == "UserAlreadyExists") {
                         userAlreadyExists();
+                    } else {
+                        alert("Unknown response [" + data + "]");
                     }
                 }).
                 error(function (data, status, headers, config) {

@@ -1,9 +1,27 @@
 <div>
     <div>
-        This is a login page
+        This is user login page
     </div>
 
     <div>
         <a href="#/home">Go home</a>
+
+
+
+        <div ng-show="loginIncorrectVisible">
+            Incorrect login or password.
+        </div>
+
+        <div>
+            User:
+            <input type="text" ng-model="userName"/>
+        </div>
+        <div>
+            Password:
+            <input type="password" ng-model="password"/>
+        </div>
+        <button ng-click="registerUser()">Login</button>
+
     </div>
+
 </div>

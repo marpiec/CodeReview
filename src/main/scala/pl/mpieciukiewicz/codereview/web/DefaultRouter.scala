@@ -41,8 +41,13 @@ class DefaultRouter extends HttpService with Actor with JsonDirectives {
           }
         } ~
         path("authenticate-user") {
-          parameter("name") { name =>
-            complete(name)
+          parameters("user", "password") { (user, password) =>
+              complete {
+              (context.actorSelection("akka://application/user/userManager") ? UserManager.AuthenticateUser(user, password)).map {
+                case UserManager.UserAuthenticated(id) => "UserAuthenticated="+id
+                case UserManager.IncorrectUserOrPassword => "IncorrectUserOrPassword"
+              }
+            }
           }
         }
       }
