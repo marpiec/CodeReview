@@ -6,24 +6,37 @@
     <div>
         <a href="#/home">Go home</a>
 
-        <div>
-            User name:
-            <input type="text" ng-model="userName"/>
-        </div>
-        <div>
-            Email:
-            <input type="text" ng-model="email"/>
-        </div>
-        <div>
-            Password:
-            <input type="password" ng-model="password"/>
-        </div>
-        <div>
-            Repeat password:
-            <input type="password" ng-model="passwordRepeat"/>
-        </div>
-        <button ng-click="registerUser()">Register</button>
+        <div ng-show="registerFormVisible">
 
+            <div>
+                User name:
+                <input type="text" ng-model="userName"/>
+            </div>
+            <div>
+                Email:
+                <input type="text" ng-model="email"/>
+            </div>
+            <div>
+                Password:
+                <input type="password" ng-model="password"/>
+            </div>
+            <div>
+                Repeat password:
+                <input type="password" ng-model="passwordRepeat"/>
+            </div>
+            <button ng-click="registerUser()">Register</button>
+
+        </div>
+
+        <div ng-show="registrationSuccessfulVisible">
+            Registration was succesful. You can now login:
+            <a href="#/login">Login</a>
+        </div>
+
+        <div ng-show="userAlreadyRegistered">
+            User {{ userName }} is already registered. Try to login:
+            <a href="#/login">Login</a>
+        </div>
     </div>
 
 </div>
