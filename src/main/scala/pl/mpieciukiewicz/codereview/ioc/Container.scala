@@ -12,6 +12,7 @@ class Container {
   val jsonUtil = new JsonUtil
   val databaseAccessor = new DatabaseAccessor("jdbc:h2:data/codeReview", "sa", "sa")
   val documentDataStorage = new DocumentDataStorage(databaseAccessor, jsonUtil)
+  documentDataStorage.initDatabaseStructure()
 
   val userStorage = new UserStorage(documentDataStorage)
   val projectStorage = new ProjectStorage(documentDataStorage)

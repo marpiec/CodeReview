@@ -1,18 +1,18 @@
-var app = angular.module("calculatorApplication", ['ngRoute']).config(function ($routeProvider) {
+var app = angular.module("application", ['ngRoute']).config(function ($routeProvider) {
 
     $routeProvider.when("/home", {
-        templateUrl: "app/home.html",
+        templateUrl: "app/view/home.html",
         controller: "HomeController"
     });
 
     $routeProvider.when("/register", {
-        templateUrl: "app/register.html",
-        controller: "HomeController"
+        templateUrl: "app/view/register.html",
+        controller: "RegisterController"
     });
 
     $routeProvider.when("/login", {
-        templateUrl: "app/login.html",
-        controller: "HomeController"
+        templateUrl: "app/view/login.html",
+        controller: "LoginController"
     });
 
     $routeProvider.otherwise({

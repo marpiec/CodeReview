@@ -1,15 +1,19 @@
 package pl.mpieciukiewicz.codereview.web
 
 import akka.actor._
+import akka.pattern.ask
 
 import spray.routing._
 import pl.mpieciukiewicz.codereview.web.json.JsonDirectives
+import pl.mpieciukiewicz.codereview.system.UserManager
+import pl.mpieciukiewicz.codereview.ioc.Container
 
 
 class DefaultRouter extends HttpService with Actor with JsonDirectives {
 
   // we use the enclosing ActorContext's or ActorSystem's dispatcher for our Futures and Scheduler
   implicit def executionContext = actorRefFactory.dispatcher
+
 
   def actorRefFactory = context
 
@@ -28,7 +32,12 @@ class DefaultRouter extends HttpService with Actor with JsonDirectives {
       post {
         path("register-user") {
           parameters("name", "email", "password") { (name, email, password) =>
-            complete(name +" "+email+" "+password)
+            complete {
+              (context.actorSelection("akka://application/user/userManager") ? UserManager.RegisterUser(name, email, password)).map {
+                case UserManager.UserRegistered => "UserRegistered"
+                case UserManager.UserAlreadyExists => "UserAlreadyExists"
+              }
+            }
           }
         } ~
         path("authenticate-user") {

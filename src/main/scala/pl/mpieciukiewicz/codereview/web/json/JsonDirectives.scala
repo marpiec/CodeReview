@@ -8,6 +8,7 @@ import scala.concurrent.ExecutionContext
 import akka.pattern.ask
 import scala.concurrent.duration._
 import pl.mpieciukiewicz.codereview.utils.json.JsonUtil
+import pl.mpieciukiewicz.codereview.ioc.Container
 
 
 /**
@@ -21,7 +22,7 @@ trait JsonDirectives {
   implicit val defaultTimeout = Timeout(30 seconds)
   val emptyJsonObject = "{}"
 
-  val jsonUtil = new JsonUtil
+  val jsonUtil = Container.instance.jsonUtil
   import jsonUtil._
 
 
@@ -52,4 +53,11 @@ trait JsonDirectives {
     actor.ask(message)(timeout).map(toJson)
   }
 
+  def askActor(actor: ActorSelection, message: AnyRef)(implicit ec: ExecutionContext) = {
+    actor.ask(message).map(toJson)
+  }
+
+  def askActor(actor: ActorSelection, message: AnyRef, timeout: Timeout)(implicit ec: ExecutionContext) = {
+    actor.ask(message)(timeout).map(toJson)
+  }
 }
