@@ -11,19 +11,18 @@ import org.eclipse.jgit.treewalk.TreeWalk
 import org.eclipse.jgit.diff._
 import pl.mpieciukiewicz.codereview.vcs._
 import org.eclipse.jgit.treewalk.filter.PathFilter
-import org.eclipse.jgit.patch.FileHeader
 import pl.mpieciukiewicz.codereview.vcs.FileRename
 import pl.mpieciukiewicz.codereview.vcs.FileModify
 import pl.mpieciukiewicz.codereview.vcs.FileDelete
 import pl.mpieciukiewicz.codereview.vcs.FileContentAdd
 import pl.mpieciukiewicz.codereview.vcs.FileContentCopy
-import pl.mpieciukiewicz.codereview.vcs.Commit
 import pl.mpieciukiewicz.codereview.vcs.FileContentRename
 import pl.mpieciukiewicz.codereview.vcs.FileContentModify
 import pl.mpieciukiewicz.codereview.vcs.FileContentDelete
 import pl.mpieciukiewicz.codereview.vcs.FileAdd
 import pl.mpieciukiewicz.codereview.vcs.FileCopy
 import org.eclipse.jgit.diff.DiffAlgorithm.SupportedAlgorithm
+import org.joda.time.DateTime
 
 /**
  *
@@ -33,19 +32,19 @@ class GitReader(val repoDir: String) {
   val builder = new FileRepositoryBuilder()
   val repository = builder.findGitDir(new File(repoDir)).build()
 
-  def readCommits(count: Int):List[Commit] = {
+  def readCommits(count: Int):List[GitCommit] = {
 
     val jgitCommits = new Git(repository).log().all().call().asScala.take(count)
 
     jgitCommits.map(convertJGitCommitToCommit).toList
   }
 
-  private def convertJGitCommitToCommit(commit: RevCommit):Commit = {
-    Commit(id = commit.getId.name.trim,
+  private def convertJGitCommitToCommit(commit: RevCommit):GitCommit = {
+    GitCommit(id = commit.getId.name.trim,
            author = commit.getAuthorIdent.getName.trim,
            commiter = commit.getCommitterIdent.getName.trim,
            message = commit.getFullMessage.trim,
-           time = commit.getCommitTime)
+           time = new DateTime(commit.getCommitTime.toLong * 1000))
   }
 
 
@@ -65,9 +64,13 @@ class GitReader(val repoDir: String) {
     df.setDiffComparator(RawTextComparator.DEFAULT)
     df.setDetectRenames(true)
 
-    val diffs = df.scan(commit.getParent(0).getId, commit.getTree).asScala.toList
+    if(commit.getParentCount > 0) {
+      val diffs = df.scan(commit.getParent(0).getId, commit.getTree).asScala.toList
 
-    diffs.map(convertDiffToFileChange)
+      diffs.map(convertDiffToFileChange)
+    } else {
+      List() // TODO what if commit doesn't have parent?
+    }
   }
 
   private def convertDiffToFileChange(diff: DiffEntry): FileChange = {

@@ -20,6 +20,11 @@ var app = angular.module("application", ['ngRoute']).config(function ($routeProv
         controller: "AddRepositoryController"
     });
 
+    $routeProvider.when("/repository/:repositoryId/:repositoryName", {
+        templateUrl: "app/view/repository.html",
+        controller: "RepositoryController"
+    });
+
     $routeProvider.otherwise({
         redirectTo: "/home"
     });

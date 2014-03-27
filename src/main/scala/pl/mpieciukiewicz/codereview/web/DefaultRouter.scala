@@ -28,6 +28,13 @@ class DefaultRouter extends HttpService with Actor with JsonDirectives {
           complete("pong")
         }
       } ~
+        path("load-commits") {
+          parameters("repositoryId".as[Int], "start".as[Int], "count".as[Int]) { (repositoryId, start, count) =>
+            complete {
+              askActor(context.actorSelection("akka://application/user/repositoryManager"), RepositoryManager.LoadCommits(repositoryId, start, count))
+            }
+          }
+        } ~
       post {
         path("register-user") {
           parameters("name", "email", "password") { (name, email, password) =>

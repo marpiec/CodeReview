@@ -27,7 +27,7 @@ class WebServer {
     val staticFilesContext: ContextHandler = createStaticFilesContext("/*", "/static", "index.html")
 
     val handlers = new HandlerList()
-    handlers.setHandlers(Array(servletContext, createRequestLogHandler(), staticFilesContext))
+    handlers.setHandlers(Array(createRequestLogHandler(), servletContext, staticFilesContext))
     server.setHandler(handlers)
 
     server.start()
@@ -71,6 +71,7 @@ class WebServer {
       requestLog.setLoggerName("accessLogger")
       requestLog.setLogDateFormat("yyyy-MM-dd hh:mm:ss:SSS")
       requestLog.setExtended(false)
+      requestLog.setIgnorePaths(Array("/lib/*", "/app/*"))
 
       val requestLogHandler = new RequestLogHandler()
       requestLogHandler.setRequestLog(requestLog)

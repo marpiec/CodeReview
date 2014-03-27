@@ -22,7 +22,7 @@
 
         <div ng-show="successMessageVisible">
             Repository {{ form.repoName }} has been cloned successfully.
-            <a ng-href="/repository/{{ repositoryId }}">Go to repository</a>
+            <a ng-href="#/repository/{{ repositoryId }}/{{ form.repoName }}">Go to repository</a>
         </div>
 
     </div>
