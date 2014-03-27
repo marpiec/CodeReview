@@ -9,13 +9,11 @@ object UserManager {
 
   case class RegisterUser(name: String, email: String, password: String)
 
-  case object UserAlreadyExists
-  case object UserRegistered
+  case class RegistrationResult(userRegistered: Boolean)
 
 
   case class AuthenticateUser(user: String, password: String)
-  case class UserAuthenticated(userId: Int)
-  case object IncorrectUserOrPassword
+  case class AuthenticationResult(userAuthenticated: Boolean, userId: Option[Int] = None, userName: Option[String] = None)
 
 }
 
@@ -33,9 +31,9 @@ class UserManager(userStorage: UserStorage) extends Actor {
 
     if (userStorage.findByName(msg.name).isEmpty && userStorage.findByEmail(msg.email).isEmpty) {
       userStorage.add(User(None, msg.name, msg.email, msg.password, "salt"))
-      sender ! UserRegistered
+      sender ! RegistrationResult(true)
     } else {
-      sender ! UserAlreadyExists
+      sender ! RegistrationResult(false)
     }
 
   }
@@ -45,9 +43,9 @@ class UserManager(userStorage: UserStorage) extends Actor {
     val user = userStorage.findByName(msg.user) orElse userStorage.findByEmail(msg.user)
 
     if(user.isDefined && user.get.password == msg.password) {
-      sender ! UserAuthenticated(user.get.id.get)
+      sender ! AuthenticationResult(true, Some(user.get.id.get), Some(user.get.name))
     } else {
-      sender ! IncorrectUserOrPassword
+      sender ! AuthenticationResult(false)
     }
   }
 

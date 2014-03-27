@@ -41,7 +41,7 @@ class UserManagerSpec extends TestKit(ActorSystem("test")) with FeatureSpecLike 
 
       Then("One user exists in data storage")
 
-      assertThat(response.value.get.get).isEqualTo(UserManager.UserRegistered)
+      assertThat(response.value.get.get).isEqualTo(UserManager.RegistrationResult(false))
       assertThat(userStorage.loadAll().asJava).hasSize(1)
       assertThat(userStorage.findByName("Marcin").isDefined)
 
@@ -50,7 +50,7 @@ class UserManagerSpec extends TestKit(ActorSystem("test")) with FeatureSpecLike 
 
       Then("Two users exists in data storage")
 
-      assertThat(response.value.get.get).isEqualTo(UserManager.UserRegistered)
+      assertThat(response.value.get.get).isEqualTo(UserManager.RegistrationResult(true))
       assertThat(userStorage.loadAll().asJava).hasSize(2)
       assertThat(userStorage.findByName("John").isDefined)
 
@@ -58,13 +58,13 @@ class UserManagerSpec extends TestKit(ActorSystem("test")) with FeatureSpecLike 
       response = userManager ? UserManager.RegisterUser("Marcin", "fake.m.p@g.p", "MyOtherSecret")
 
       Then("Registration is unsuccessful")
-      assertThat(response.value.get.get).isEqualTo(UserManager.UserAlreadyExists)
+      assertThat(response.value.get.get).isEqualTo(UserManager.RegistrationResult(false))
 
       When("User with the same email as first one is registered")
       response = userManager ? UserManager.RegisterUser("nicraM", "m.p@g.p", "MyOtherSecret")
 
       Then("Registration is unsuccessful")
-      assertThat(response.value.get.get).isEqualTo(UserManager.UserAlreadyExists)
+      assertThat(response.value.get.get).isEqualTo(UserManager.RegistrationResult(false))
 
     }
 
@@ -78,13 +78,13 @@ class UserManagerSpec extends TestKit(ActorSystem("test")) with FeatureSpecLike 
       response = userManager ? UserManager.AuthenticateUser("Marcin", "mySecret")
 
       Then("Is successfully registered with correct id")
-      assertThat(response.value.get.get).isEqualTo(UserManager.UserAuthenticated(userId))
+      assertThat(response.value.get.get).isEqualTo(UserManager.AuthenticationResult(true, Some(userId), Some("Marcin")))
 
       When("User tries to authenticate with correct email and password")
       response = userManager ? UserManager.AuthenticateUser("m.p@g.p", "mySecret")
 
-      Then("Is successfully registered with correct id")
-      assertThat(response.value.get.get).isEqualTo(UserManager.UserAuthenticated(userId))
+      Then("Is successfully authenticate with correct id")
+      assertThat(response.value.get.get).isEqualTo(UserManager.AuthenticationResult(true, Some(userId), Some("Marcin")))
     }
 
 
@@ -97,13 +97,13 @@ class UserManagerSpec extends TestKit(ActorSystem("test")) with FeatureSpecLike 
       response = userManager ? UserManager.AuthenticateUser("Marcin", "iDontKnow")
 
       Then("Is denied of registration")
-      assertThat(response.value.get.get).isEqualTo(UserManager.IncorrectUserOrPassword)
+      assertThat(response.value.get.get).isEqualTo(UserManager.AuthenticationResult(false))
 
       When("User tries to authenticate with incorrect name or email")
       response = userManager ? UserManager.AuthenticateUser("John", "mySecret")
 
       Then("Is denied of registration")
-      assertThat(response.value.get.get).isEqualTo(UserManager.IncorrectUserOrPassword)
+      assertThat(response.value.get.get).isEqualTo(UserManager.AuthenticationResult(false))
     }
   }
 

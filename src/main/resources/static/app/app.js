@@ -23,12 +23,14 @@ var app = angular.module("application", ['ngRoute']).config(function ($routeProv
 
 });
 
-app.run(function($rootScope, $location) {
-
-    $rootScope.session = {authenticated: false};
+app.run(function($rootScope, $location, session) {
 
     $rootScope.$on('$routeChangeStart', function (event, next, current) {
-        if (!$rootScope.session.authenticated) {
+        var url = $location.url();
+
+        var whitelist = ["/login", "/register"];
+
+        if (!session.authenticated && !_.contains(whitelist, url)) {
             $location.path('/login');
         }
     });

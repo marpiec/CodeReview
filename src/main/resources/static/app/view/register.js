@@ -1,9 +1,12 @@
 app.controller("RegisterController", function ($scope, $http) {
 
-    $scope.userName = "";
-    $scope.email = "";
-    $scope.password = "";
-    $scope.passwordRepeat = "";
+    $scope.form = {
+        userName: "",
+        email: "",
+        password: "",
+        passwordRepeat: ""
+    };
+
 
     $scope.registerFormVisible = true;
     $scope.registrationSuccessfulVisible = false;
@@ -11,16 +14,10 @@ app.controller("RegisterController", function ($scope, $http) {
 
     $scope.registerUser = function() {
 
-        if($scope.password == $scope.passwordRepeat) {
-            $http.post("/rest/register-user", "", {params: {name: $scope.userName, email: $scope.email, password: $scope.password}}).
+        if($scope.form.password == $scope.form.passwordRepeat) {
+            $http.post("/rest/register-user", "", {params: {name: $scope.form.userName, email: $scope.form.email, password: $scope.form.password}}).
                 success(function (data, status, headers, config) {
-                    if(data == "UserRegistered") {
-                        userRegistered();
-                    } else if (data == "UserAlreadyExists") {
-                        userAlreadyExists();
-                    } else {
-                        alert("Unknown response [" + data + "]");
-                    }
+                    handleRegistrationResponse(data);
                 }).
                 error(function (data, status, headers, config) {
                     alert("Error communication with server!")
@@ -32,18 +29,16 @@ app.controller("RegisterController", function ($scope, $http) {
 
     };
 
-    function userRegistered() {
-        $scope.registerFormVisible = false;
-        $scope.registrationSuccessfulVisible = true;
-        $scope.userAlreadyRegistered = false;
+    function handleRegistrationResponse(response) {
+        if(response.userRegistered) {
+            $scope.registerFormVisible = false;
+            $scope.registrationSuccessfulVisible = true;
+            $scope.userAlreadyRegistered = false;
+        } else {
+            $scope.registerFormVisible = false;
+            $scope.registrationSuccessfulVisible = false;
+            $scope.userAlreadyRegistered = true;
+        }
     }
-
-    function userAlreadyExists() {
-        $scope.registerFormVisible = false;
-        $scope.registrationSuccessfulVisible = false;
-        $scope.userAlreadyRegistered = true;
-    }
-
-
 
 });

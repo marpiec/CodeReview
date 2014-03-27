@@ -1,4 +1,4 @@
-app.controller("LoginController", function ($rootScope, $scope, $http) {
+app.controller("LoginController", function ($rootScope, $scope, $http, session, $location) {
 
     $scope.user = "";
     $scope.password = "";
@@ -9,13 +9,7 @@ app.controller("LoginController", function ($rootScope, $scope, $http) {
 
         $http.post("/rest/authenticate-user", "", {params: {user: $scope.userName, password: $scope.password}}).
             success(function (data, status, headers, config) {
-                if(data.indexOf("UserAuthenticated") == 0) {
-                    userAuthenticated();
-                } else if (data == "IncorrectUserOrPassword") {
-                    incorrectUserOrPassword();
-                } else {
-                    alert("Unknown response [" + data + "]");
-                }
+                handleAuthenticationResponse(data);
             }).
             error(function (data, status, headers, config) {
                 alert("Error communication with server!")
@@ -23,13 +17,19 @@ app.controller("LoginController", function ($rootScope, $scope, $http) {
 
     };
 
-    function incorrectUserOrPassword() {
-        $scope.loginIncorrectVisible = true;
-        $rootScope.session.authenticated = true;
-    }
+    function handleAuthenticationResponse(response) {
+        if(response.userAuthenticated) {
+            session.authenticated = true;
+            session.userName = response.userName[0];
+            session.userId = response.userId[0];
 
-    function userAuthenticated() {
-        $scope.loginIncorrectVisible = false;
+            $location.path("#/home");
+        } else {
+            session.authenticated = false;
+            session.userName = "";
+            session.userId = 0;
+            $scope.loginIncorrectVisible = true;
+        }
     }
 
 

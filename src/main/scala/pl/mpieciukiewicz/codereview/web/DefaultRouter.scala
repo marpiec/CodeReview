@@ -6,7 +6,6 @@ import akka.pattern.ask
 import spray.routing._
 import pl.mpieciukiewicz.codereview.web.json.JsonDirectives
 import pl.mpieciukiewicz.codereview.system.UserManager
-import pl.mpieciukiewicz.codereview.ioc.Container
 
 
 class DefaultRouter extends HttpService with Actor with JsonDirectives {
@@ -33,20 +32,14 @@ class DefaultRouter extends HttpService with Actor with JsonDirectives {
         path("register-user") {
           parameters("name", "email", "password") { (name, email, password) =>
             complete {
-              (context.actorSelection("akka://application/user/userManager") ? UserManager.RegisterUser(name, email, password)).map {
-                case UserManager.UserRegistered => "UserRegistered"
-                case UserManager.UserAlreadyExists => "UserAlreadyExists"
-              }
+              askActor(context.actorSelection("akka://application/user/userManager"), UserManager.RegisterUser(name, email, password))
             }
           }
         } ~
         path("authenticate-user") {
           parameters("user", "password") { (user, password) =>
               complete {
-              (context.actorSelection("akka://application/user/userManager") ? UserManager.AuthenticateUser(user, password)).map {
-                case UserManager.UserAuthenticated(id) => "UserAuthenticated="+id
-                case UserManager.IncorrectUserOrPassword => "IncorrectUserOrPassword"
-              }
+                askActor(context.actorSelection("akka://application/user/userManager"), UserManager.AuthenticateUser(user, password))
             }
           }
         }
