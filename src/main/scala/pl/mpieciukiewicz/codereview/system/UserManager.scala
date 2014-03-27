@@ -22,7 +22,7 @@ class UserManager(userStorage: UserStorage) extends Actor {
 
   import UserManager._
 
-  override def receive: Receive = {
+  override def receive = {
     case msg: RegisterUser => registerUser(msg)
     case msg: AuthenticateUser => authenticateUser(msg)
   }

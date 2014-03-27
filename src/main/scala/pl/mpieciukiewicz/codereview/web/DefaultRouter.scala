@@ -5,7 +5,7 @@ import akka.pattern.ask
 
 import spray.routing._
 import pl.mpieciukiewicz.codereview.web.json.JsonDirectives
-import pl.mpieciukiewicz.codereview.system.UserManager
+import pl.mpieciukiewicz.codereview.system.{RepositoryManager, UserManager}
 
 
 class DefaultRouter extends HttpService with Actor with JsonDirectives {
@@ -40,6 +40,13 @@ class DefaultRouter extends HttpService with Actor with JsonDirectives {
           parameters("user", "password") { (user, password) =>
               complete {
                 askActor(context.actorSelection("akka://application/user/userManager"), UserManager.AuthenticateUser(user, password))
+            }
+          }
+        } ~
+        path("add-repository") {
+          parameters("cloneUrl", "repoName", "projectId".as[Int]) { (cloneUrl, repoName, projectId) =>
+            complete {
+              askActor(context.actorSelection("akka://application/user/repositoryManager"), RepositoryManager.AddRepository(cloneUrl, repoName, projectId))
             }
           }
         }

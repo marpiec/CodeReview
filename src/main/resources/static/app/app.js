@@ -15,6 +15,11 @@ var app = angular.module("application", ['ngRoute']).config(function ($routeProv
         controller: "LoginController"
     });
 
+    $routeProvider.when("/add-repository", {
+        templateUrl: "app/view/add-repository.html",
+        controller: "AddRepositoryController"
+    });
+
     $routeProvider.otherwise({
         redirectTo: "/home"
     });
