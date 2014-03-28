@@ -4,15 +4,12 @@ version := "0.0.1"
 
 scalaVersion := "2.10.3"
 
-resolvers ++= Seq("spray repo" at "http://repo.spray.io",
-  "eclipse repo" at "https://repo.eclipse.org/content/groups/releases/",
+resolvers ++= Seq("eclipse repo" at "https://repo.eclipse.org/content/groups/releases/",
   "Local Maven" at Path.userHome.asFile.toURI.toURL + ".m2/repository")
 
 libraryDependencies ++= Seq("org.eclipse.jetty" % "jetty-server" % "9.0.6.v20130930",
   "org.eclipse.jetty" % "jetty-servlet" % "9.0.6.v20130930",
-  "io.spray" % "spray-can" % "1.3.1",
-  "io.spray" % "spray-routing" % "1.3.1",
-  "io.spray" % "spray-servlet" % "1.3.1",
+  "org.scalatra" % "scalatra_2.10" % "2.3.0.M1",
   "com.typesafe.akka" %% "akka-actor" % "2.3.0",
   "com.typesafe.akka" %% "akka-slf4j" % "2.3.0",
   "commons-io" % "commons-io" % "2.4",

@@ -7,7 +7,6 @@ import pl.mpieciukiewicz.codereview.model.constant.ProjectRole
 import collection.JavaConverters._
 import org.fest.assertions.api.Assertions._
 import pl.mpieciukiewicz.codereview.utils.json.JsonUtil
-import shapeless.isDefined
 
 /**
  *

@@ -3,6 +3,7 @@ package pl.mpieciukiewicz.codereview.ioc
 import pl.mpieciukiewicz.codereview.database._
 import pl.mpieciukiewicz.codereview.database.engine.{DatabaseAccessor, DocumentDataStorage}
 import pl.mpieciukiewicz.codereview.utils.json.JsonUtil
+import pl.mpieciukiewicz.codereview.system.DocumentsCache
 
 /**
  *
@@ -19,6 +20,8 @@ class Container {
   val userRoleStorage = new UserRoleStorage(documentDataStorage)
   val repositoryStorage = new RepositoryStorage(documentDataStorage)
   val commitStorage = new CommitStorage(documentDataStorage)
+
+  val documentsCache = new DocumentsCache
 
 }
 

@@ -9,13 +9,11 @@ import pl.mpieciukiewicz.codereview.ioc.Container
 /**
  * @author Marcin Pieciukiewicz
  */
-class ActorSystemInitializator {
+class ActorSystemInitializator(context: ActorSystem) {
 
-  def createActors(context: ActorSystem) {
-
+  def createActors() {
     context.actorOf(Props(classOf[UserManager], Container.instance.userStorage), "userManager")
     context.actorOf(Props(classOf[RepositoryManager], Container.instance.repositoryStorage, Container.instance.commitStorage), "repositoryManager")
-
   }
 
 }
