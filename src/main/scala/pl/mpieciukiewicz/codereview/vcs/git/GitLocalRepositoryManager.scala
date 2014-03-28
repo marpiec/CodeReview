@@ -7,18 +7,20 @@ import org.apache.commons.io.FileUtils
 /**
  *
  */
-class GitLocalRepositoryManager(localDirectory: File) {
+class GitLocalRepositoryManager(localDirectory: String) {
+
+  private val localDirectoryFile = new File(localDirectory)
 
   def cloneRemoteRepository(remoteUrl: String) {
     Git.cloneRepository().
       setURI(remoteUrl).
-      setDirectory(localDirectory).
+      setDirectory(localDirectoryFile).
       call().
       close()
   }
 
   def removeRepository() = {
-    FileUtils.deleteDirectory(localDirectory)
+    FileUtils.deleteDirectory(localDirectoryFile)
   }
 
 }

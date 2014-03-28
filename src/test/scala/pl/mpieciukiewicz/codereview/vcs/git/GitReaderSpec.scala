@@ -19,7 +19,7 @@ class GitReaderSpec extends FeatureSpec with GivenWhenThen {
 
       val gitReader = new GitReader("c:/TmpRepo/")
 
-      When("Getting Commits")
+      When("Getting 4 Commits")
 
       val commits: List[GitCommit] = gitReader.readCommits(4)
 
@@ -31,6 +31,14 @@ class GitReaderSpec extends FeatureSpec with GivenWhenThen {
         GitCommit("e20b7e4df6d4b7df4816a75981331201317e90e8", "Marcin Pieciukiewicz", "Marcin Pieciukiewicz", "Some clean up", new DateTime(1376554727000L)),
         GitCommit("98fc0f9e817708f0a4f38f630b134251cf076afc", "Marcin Pieciukiewicz", "Marcin Pieciukiewicz", "Sources", new DateTime(1376478826000L)),
         GitCommit("9333a8309c0ec2f6c35d5746861b2b53f8c04955", "Marcin Pieciukiewicz", "Marcin Pieciukiewicz", "Sources", new DateTime(1376478781000L)))
+
+      When("Getting All Commits")
+
+      val allCommits: List[GitCommit] = gitReader.readAllCommits()
+
+      Then("Has correct number of commits")
+      assertThat(allCommits.asJava).hasSize(5)
+
     }
 
 

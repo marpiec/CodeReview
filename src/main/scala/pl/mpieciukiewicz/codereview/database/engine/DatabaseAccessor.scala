@@ -49,6 +49,15 @@ class DatabaseAccessor(url: String, user: String, password: String) {
     }
   }
 
+  def prepareStatement(query: String)(codeBlock: PreparedStatement => Unit) {
+    db { connection =>
+      tryWith(connection.prepareStatement(query)) {
+        preparedStatement =>
+          codeBlock(preparedStatement)
+      }
+    }
+  }
+
   private def tryWith[E <: AutoCloseable, T](closable: E)(codeBlock: (E) => T): T = {
     try {
       codeBlock(closable)

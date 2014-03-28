@@ -22,6 +22,19 @@ class DocumentDataStorage(val dba: DatabaseAccessor, jsonUtil: JsonUtil) {
     entity
   }
 
+  def saveAllNewEntities[T](entities: List[T {def id:Option[Int]}]): List[T] = {
+
+    prepareStatement("INSERT INTO entity (id, type, object) VALUES (?, ?, ?)") { preparedStatement =>
+      for(entity <- entities) {
+        preparedStatement.setInt(1, entity.id.get)
+        preparedStatement.setString(2, entity.getClass.getName)
+        preparedStatement.setString(3, jsonUtil.toJson(entity))
+        preparedStatement.execute()
+      }
+    }
+    entities
+  }
+
   def loadNewId():Int = {
     selectNoParams("SELECT NEXTVAL('entity_seq')") { resultSet =>
       resultSet.next()

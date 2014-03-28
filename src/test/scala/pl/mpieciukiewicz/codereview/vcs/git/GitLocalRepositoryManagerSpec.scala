@@ -29,7 +29,7 @@ class GitLocalRepositoryManagerSpec extends FeatureSpec with GivenWhenThen with 
 
       Given("Repository remote url and repository manager initialized with local directory")
       val remoteUrl = "https://github.com/marpiec/AngularJSCalculator.git"
-      val repositoryManager = new GitLocalRepositoryManager(tmpDir)
+      val repositoryManager = new GitLocalRepositoryManager(tmpDir.getAbsolutePath)
 
       When("Repository is cloned")
       repositoryManager.cloneRemoteRepository(remoteUrl)
@@ -42,7 +42,7 @@ class GitLocalRepositoryManagerSpec extends FeatureSpec with GivenWhenThen with 
 
       Given("Cloned repository")
       val remoteUrl = "https://github.com/marpiec/AngularJSCalculator.git"
-      val repositoryManager = new GitLocalRepositoryManager(tmpDir)
+      val repositoryManager = new GitLocalRepositoryManager(tmpDir.getAbsolutePath)
       repositoryManager.cloneRemoteRepository(remoteUrl)
 
       When("Remove repository")

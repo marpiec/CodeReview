@@ -34,7 +34,7 @@ class ProjectStorageSpec extends FeatureSpec with GivenWhenThen with BeforeAndAf
       val entityA = storage.add(prototypeA)
       val entityB = storage.add(prototypeB)
 
-      Then("Data storage contains correct users in order they were stored")
+      Then("Data storage contains correct projects in order they were stored")
       assertThat(storage.loadAll().asJava).containsExactly(entityA, entityB)
 
     }

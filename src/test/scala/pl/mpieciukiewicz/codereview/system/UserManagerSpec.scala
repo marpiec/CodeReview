@@ -41,7 +41,7 @@ class UserManagerSpec extends TestKit(ActorSystem("test")) with FeatureSpecLike 
 
       Then("One user exists in data storage")
 
-      assertThat(response.value.get.get).isEqualTo(UserManager.RegistrationResult(false))
+      assertThat(response.value.get.get).isEqualTo(UserManager.RegistrationResult(true))
       assertThat(userStorage.loadAll().asJava).hasSize(1)
       assertThat(userStorage.findByName("Marcin").isDefined)
 

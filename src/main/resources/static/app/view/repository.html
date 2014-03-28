@@ -11,6 +11,7 @@
             commited: {{ commit.info.time }} <br />
             commiter: {{ commit.info.commiter }} <br />
             author: {{ commit.info.author }} <br />
+            message: {{ commit.info.message }} <br />
         </div>
         <div ng-repeat="file in commit.files">
             change: {{ file.changeType }}

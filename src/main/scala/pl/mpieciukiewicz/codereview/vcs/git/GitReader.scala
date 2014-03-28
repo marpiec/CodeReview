@@ -32,11 +32,16 @@ class GitReader(val repoDir: String) {
   val builder = new FileRepositoryBuilder()
   val repository = builder.findGitDir(new File(repoDir)).build()
 
+  def readAllCommits():List[GitCommit] = {
+    readAllGitCommits.map(convertJGitCommitToCommit).toList
+  }
+
   def readCommits(count: Int):List[GitCommit] = {
+    readAllGitCommits.take(count).map(convertJGitCommitToCommit).toList
+  }
 
-    val jgitCommits = new Git(repository).log().all().call().asScala.take(count)
-
-    jgitCommits.map(convertJGitCommitToCommit).toList
+  private def readAllGitCommits() = {
+    new Git(repository).log().all().call().asScala
   }
 
   private def convertJGitCommitToCommit(commit: RevCommit):GitCommit = {
