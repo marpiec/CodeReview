@@ -7,7 +7,7 @@ app.controller("RepositoryController", function ($scope, $http, $routeParams) {
     $scope.commits = [];
 
     function init() {
-        $http.post("/rest/load-commits", "", {params: {repositoryId: repositoryId, start: 0, count: 20}}).
+        $http.get("/rest/load-commits", {params: {repositoryId: repositoryId, start: 0, count: 20}}).
             success(function (data, status, headers, config) {
                 handleLoadCommitsResponse(data);
             }).

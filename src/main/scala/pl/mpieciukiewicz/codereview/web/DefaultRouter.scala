@@ -5,7 +5,7 @@ import akka.pattern.ask
 
 import spray.routing._
 import pl.mpieciukiewicz.codereview.web.json.JsonDirectives
-import pl.mpieciukiewicz.codereview.system.{RepositoryManager, UserManager}
+import pl.mpieciukiewicz.codereview.system.{DocumentsCache, RepositoryManager, UserManager}
 
 
 class DefaultRouter extends HttpService with Actor with JsonDirectives {
@@ -13,6 +13,7 @@ class DefaultRouter extends HttpService with Actor with JsonDirectives {
   // we use the enclosing ActorContext's or ActorSystem's dispatcher for our Futures and Scheduler
   implicit def executionContext = actorRefFactory.dispatcher
 
+  val cache = new DocumentsCache
 
   def actorRefFactory = context
 
@@ -26,15 +27,19 @@ class DefaultRouter extends HttpService with Actor with JsonDirectives {
         } ~
         path("ping") {
           complete("pong")
-        }
-      } ~
+        } ~
         path("load-commits") {
           parameters("repositoryId".as[Int], "start".as[Int], "count".as[Int]) { (repositoryId, start, count) =>
-            complete {
-              askActor(context.actorSelection("akka://application/user/repositoryManager"), RepositoryManager.LoadCommits(repositoryId, start, count))
+            requestUri {uri =>
+              complete {
+                cache.getOrInsert("loadCommits" + uri) {
+                  askActor(context.actorSelection("akka://application/user/repositoryManager"), RepositoryManager.LoadCommits(repositoryId, start, count))
+                }
+              }
             }
           }
-        } ~
+        }
+      } ~
       post {
         path("register-user") {
           parameters("name", "email", "password") { (name, email, password) =>
