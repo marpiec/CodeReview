@@ -9,6 +9,10 @@ import akka.actor.{ActorSystem, PoisonPill}
 import pl.mpieciukiewicz.codereview.database.UserStorage
 import pl.mpieciukiewicz.codereview.database.engine.{DatabaseAccessor, DocumentDataStorage}
 import pl.mpieciukiewicz.codereview.utils.json.JsonUtil
+import pl.mpieciukiewicz.codereview.utils.RandomUtil
+import pl.mpieciukiewicz.codereview.model.authorization.UserRights
+import pl.mpieciukiewicz.codereview.system.UserManager.AuthenticationResult
+import pl.mpieciukiewicz.codereview.system.UserManager.AuthenticationResult
 
 /**
  *
@@ -23,7 +27,7 @@ class UserManagerSpec extends TestKit(ActorSystem("test")) with FeatureSpecLike 
     val documentDataStorage = new DocumentDataStorage(new DatabaseAccessor("jdbc:h2:mem:testdb", "sa", "sa"), new JsonUtil)
     documentDataStorage.initDatabaseStructure()
     userStorage = new UserStorage(documentDataStorage)
-    userManager = TestActorRef(new UserManager(userStorage))
+    userManager = TestActorRef(new UserManager(userStorage, new RandomUtil))
   }
 
   after {
@@ -78,13 +82,18 @@ class UserManagerSpec extends TestKit(ActorSystem("test")) with FeatureSpecLike 
       response = userManager ? UserManager.AuthenticateUser("Marcin", "mySecret")
 
       Then("Is successfully registered with correct id")
-      assertThat(response.value.get.get).isEqualTo(UserManager.AuthenticationResult(true, Some(userId), Some("Marcin")))
+      var result = response.value.get.get.asInstanceOf[AuthenticationResult]
+      assertThat(result.userAuthenticated).isTrue
+      assertThat(result.userRights.get.userName).isEqualTo("Marcin")
 
       When("User tries to authenticate with correct email and password")
       response = userManager ? UserManager.AuthenticateUser("m.p@g.p", "mySecret")
 
       Then("Is successfully authenticate with correct id")
-      assertThat(response.value.get.get).isEqualTo(UserManager.AuthenticationResult(true, Some(userId), Some("Marcin")))
+      result = response.value.get.get.asInstanceOf[AuthenticationResult]
+      assertThat(result.userAuthenticated).isTrue
+      assertThat(result.userRights.get.userName).isEqualTo("Marcin")
+
     }
 
 

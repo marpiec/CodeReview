@@ -4,6 +4,7 @@ import pl.mpieciukiewicz.codereview.database._
 import pl.mpieciukiewicz.codereview.database.engine.{DatabaseAccessor, DocumentDataStorage}
 import pl.mpieciukiewicz.codereview.utils.json.JsonUtil
 import pl.mpieciukiewicz.codereview.system.DocumentsCache
+import pl.mpieciukiewicz.codereview.utils.RandomUtil
 
 /**
  *
@@ -11,6 +12,8 @@ import pl.mpieciukiewicz.codereview.system.DocumentsCache
 class Container {
 
   val jsonUtil = new JsonUtil
+  val randomUtil = new RandomUtil
+
   val databaseAccessor = new DatabaseAccessor("jdbc:h2:data/codeReview", "sa", "sa")
   val documentDataStorage = new DocumentDataStorage(databaseAccessor, jsonUtil)
   documentDataStorage.initDatabaseStructure()

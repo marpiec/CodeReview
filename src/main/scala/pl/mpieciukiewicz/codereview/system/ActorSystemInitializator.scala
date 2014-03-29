@@ -12,7 +12,7 @@ import pl.mpieciukiewicz.codereview.ioc.Container
 class ActorSystemInitializator(context: ActorSystem) {
 
   def createActors() {
-    context.actorOf(Props(classOf[UserManager], Container.instance.userStorage), "userManager")
+    context.actorOf(Props(classOf[UserManager], Container.instance.userStorage, Container.instance.randomUtil), "userManager")
     context.actorOf(Props(classOf[RepositoryManager], Container.instance.repositoryStorage, Container.instance.commitStorage), "repositoryManager")
   }
 

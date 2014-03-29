@@ -1,4 +1,4 @@
-app.controller("LoginController", function ($rootScope, $scope, $http, session, $location) {
+app.controller("LoginController", function ($rootScope, $scope, $http, session, $location, $cookies) {
 
     $scope.user = "";
     $scope.password = "";
@@ -19,15 +19,10 @@ app.controller("LoginController", function ($rootScope, $scope, $http, session, 
 
     function handleAuthenticationResponse(response) {
         if(response.userAuthenticated) {
-            session.authenticated = true;
-            session.userName = response.userName[0];
-            session.userId = response.userId[0];
-
+            session.createNewSession(response.sessionId[0], response.userRights[0]);
             $location.path("#/home");
         } else {
-            session.authenticated = false;
-            session.userName = "";
-            session.userId = 0;
+            session.clearSession();
             $scope.loginIncorrectVisible = true;
         }
     }

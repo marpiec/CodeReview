@@ -56,6 +56,16 @@ class RestServlet(system: ActorSystem) extends ScalatraServlet with FutureSuppor
     }
   }
 
+  get("/session-info") {
+    async {
+      contentType = "application/javascript"
+      response.setHeader("Cache-Control", "no-cache")
+      val actor = system.actorSelection("akka://application/user/userManager")
+      val msg = UserManager.CheckSession(cookies.get("sessionId").getOrElse(""))
+      actor.askForJson(msg).map("window.currentSessionInfo = JSON.parse(\""+_.replace("\"","\\\"")+"\");\n")
+    }
+  }
+
   post("/add-repository") {
     async {
       val actor = system.actorSelection("akka://application/user/repositoryManager")

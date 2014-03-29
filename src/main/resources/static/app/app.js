@@ -1,4 +1,4 @@
-var app = angular.module("application", ['ngRoute']).config(function ($routeProvider) {
+var app = angular.module("application", ["ngRoute", "ngCookies"]).config(function ($routeProvider) {
 
     $routeProvider.when("/home", {
         templateUrl: "app/view/home.html",
