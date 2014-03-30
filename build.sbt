@@ -35,3 +35,7 @@ scalacOptions ++= Seq(
 )
 
 seq(lessSettings: _*)
+
+fork := true
+
+javaOptions := Seq("-DdevelopmentMode=true")
