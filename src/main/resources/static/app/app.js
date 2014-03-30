@@ -40,7 +40,7 @@ app.run(function($rootScope, $location, session) {
 
         var whitelist = ["/login", "/register"];
 
-        if (!session.authenticated && !_.contains(whitelist, url)) {
+        if (!session.isAuthenticated() && !_.contains(whitelist, url)) {
             $location.path('/login');
         }
     });

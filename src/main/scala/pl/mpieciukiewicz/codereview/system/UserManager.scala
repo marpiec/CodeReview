@@ -3,9 +3,9 @@ package pl.mpieciukiewicz.codereview.system
 import akka.actor.Actor
 import pl.mpieciukiewicz.codereview.database.UserStorage
 import pl.mpieciukiewicz.codereview.model.User
-import pl.mpieciukiewicz.codereview.model.authorization.UserRights
+import pl.mpieciukiewicz.codereview.model.authorization.{SessionInfoClientSide, SessionInfo}
 import pl.mpieciukiewicz.codereview.utils.RandomUtil
-import org.joda.time.DateTime
+import org.joda.time.{Duration, DateTime}
 
 
 object UserManager {
@@ -16,9 +16,9 @@ object UserManager {
 
 
   case class AuthenticateUser(user: String, password: String)
-  case class CheckSession(sessionId: String)
+  case class Logout(sessionId: String)
 
-  case class AuthenticationResult(userAuthenticated: Boolean, sessionId: Option[String] = None, userRights: Option[UserRights] = None)
+  case class AuthenticationResult(userAuthenticated: Boolean, sessionInfo: Option[SessionInfoClientSide] = None)
 
 }
 
@@ -27,13 +27,14 @@ class UserManager(userStorage: UserStorage, randomUtil: RandomUtil) extends Acto
 
   import UserManager._
 
-  var sessions = Map[String, UserRights]()
+  var sessions = Map[String, SessionInfo]()
+  var timeout = Duration.standardMinutes(15)
 
 
   override def receive = {
     case msg: RegisterUser => registerUser(msg)
     case msg: AuthenticateUser => authenticateUser(msg)
-    case msg: CheckSession => checkSession(msg)
+    case msg: Logout => logout(msg)
   }
 
   private def registerUser(msg: RegisterUser) = {
@@ -57,20 +58,18 @@ class UserManager(userStorage: UserStorage, randomUtil: RandomUtil) extends Acto
         sessionId = randomUtil.generateSessionIdentifier
       } while (sessions.contains(sessionId))
       val now = DateTime.now
-      val userRights = UserRights(user.get.name, "whoKnows", now, now)
-      sessions += sessionId -> userRights
+      val sessionInfo = SessionInfo(user.get.name, "whoKnows", now, now)
+      sessions += sessionId -> sessionInfo
 
-      sender ! AuthenticationResult(true, Some(sessionId), Some(userRights))
+      sender ! AuthenticationResult(true, Some(SessionInfoClientSide(sessionId, sessionInfo.userName)))
     } else {
       sender ! AuthenticationResult(false)
     }
   }
 
-  private def checkSession(msg: CheckSession) = {
-     sessions.get(msg.sessionId) match {
-       case Some(userRights) => sender ! AuthenticationResult(true, Some(msg.sessionId), Some(userRights))
-       case None => sender ! AuthenticationResult(false)
-     }
+  private def logout(msg: Logout) = {
+    sessions -= msg.sessionId
+    sender ! AuthenticationResult(false)
   }
 
 }

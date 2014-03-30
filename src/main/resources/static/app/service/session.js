@@ -1,24 +1,28 @@
-app.factory('session', function($http, $cookies) {
+app.factory('session', function($http, $cookieStore) {
     var session = {
-        authenticated: false,
-        sessionId: "",
-        userRights: {},
-        clearSession: function() {
-            this.authenticated = false;
-            this.userRights = {};
-            this.sessionId = 0;
+        info: {
+            sessionId: undefined,
+            userName: undefined
         },
-        createNewSession: function(sessionId, userRights) {
-            this.authenticated = true;
-            this.userRights = userRights;
-            this.sessionId = sessionId;
-            $cookies.sessionId = session.sessionId;
+        isAuthenticated: function() {
+            return this.info.sessionId != undefined;
+        },
+        clearSession: function() {
+            this.info = {
+                sessionId: undefined,
+                userName: undefined
+            };
+            $cookieStore.remove("sessionInfo");
+        },
+        createNewSession: function(sessionInfo) {
+            this.info = sessionInfo;
+            $cookieStore.put("sessionInfo", this.info);
         },
         loadSessionInfo: function() {
-           var sessionInfo = window.currentSessionInfo;
-           this.authenticated = sessionInfo.userAuthenticated;
-           this.userRights = sessionInfo.userRights;
-           this.sessionId = sessionInfo.sessionId;
+            var info =  $cookieStore.get("sessionInfo");
+            if(info != undefined) {
+                this.info = info;
+            }
         }
     };
     session.loadSessionInfo();

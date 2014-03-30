@@ -10,7 +10,7 @@ import pl.mpieciukiewicz.codereview.database.UserStorage
 import pl.mpieciukiewicz.codereview.database.engine.{DatabaseAccessor, DocumentDataStorage}
 import pl.mpieciukiewicz.codereview.utils.json.JsonUtil
 import pl.mpieciukiewicz.codereview.utils.RandomUtil
-import pl.mpieciukiewicz.codereview.model.authorization.UserRights
+import pl.mpieciukiewicz.codereview.model.authorization.SessionInfo
 import pl.mpieciukiewicz.codereview.system.UserManager.AuthenticationResult
 import pl.mpieciukiewicz.codereview.system.UserManager.AuthenticationResult
 
@@ -84,7 +84,7 @@ class UserManagerSpec extends TestKit(ActorSystem("test")) with FeatureSpecLike 
       Then("Is successfully registered with correct id")
       var result = response.value.get.get.asInstanceOf[AuthenticationResult]
       assertThat(result.userAuthenticated).isTrue
-      assertThat(result.userRights.get.userName).isEqualTo("Marcin")
+      assertThat(result.sessionInfo.get.userName).isEqualTo("Marcin")
 
       When("User tries to authenticate with correct email and password")
       response = userManager ? UserManager.AuthenticateUser("m.p@g.p", "mySecret")
@@ -92,7 +92,7 @@ class UserManagerSpec extends TestKit(ActorSystem("test")) with FeatureSpecLike 
       Then("Is successfully authenticate with correct id")
       result = response.value.get.get.asInstanceOf[AuthenticationResult]
       assertThat(result.userAuthenticated).isTrue
-      assertThat(result.userRights.get.userName).isEqualTo("Marcin")
+      assertThat(result.sessionInfo.get.userName).isEqualTo("Marcin")
 
     }
 
