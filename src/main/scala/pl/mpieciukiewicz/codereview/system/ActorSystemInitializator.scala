@@ -14,6 +14,7 @@ class ActorSystemInitializator(context: ActorSystem) {
   def createActors() {
     context.actorOf(Props(classOf[UserManager], Container.instance.userStorage, Container.instance.randomUtil), "userManager")
     context.actorOf(Props(classOf[RepositoryManager], Container.instance.repositoryStorage, Container.instance.commitStorage), "repositoryManager")
+    context.actorOf(Props(classOf[ProjectManager], Container.instance.projectStorage, Container.instance.repositoryStorage), "projectManager")
   }
 
 }

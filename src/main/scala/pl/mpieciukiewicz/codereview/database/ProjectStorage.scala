@@ -23,4 +23,7 @@ class ProjectStorage(val dds: DocumentDataStorage) {
     loadAllEntitiesByType(classOf[Project]).find(project => project.id.get == id)
   }
 
+  def findByName(name: String): Option[Project] = {
+    loadAllEntitiesByType(classOf[Project]).find(project => project.name == name)
+  }
 }

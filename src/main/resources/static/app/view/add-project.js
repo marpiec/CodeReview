@@ -1,31 +1,29 @@
-app.controller("AddRepositoryController", function ($scope, $http, $routeParams) {
+app.controller("AddProjectController", function ($scope, $http) {
 
     $scope.form = {
-        cloneUrl: "",
-        repoName: "",
-        projectId: parseInt($routeParams.projectId)
+        projectName: ""
     };
 
     $scope.formVisible = true;
     $scope.successMessageVisible = false;
-    $scope.repositoryId = 0;
+    $scope.projectId = 0;
 
-    $scope.addRepository = function() {
+    $scope.addProject = function() {
 
-        $http.post("/rest/add-repository", "", {params: $scope.form}).
+        $http.post("/rest/add-project", "", {params: $scope.form}).
             success(function (data, status, headers, config) {
-                handleAddingRepositoryResponse(data);
+                handleAddingProjectResponse(data);
             }).
             error(function (data, status, headers, config) {
                 alert("Error communication with server!")
             });
     };
 
-    function handleAddingRepositoryResponse(response) {
+    function handleAddingProjectResponse(response) {
         if(response.successful) {
             $scope.formVisible = false;
             $scope.successMessageVisible = true;
-            $scope.repositoryId = response.repositoryId[0];
+            $scope.projectId = response.projectId[0];
         } else {
             $scope.formVisible = true;
             $scope.successMessageVisible = false;

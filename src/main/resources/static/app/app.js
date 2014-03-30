@@ -15,7 +15,7 @@ var app = angular.module("application", ["ngRoute", "ngCookies"]).config(functio
         controller: "LoginController"
     });
 
-    $routeProvider.when("/add-repository", {
+    $routeProvider.when("/project/:projectId/:projectName/add-repository", {
         templateUrl: "app/view/add-repository.html",
         controller: "AddRepositoryController"
     });
@@ -23,6 +23,16 @@ var app = angular.module("application", ["ngRoute", "ngCookies"]).config(functio
     $routeProvider.when("/repository/:repositoryId/:repositoryName", {
         templateUrl: "app/view/repository.html",
         controller: "RepositoryController"
+    });
+
+    $routeProvider.when("/add-project", {
+        templateUrl: "app/view/add-project.html",
+        controller: "AddProjectController"
+    });
+
+    $routeProvider.when("/project/:projectId/:projectName", {
+        templateUrl: "app/view/project.html",
+        controller: "ProjectController"
     });
 
     $routeProvider.otherwise({

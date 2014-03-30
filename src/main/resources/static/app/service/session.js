@@ -1,4 +1,4 @@
-app.factory('session', function($http, $cookieStore) {
+app.factory('session', function($http, $cookies) {
     var session = {
         info: {
             sessionId: undefined,
@@ -12,17 +12,19 @@ app.factory('session', function($http, $cookieStore) {
                 sessionId: undefined,
                 userName: undefined
             };
-            $cookieStore.remove("sessionInfo");
+            delete $cookies.sessionId;
+            delete $cookies.userName;
         },
         createNewSession: function(sessionInfo) {
             this.info = sessionInfo;
-            $cookieStore.put("sessionInfo", this.info);
+            $cookies.sessionId = this.info.sessionId;
+            $cookies.userName = this.info.userName;
         },
         loadSessionInfo: function() {
-            var sessionInfo =  $cookieStore.get("sessionInfo");
-            if(sessionInfo != undefined) {
-                this.info = sessionInfo;
-            }
+            this.info = {
+                sessionId: $cookies.sessionId,
+                userName: $cookies.userName
+            };
         }
     };
     session.loadSessionInfo();

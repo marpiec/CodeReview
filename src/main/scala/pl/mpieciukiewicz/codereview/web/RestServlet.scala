@@ -1,14 +1,14 @@
 package pl.mpieciukiewicz.codereview.web
 
 import org.scalatra.{FutureSupport, AsyncResult, ScalatraServlet}
-import pl.mpieciukiewicz.codereview.system.{UserManager, RepositoryManager, DocumentsCache}
+import pl.mpieciukiewicz.codereview.system.{ProjectManager, UserManager, RepositoryManager, DocumentsCache}
 import pl.mpieciukiewicz.codereview.ioc.Container
 import akka.actor.{ActorSelection, Actor, ActorSystem}
 import akka.pattern.ask
-import scala.concurrent.{ExecutionContext, Future}
-import pl.mpieciukiewicz.codereview.system.RepositoryManager.LoadCommits
+import scala.concurrent.{Await, ExecutionContext, Future}
 import akka.util.Timeout
 import scala.concurrent.duration._
+import pl.mpieciukiewicz.codereview.system.UserManager.SessionInfoResponse
 
 /**
  *
@@ -30,7 +30,7 @@ class RestServlet(system: ActorSystem) extends ScalatraServlet with FutureSuppor
     "pong"
   }
 
-  get("/load-commits/:repository/:start/:count") {
+  get("/commits/:repository/:start/:count") {
     async {
       cache.getOrInsert(request.getRequestURI) {
         val actor = system.actorSelection("akka://application/user/repositoryManager")
@@ -68,6 +68,27 @@ class RestServlet(system: ActorSystem) extends ScalatraServlet with FutureSuppor
     async {
       val actor = system.actorSelection("akka://application/user/repositoryManager")
       val msg = RepositoryManager.AddRepository(params("cloneUrl"), params("repoName"), params("projectId").toInt)
+      actor.askForJson(msg)
+    }
+  }
+
+  post("/add-project") {
+    async {
+      val actor = system.actorSelection("akka://application/user/projectManager")
+      val msg =  ProjectManager.CreateProject(params("projectName"))
+      actor.askForJson(msg)
+    }
+  }
+
+  get("/user-projects") {
+    async {
+      val userManager = system.actorSelection("akka://application/user/userManager")
+      val sessionId = cookies.get("sessionId")
+      val userInfo = userManager ? UserManager.GetSessionInfo(sessionId.getOrElse(""))
+      val userInfoResponse = Await.result(userInfo, 10 seconds).asInstanceOf[SessionInfoResponse]
+
+      val actor = system.actorSelection("akka://application/user/projectManager")
+      val msg =  ProjectManager.LoadUserProjects(userInfoResponse.sessionInfo.get.userId)
       actor.askForJson(msg)
     }
   }

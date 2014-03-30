@@ -7,7 +7,7 @@ app.controller("RepositoryController", function ($scope, $http, $routeParams) {
     $scope.commits = [];
 
     function init() {
-        $http.get("/rest/load-commits/"+repositoryId+"/0/20", {cache: true}).
+        $http.get("/rest/commits/"+repositoryId+"/0/20", {cache: true}).
             success(function (data, status, headers, config) {
                 handleLoadCommitsResponse(data);
             }).

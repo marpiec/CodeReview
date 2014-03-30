@@ -1,0 +1,28 @@
+<div>
+
+    <mp-user-info></mp-user-info>
+
+    <div>
+        This is adding project page
+    </div>
+
+    <div>
+        <a href="#/home">Go home</a>
+
+        <div ng-show="formVisible">
+            <div>
+                Project name:
+                <input type="text" ng-model="form.projectName" />
+            </div>
+            <div>
+                <button ng-click="addProject()">Add project</button>
+            </div>
+        </div>
+
+        <div ng-show="successMessageVisible">
+            Project {{ form.projectName }} has been created successfully.
+            <a ng-href="#/project/{{ projectId }}/{{ form.projectName }}">Go to project</a>
+        </div>
+
+    </div>
+</div>
