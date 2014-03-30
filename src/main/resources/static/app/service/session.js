@@ -19,9 +19,9 @@ app.factory('session', function($http, $cookieStore) {
             $cookieStore.put("sessionInfo", this.info);
         },
         loadSessionInfo: function() {
-            var info =  $cookieStore.get("sessionInfo");
-            if(info != undefined) {
-                this.info = info;
+            var sessionInfo =  $cookieStore.get("sessionInfo");
+            if(sessionInfo != undefined) {
+                this.info = sessionInfo;
             }
         }
     };

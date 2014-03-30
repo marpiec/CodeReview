@@ -20,7 +20,7 @@ app.controller("LoginController", function ($rootScope, $scope, $http, session, 
     function handleAuthenticationResponse(response) {
         if(response.userAuthenticated) {
             session.createNewSession(response.sessionInfo[0]);
-            $location.path("#/home");
+            $location.path("/");
         } else {
             session.clearSession();
             $scope.loginIncorrectVisible = true;

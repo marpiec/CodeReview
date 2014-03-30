@@ -1,0 +1,10 @@
+<div>
+    <div ng-hide="authenticated">
+        Please <a href="#/login">Login</a>
+    </div>
+
+    <div ng-show="authenticated">
+       <div>{{ info.userName }}</div>
+       <a href="#" onclick="return false;" ng-click="logout()">Logout</a>
+    </div>
+</div>

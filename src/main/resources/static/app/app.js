@@ -38,7 +38,7 @@ app.run(function($rootScope, $location, session) {
     $rootScope.$on('$routeChangeStart', function (event, next, current) {
         var url = $location.url();
 
-        var whitelist = ["/login", "/register"];
+        var whitelist = ["/home", "/login", "/register"];
 
         if (!session.isAuthenticated() && !_.contains(whitelist, url)) {
             $location.path('/login');
