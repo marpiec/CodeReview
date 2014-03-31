@@ -11,4 +11,8 @@ class RandomUtil {
     RandomStringUtils.randomAlphabetic(32)
   }
 
+  def generateRepoDirectoryName: String = {
+    RandomStringUtils.randomAlphabetic(8)
+  }
+
 }

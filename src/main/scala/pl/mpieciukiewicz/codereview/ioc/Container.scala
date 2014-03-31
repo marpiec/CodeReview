@@ -5,16 +5,24 @@ import pl.mpieciukiewicz.codereview.database.engine.{DatabaseAccessor, DocumentD
 import pl.mpieciukiewicz.codereview.utils.json.JsonUtil
 import pl.mpieciukiewicz.codereview.system.DocumentsCache
 import pl.mpieciukiewicz.codereview.utils.RandomUtil
+import pl.mpieciukiewicz.codereview.utils.Configuration
+import com.typesafe.config.ConfigFactory
+import java.io.InputStreamReader
+import pl.mpieciukiewicz.codereview.utils.clock.DefaultTimeZoneClock
 
 /**
  *
  */
 class Container {
 
+  private val MAIN_CONFIG_FILE = "/application.conf"
+  val configuration = new Configuration(ConfigFactory.parseReader(new InputStreamReader(classOf[Container].getResourceAsStream(MAIN_CONFIG_FILE))))
+
+  val clock = new DefaultTimeZoneClock
   val jsonUtil = new JsonUtil
   val randomUtil = new RandomUtil
 
-  val databaseAccessor = new DatabaseAccessor("jdbc:h2:data/codeReview", "sa", "sa")
+  val databaseAccessor = new DatabaseAccessor("jdbc:h2:"+configuration.storage.dataDirectory+"/codeReview", "sa", "sa")
   val documentDataStorage = new DocumentDataStorage(databaseAccessor, jsonUtil)
   documentDataStorage.initDatabaseStructure()
 
@@ -24,7 +32,7 @@ class Container {
   val repositoryStorage = new RepositoryStorage(documentDataStorage)
   val commitStorage = new CommitStorage(documentDataStorage)
 
-  val documentsCache = new DocumentsCache
+  val documentsCache = new DocumentsCache(clock)
 
 }
 

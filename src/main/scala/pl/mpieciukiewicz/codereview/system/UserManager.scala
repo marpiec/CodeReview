@@ -7,6 +7,7 @@ import pl.mpieciukiewicz.codereview.model.authorization.{SessionInfoClientSide, 
 import pl.mpieciukiewicz.codereview.utils.RandomUtil
 import org.joda.time.{Duration, DateTime}
 import akka.actor.FSM.->
+import pl.mpieciukiewicz.codereview.utils.clock.Clock
 
 
 object UserManager {
@@ -27,7 +28,7 @@ object UserManager {
 }
 
 
-class UserManager(userStorage: UserStorage, randomUtil: RandomUtil) extends Actor {
+class UserManager(userStorage: UserStorage, randomUtil: RandomUtil, clock: Clock) extends Actor {
 
   import UserManager._
 
@@ -62,7 +63,7 @@ class UserManager(userStorage: UserStorage, randomUtil: RandomUtil) extends Acto
       do {
         sessionId = randomUtil.generateSessionIdentifier
       } while (sessions.contains(sessionId))
-      val now = DateTime.now
+      val now = clock.now
       val sessionInfo = SessionInfo(user.get.id.get, user.get.name, "whoKnows", now, now)
       sessions += sessionId -> sessionInfo
 
@@ -84,12 +85,13 @@ class UserManager(userStorage: UserStorage, randomUtil: RandomUtil) extends Acto
 
 
   private def readSessionInfo(sessionId: String): Option[SessionInfo] = {
+    val now = clock.now
     sessions.get(sessionId) match {
-      case Some(info) => if(info.lastAction.plus(timeout).isBefore(DateTime.now)) {
+      case Some(info) => if(info.lastAction.plus(timeout).isBefore(now)) {
         sessions -= sessionId
         None
       } else {
-        val updatedInfo = info.copy(lastAction = DateTime.now)
+        val updatedInfo = info.copy(lastAction = now)
         sessions += sessionId -> updatedInfo
         Some(updatedInfo)
       }

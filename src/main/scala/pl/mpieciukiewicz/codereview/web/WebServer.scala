@@ -7,15 +7,16 @@ import org.eclipse.jetty.servlet.ServletContextHandler
 import org.eclipse.jetty.util.resource.Resource
 import org.h2.server.web.WebServlet
 import org.scalatra.servlet.ScalatraListener
+import pl.mpieciukiewicz.codereview.utils.{Configuration, Settings}
 
 
 /**
  * @author Marcin Pieciukiewicz
  */
-class WebServer {
+class WebServer(config: Configuration) {
 
   def start() {
-    val server = new Server(8080)
+    val server = new Server(config.webServer.port)
 
     val servletContext = new ServletContextHandler(ServletContextHandler.SESSIONS)
     servletContext.setInitParameter(ScalatraListener.LifeCycleKey, "pl.mpieciukiewicz.codereview.web.Bootstrap")

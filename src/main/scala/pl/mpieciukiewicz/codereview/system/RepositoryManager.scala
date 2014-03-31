@@ -8,6 +8,9 @@ import java.io.File
 import pl.mpieciukiewicz.codereview.model.{Commit, Repository}
 import org.joda.time.DateTime
 import pl.mpieciukiewicz.codereview.vcs.FileChange
+import pl.mpieciukiewicz.codereview.utils.{RandomUtil, Configuration}
+import org.apache.commons.lang3.RandomUtils
+import pl.mpieciukiewicz.codereview.utils.clock.Clock
 
 object RepositoryManager {
   case class AddRepository(cloneUrl: String, repositoryName: String, projectId: Int)
@@ -24,7 +27,7 @@ object RepositoryManager {
   case class LoadRepositoriesResponse(repositories: List[Repository])
 }
 
-class RepositoryManager(repositoryStorage: RepositoryStorage, commitRepository: CommitStorage) extends Actor {
+class RepositoryManager(repositoryStorage: RepositoryStorage, commitStorage: CommitStorage, randomUtil: RandomUtil, config: Configuration, clock: Clock) extends Actor {
 
   import RepositoryManager._
 
@@ -35,25 +38,33 @@ class RepositoryManager(repositoryStorage: RepositoryStorage, commitRepository: 
   }
 
   private def handleAddRepository(msg: AddRepository) {
-    new GitLocalRepositoryManager("c:/codeReview/first").cloneRemoteRepository(msg.cloneUrl)
-    val repository = repositoryStorage.add(Repository(None, msg.projectId, msg.repositoryName, msg.cloneUrl, "c:/codeReview/first", DateTime.now))
 
+    var repoDirName:String = null
+    do {
+      repoDirName = randomUtil.generateRepoDirectoryName
+    } while (new File(config.storage.dataDirectory, repoDirName).exists())
+    
+    val repoDirPath = config.storage.dataDirectory + repoDirName
 
-    val allGitCommits = new GitReader("c:/codeReview/first").readAllCommits()
+    new GitLocalRepositoryManager(repoDirPath).cloneRemoteRepository(msg.cloneUrl)
+    val repository = repositoryStorage.add(Repository(None, msg.projectId, msg.repositoryName, msg.cloneUrl, repoDirName, clock.now))
+
+    val allGitCommits = new GitReader(repoDirPath).readAllCommits()
 
     val allCommits = allGitCommits.map(_.convertToCommit(repository.id.get))
 
-    commitRepository.addAll(allCommits)
+    commitStorage.addAll(allCommits)
 
 
     sender ! AddingRepositoryResponse(true, repository.id)
   }
 
-  private def handleLoadCommits(msg: LoadCommits) {
-    val commits = commitRepository.findByRepositoryId(msg.repositoryId)
+  private def handleLoadCommits(msg: LoadCommits) {         
+    val repository = repositoryStorage.findById(msg.repositoryId)
+    val commits = commitStorage.findByRepositoryId(msg.repositoryId)
 
     val commitFiles = commits.map { commit =>
-      CommitWithFiles(commit, new GitReader("c:/codeReview/first").readFilesFromCommit(commit.hash))
+      CommitWithFiles(commit, new GitReader(config.storage.dataDirectory + repository.get.localDir).readFilesFromCommit(commit.hash))
     }
 
     sender ! LoadCommitsResponse(commitFiles)

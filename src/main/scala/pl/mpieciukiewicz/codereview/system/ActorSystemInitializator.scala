@@ -12,9 +12,13 @@ import pl.mpieciukiewicz.codereview.ioc.Container
 class ActorSystemInitializator(context: ActorSystem) {
 
   def createActors() {
-    context.actorOf(Props(classOf[UserManager], Container.instance.userStorage, Container.instance.randomUtil), "userManager")
-    context.actorOf(Props(classOf[RepositoryManager], Container.instance.repositoryStorage, Container.instance.commitStorage), "repositoryManager")
-    context.actorOf(Props(classOf[ProjectManager], Container.instance.projectStorage, Container.instance.repositoryStorage), "projectManager")
+    val ioc = Container.instance
+    context.actorOf(Props(classOf[UserManager], ioc.userStorage, ioc.randomUtil, ioc.clock), "userManager")
+
+    context.actorOf(Props(classOf[RepositoryManager], ioc.repositoryStorage, ioc.commitStorage, ioc.randomUtil, ioc.configuration, ioc.clock),
+      "repositoryManager")
+
+    context.actorOf(Props(classOf[ProjectManager], ioc.projectStorage, ioc.repositoryStorage), "projectManager")
   }
 
 }

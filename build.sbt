@@ -16,6 +16,7 @@ libraryDependencies ++= Seq("org.eclipse.jetty" % "jetty-server" % "9.0.6.v20130
   "org.apache.commons" % "commons-lang3" % "3.3.1",
   "com.github.nscala-time" %% "nscala-time" % "0.8.0",
   "com.h2database" % "h2" % "1.3.175",
+  "com.typesafe" % "config" % "1.2.0",
   "pl.mpieciukiewicz.mpjsons" % "mpjsons" % "0.5", //clone from: https://github.com/marpiec/mpjsons and then mvn install
   "org.eclipse.jgit" % "org.eclipse.jgit" % "3.3.0.201403021825-r",
   "ch.qos.logback" % "logback-classic" % "1.1.1",
