@@ -1,4 +1,4 @@
-app.directive("mpUserProjects", function($http, $location, session) {
+app.directive("mpUserProjects", function(secureService, session, secureService) {
     return {
         scope: {},
         restrict: "E",
@@ -13,13 +13,7 @@ app.directive("mpUserProjects", function($http, $location, session) {
 
             function loadUserProjects() {
                 if(session.isAuthenticated()) {
-                    $http.get("/rest/user-projects", {cache: true}).
-                        success(function (data, status, headers, config) {
-                            handleUserProjectsResponse(data);
-                        }).
-                        error(function (data, status, headers, config) {
-                            alert("Error communication with server!")
-                        });
+                    secureService.get("/rest/user-projects", true, handleUserProjectsResponse);
                 } else {
                     scope.projects = {};
                 }

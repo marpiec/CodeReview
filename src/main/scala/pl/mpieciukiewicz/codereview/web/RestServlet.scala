@@ -1,6 +1,6 @@
 package pl.mpieciukiewicz.codereview.web
 
-import org.scalatra.{FutureSupport, AsyncResult, ScalatraServlet}
+import org.scalatra.{Unauthorized, FutureSupport, AsyncResult, ScalatraServlet}
 import pl.mpieciukiewicz.codereview.system.{ProjectManager, UserManager, RepositoryManager, DocumentsCache}
 import pl.mpieciukiewicz.codereview.ioc.Container
 import akka.actor.{ActorSelection, Actor, ActorSystem}
@@ -87,9 +87,15 @@ class RestServlet(system: ActorSystem) extends ScalatraServlet with FutureSuppor
       val userInfo = userManager ? UserManager.GetSessionInfo(sessionId.getOrElse(""))
       val userInfoResponse = Await.result(userInfo, 10 seconds).asInstanceOf[SessionInfoResponse]
 
-      val actor = system.actorSelection("akka://application/user/projectManager")
-      val msg =  ProjectManager.LoadUserProjects(userInfoResponse.sessionInfo.get.userId)
-      actor.askForJson(msg)
+      val future:Future[_] = if(userInfoResponse.sessionInfo.isDefined) {
+        val actor = system.actorSelection("akka://application/user/projectManager")
+        val msg = ProjectManager.LoadUserProjects(userInfoResponse.sessionInfo.get.userId)
+        actor.askForJson(msg)
+      } else {
+        Future.successful(Unauthorized())
+      }
+
+      future
     }
   }
 
