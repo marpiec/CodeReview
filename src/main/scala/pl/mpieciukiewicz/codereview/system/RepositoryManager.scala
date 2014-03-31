@@ -19,6 +19,9 @@ object RepositoryManager {
 
   case class CommitWithFiles(info: Commit, files: List[FileChange])
   case class LoadCommitsResponse(commits: List[CommitWithFiles])
+
+  case class LoadRepositoriesForProject(projectId: Int)
+  case class LoadRepositoriesResponse(repositories: List[Repository])
 }
 
 class RepositoryManager(repositoryStorage: RepositoryStorage, commitRepository: CommitStorage) extends Actor {
@@ -28,6 +31,7 @@ class RepositoryManager(repositoryStorage: RepositoryStorage, commitRepository: 
   override def receive = {
     case msg: AddRepository => handleAddRepository(msg)
     case msg: LoadCommits => handleLoadCommits(msg)
+    case msg: LoadRepositoriesForProject => loadRepositoriesForProject(msg)
   }
 
   private def handleAddRepository(msg: AddRepository) {
@@ -53,5 +57,10 @@ class RepositoryManager(repositoryStorage: RepositoryStorage, commitRepository: 
     }
 
     sender ! LoadCommitsResponse(commitFiles)
+  }
+
+
+  def loadRepositoriesForProject(msg: LoadRepositoriesForProject) {
+    sender ! LoadRepositoriesResponse(repositoryStorage.findByProject(msg.projectId))
   }
 }

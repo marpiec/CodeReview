@@ -1,6 +1,18 @@
 <div>
-    <div>Project {{ projectName }}</div>
 
-    <a ng-href="#/project/{{ projectId }}/{{ projectName }}/add-repository">Add repository</a>
+    <mp-user-info></mp-user-info>
+    <a href="#/home">Go home</a>
 
+    <div>Project {{ project.name }}</div>
+
+    <a ng-href="#/project/{{ project.id[0] }}/{{ project.name }}/add-repository">Add repository</a>
+
+    <div>
+        Project repositories:
+        <div ng-repeat="repository in repositories">
+            <a ng-href="#/repository/{{ repository.id[0] }}/{{ repository.name }}">{{ repository.name }}</a>
+            Url: {{ repository.remoteUrl }}
+            Last update time: {{ repository.lastUpdateTime }}
+        </div>
+    </div>
 </div>

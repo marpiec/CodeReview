@@ -6,13 +6,12 @@ app.factory("secureService", function($http, session, $route) {
                    handler(data);
                }).
                error(function (data, status, headers, config) {
-                   alert(status);
                    if(status==401) {
                        session.clearSession();
                        alert("You have been logged off");
                        $route.reload();
                    } else {
-                       alert("Error communication with server!")
+                       alert("Error communication with server! ("+status+")")
                    }
 
                });

@@ -3,6 +3,7 @@ package pl.mpieciukiewicz.codereview.system
 import pl.mpieciukiewicz.codereview.database.{RepositoryStorage, ProjectStorage}
 import akka.actor.Actor
 import pl.mpieciukiewicz.codereview.model.Project
+import pl.mpieciukiewicz.codereview.system.RepositoryManager.LoadRepositoriesForProject
 
 object ProjectManager {
 
@@ -13,7 +14,8 @@ object ProjectManager {
   case class LoadUserProjects(userId: Int)
   case class UserProjects(projects: List[Project])
 
-  case class LoadRepositoriesForProject(projectId: Int)
+  case class LoadProject(projectId: Int)
+  case class ProjectResponse(project: Option[Project])
 
 }
 
@@ -26,7 +28,7 @@ class ProjectManager(projectStorage: ProjectStorage, repositoryStorage: Reposito
   override def receive: Receive = {
     case msg: CreateProject => createProject(msg)
     case msg: LoadUserProjects => loadUserProjects(msg)
-    case msg: LoadRepositoriesForProject => loadRepositoriesForProject(msg)
+    case msg: LoadProject => loadProject(msg)
   }
 
 
@@ -46,8 +48,11 @@ class ProjectManager(projectStorage: ProjectStorage, repositoryStorage: Reposito
     sender ! UserProjects(projects)
   }
 
-  def loadRepositoriesForProject(msg: LoadRepositoriesForProject) {
 
+  def loadProject(msg: LoadProject) {
+    val project = projectStorage.findById(msg.projectId)
+    sender ! ProjectResponse(project)
   }
+
 
 }
