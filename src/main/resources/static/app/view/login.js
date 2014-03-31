@@ -5,7 +5,7 @@ app.controller("LoginController", function ($rootScope, $scope, $http, session, 
 
     $scope.loginIncorrectVisible = false;
 
-    $scope.registerUser = function() {
+    $scope.loginUser = function() {
 
         $http.post("/rest/authenticate-user", "", {params: {user: $scope.userName, password: $scope.password}}).
             success(function (data, status, headers, config) {

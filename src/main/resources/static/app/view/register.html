@@ -9,24 +9,25 @@
 
         <div ng-show="registerFormVisible">
 
-            <div>
-                User name:
-                <input type="text" ng-model="form.userName"/>
-            </div>
-            <div>
-                Email:
-                <input type="text" ng-model="form.email"/>
-            </div>
-            <div>
-                Password:
-                <input type="password" ng-model="form.password"/>
-            </div>
-            <div>
-                Repeat password:
-                <input type="password" ng-model="form.passwordRepeat"/>
-            </div>
-            <button ng-click="registerUser()">Register</button>
-
+            <form ng-submit="registerUser()">
+                <div>
+                    User name:
+                    <input type="text" ng-model="form.userName"/>
+                </div>
+                <div>
+                    Email:
+                    <input type="text" ng-model="form.email"/>
+                </div>
+                <div>
+                    Password:
+                    <input type="password" ng-model="form.password"/>
+                </div>
+                <div>
+                    Repeat password:
+                    <input type="password" ng-model="form.passwordRepeat"/>
+                </div>
+                <button type="submit">Register</button>
+             </form>
         </div>
 
         <div ng-show="registrationSuccessfulVisible">
