@@ -6,6 +6,7 @@ import org.fest.assertions.api.Assertions._
 import pl.mpieciukiewicz.codereview.model.Project
 import pl.mpieciukiewicz.codereview.database.engine.{DatabaseAccessor, DocumentDataStorage}
 import pl.mpieciukiewicz.codereview.utils.json.JsonUtil
+import pl.mpieciukiewicz.codereview.TestsUtil
 
 /**
  *
@@ -15,7 +16,7 @@ class ProjectStorageSpec extends FeatureSpec with GivenWhenThen with BeforeAndAf
   var storage:ProjectStorage = _
 
   before {
-    storage = new ProjectStorage(new DocumentDataStorage(new DatabaseAccessor("jdbc:h2:mem:testdb", "sa", "sa"), new JsonUtil))
+    storage = new ProjectStorage(new DocumentDataStorage(new DatabaseAccessor(TestsUtil.randomMemoryH2Url, "sa", "sa"), new JsonUtil))
     storage.dds.initDatabaseStructure()
   }
 

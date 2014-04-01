@@ -3,6 +3,7 @@ package pl.mpieciukiewicz.codereview.database.engine
 import org.scalatest.{BeforeAndAfter, GivenWhenThen, FeatureSpec}
 import org.fest.assertions.api.Assertions._
 import pl.mpieciukiewicz.codereview.utils.json.JsonUtil
+import pl.mpieciukiewicz.codereview.TestsUtil
 
 /**
  *
@@ -12,7 +13,7 @@ class DocumentDataStorageSpec extends FeatureSpec with GivenWhenThen with Before
   var ds:DocumentDataStorage = _
 
   before {
-    ds = new DocumentDataStorage(new DatabaseAccessor("jdbc:h2:mem:testdb", "sa", "sa"), new JsonUtil)
+    ds = new DocumentDataStorage(new DatabaseAccessor(TestsUtil.randomMemoryH2Url, "sa", "sa"), new JsonUtil)
     ds.initDatabaseStructure()
   }
 

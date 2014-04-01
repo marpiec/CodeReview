@@ -6,6 +6,7 @@ import org.fest.assertions.api.Assertions._
 import pl.mpieciukiewicz.codereview.model.User
 import pl.mpieciukiewicz.codereview.database.engine.{DatabaseAccessor, DocumentDataStorage}
 import pl.mpieciukiewicz.codereview.utils.json.JsonUtil
+import pl.mpieciukiewicz.codereview.TestsUtil
 
 /**
  *
@@ -15,7 +16,7 @@ class UserStorageSpec extends FeatureSpec with GivenWhenThen with BeforeAndAfter
   var storage:UserStorage = _
 
   before {
-    storage = new UserStorage(new DocumentDataStorage(new DatabaseAccessor("jdbc:h2:mem:testdb", "sa", "sa"), new JsonUtil))
+    storage = new UserStorage(new DocumentDataStorage(new DatabaseAccessor(TestsUtil.randomMemoryH2Url, "sa", "sa"), new JsonUtil))
     storage.dds.initDatabaseStructure()
   }
 

@@ -3,6 +3,7 @@ package pl.mpieciukiewicz.codereview.database.engine
 import org.scalatest.{BeforeAndAfter, GivenWhenThen, FeatureSpec}
 import org.fest.assertions.api.Assertions._
 import org.h2.jdbc.JdbcSQLException
+import pl.mpieciukiewicz.codereview.TestsUtil
 
 /**
  *
@@ -12,7 +13,7 @@ class DatabaseAccessorSpec extends FeatureSpec with GivenWhenThen with BeforeAnd
   var dba:DatabaseAccessor = _
 
   before {
-    dba = new DatabaseAccessor("jdbc:h2:mem:testdb", "sa", "sa")
+    dba = new DatabaseAccessor(TestsUtil.randomMemoryH2Url, "sa", "sa")
   }
 
   after {

@@ -14,6 +14,7 @@ import pl.mpieciukiewicz.codereview.model.authorization.SessionInfo
 import pl.mpieciukiewicz.codereview.system.UserManager.AuthenticationResult
 import pl.mpieciukiewicz.codereview.system.UserManager.AuthenticationResult
 import pl.mpieciukiewicz.codereview.utils.clock.DefaultTimeZoneClock
+import pl.mpieciukiewicz.codereview.TestsUtil
 
 /**
  *
@@ -25,7 +26,7 @@ class UserManagerSpec extends TestKit(ActorSystem("test")) with FeatureSpecLike 
 
 
   before {
-    val documentDataStorage = new DocumentDataStorage(new DatabaseAccessor("jdbc:h2:mem:testdb", "sa", "sa"), new JsonUtil)
+    val documentDataStorage = new DocumentDataStorage(new DatabaseAccessor(TestsUtil.randomMemoryH2Url, "sa", "sa"), new JsonUtil)
     documentDataStorage.initDatabaseStructure()
     userStorage = new UserStorage(documentDataStorage)
     userManager = TestActorRef(new UserManager(userStorage, new RandomGenerator, new DefaultTimeZoneClock))
