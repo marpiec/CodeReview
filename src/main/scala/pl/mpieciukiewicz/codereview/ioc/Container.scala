@@ -4,7 +4,7 @@ import pl.mpieciukiewicz.codereview.database._
 import pl.mpieciukiewicz.codereview.database.engine.{DatabaseAccessor, DocumentDataStorage}
 import pl.mpieciukiewicz.codereview.utils.json.JsonUtil
 import pl.mpieciukiewicz.codereview.system.DocumentsCache
-import pl.mpieciukiewicz.codereview.utils.RandomUtil
+import pl.mpieciukiewicz.codereview.utils.RandomGenerator
 import pl.mpieciukiewicz.codereview.utils.Configuration
 import com.typesafe.config.ConfigFactory
 import java.io.InputStreamReader
@@ -20,7 +20,7 @@ class Container {
 
   val clock = new DefaultTimeZoneClock
   val jsonUtil = new JsonUtil
-  val randomUtil = new RandomUtil
+  val randomUtil = new RandomGenerator
 
   val databaseAccessor = new DatabaseAccessor("jdbc:h2:"+configuration.storage.dataDirectory+"/codeReview", "sa", "sa")
   val documentDataStorage = new DocumentDataStorage(databaseAccessor, jsonUtil)

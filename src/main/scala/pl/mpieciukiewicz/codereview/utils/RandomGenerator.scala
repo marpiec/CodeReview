@@ -5,7 +5,7 @@ import org.apache.commons.lang3.RandomStringUtils
 /**
  *
  */
-class RandomUtil {
+class RandomGenerator {
 
   def generateSessionIdentifier: String = {
     RandomStringUtils.randomAlphabetic(32)

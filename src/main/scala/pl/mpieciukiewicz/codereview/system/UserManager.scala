@@ -4,7 +4,7 @@ import akka.actor.Actor
 import pl.mpieciukiewicz.codereview.database.UserStorage
 import pl.mpieciukiewicz.codereview.model.User
 import pl.mpieciukiewicz.codereview.model.authorization.{SessionInfoClientSide, SessionInfo}
-import pl.mpieciukiewicz.codereview.utils.RandomUtil
+import pl.mpieciukiewicz.codereview.utils.RandomGenerator
 import org.joda.time.{Duration, DateTime}
 import akka.actor.FSM.->
 import pl.mpieciukiewicz.codereview.utils.clock.Clock
@@ -28,7 +28,7 @@ object UserManager {
 }
 
 
-class UserManager(userStorage: UserStorage, randomUtil: RandomUtil, clock: Clock) extends Actor {
+class UserManager(userStorage: UserStorage, randomUtil: RandomGenerator, clock: Clock) extends Actor {
 
   import UserManager._
 

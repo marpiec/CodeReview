@@ -8,7 +8,7 @@ import java.io.File
 import pl.mpieciukiewicz.codereview.model.{Commit, Repository}
 import org.joda.time.DateTime
 import pl.mpieciukiewicz.codereview.vcs.FileChange
-import pl.mpieciukiewicz.codereview.utils.{RandomUtil, Configuration}
+import pl.mpieciukiewicz.codereview.utils.{RandomGenerator, Configuration}
 import org.apache.commons.lang3.RandomUtils
 import pl.mpieciukiewicz.codereview.utils.clock.Clock
 
@@ -27,7 +27,7 @@ object RepositoryManager {
   case class LoadRepositoriesResponse(repositories: List[Repository])
 }
 
-class RepositoryManager(repositoryStorage: RepositoryStorage, commitStorage: CommitStorage, randomUtil: RandomUtil, config: Configuration, clock: Clock) extends Actor {
+class RepositoryManager(repositoryStorage: RepositoryStorage, commitStorage: CommitStorage, randomUtil: RandomGenerator, config: Configuration, clock: Clock) extends Actor {
 
   import RepositoryManager._
 

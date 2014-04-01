@@ -9,10 +9,11 @@ import akka.actor.{ActorSystem, PoisonPill}
 import pl.mpieciukiewicz.codereview.database.UserStorage
 import pl.mpieciukiewicz.codereview.database.engine.{DatabaseAccessor, DocumentDataStorage}
 import pl.mpieciukiewicz.codereview.utils.json.JsonUtil
-import pl.mpieciukiewicz.codereview.utils.RandomUtil
+import pl.mpieciukiewicz.codereview.utils.RandomGenerator
 import pl.mpieciukiewicz.codereview.model.authorization.SessionInfo
 import pl.mpieciukiewicz.codereview.system.UserManager.AuthenticationResult
 import pl.mpieciukiewicz.codereview.system.UserManager.AuthenticationResult
+import pl.mpieciukiewicz.codereview.utils.clock.DefaultTimeZoneClock
 
 /**
  *
@@ -27,7 +28,7 @@ class UserManagerSpec extends TestKit(ActorSystem("test")) with FeatureSpecLike 
     val documentDataStorage = new DocumentDataStorage(new DatabaseAccessor("jdbc:h2:mem:testdb", "sa", "sa"), new JsonUtil)
     documentDataStorage.initDatabaseStructure()
     userStorage = new UserStorage(documentDataStorage)
-    userManager = TestActorRef(new UserManager(userStorage, new RandomUtil))
+    userManager = TestActorRef(new UserManager(userStorage, new RandomGenerator, new DefaultTimeZoneClock))
   }
 
   after {
