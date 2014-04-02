@@ -4,8 +4,7 @@ import pl.mpieciukiewicz.codereview.database._
 import pl.mpieciukiewicz.codereview.database.engine.{DatabaseAccessor, DocumentDataStorage}
 import pl.mpieciukiewicz.codereview.utils.json.JsonUtil
 import pl.mpieciukiewicz.codereview.system.DocumentsCache
-import pl.mpieciukiewicz.codereview.utils.RandomGenerator
-import pl.mpieciukiewicz.codereview.utils.Configuration
+import pl.mpieciukiewicz.codereview.utils.{PasswordUtil, RandomGenerator, Configuration}
 import com.typesafe.config.ConfigFactory
 import java.io.InputStreamReader
 import pl.mpieciukiewicz.codereview.utils.clock.DefaultTimeZoneClock
@@ -18,6 +17,7 @@ class Container {
   private val MAIN_CONFIG_FILE = "/application.conf"
   val configuration = Configuration.fromClasspath(MAIN_CONFIG_FILE)
 
+  val passwordUtil = new PasswordUtil(configuration.security.systemSalt)
   val clock = new DefaultTimeZoneClock
   val jsonUtil = new JsonUtil
   val randomUtil = new RandomGenerator

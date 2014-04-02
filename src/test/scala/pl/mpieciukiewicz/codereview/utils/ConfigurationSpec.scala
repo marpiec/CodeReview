@@ -22,6 +22,8 @@ class ConfigurationSpec extends FeatureSpec with GivenWhenThen {
 
       assertThat(config.storage.dataDirectory).isEqualTo("../data/")
 
+      assertThat(config.security.systemSalt).isEqualTo("SecureSalt")
+
       Then("String representation is not empty")
 
       assertThat(config.toString).isNotEmpty

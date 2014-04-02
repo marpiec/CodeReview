@@ -27,6 +27,10 @@ class Configuration(c: Config) {
     val dataDirectory = config.getString("dataDirectory")
   }
 
+  val security = new Settings("security") {
+    val systemSalt = config.getString("systemSalt")
+  }
+
   override def toString = {
     globalConfig.root().render(ConfigRenderOptions.concise().setFormatted(true))
   }

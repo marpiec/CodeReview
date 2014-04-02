@@ -4,7 +4,7 @@ import akka.actor.Actor
 import pl.mpieciukiewicz.codereview.database.UserStorage
 import pl.mpieciukiewicz.codereview.model.User
 import pl.mpieciukiewicz.codereview.model.authorization.{SessionInfoClientSide, SessionInfo}
-import pl.mpieciukiewicz.codereview.utils.RandomGenerator
+import pl.mpieciukiewicz.codereview.utils.{PasswordUtil, RandomGenerator}
 import org.joda.time.{Duration, DateTime}
 import akka.actor.FSM.->
 import pl.mpieciukiewicz.codereview.utils.clock.Clock
@@ -28,7 +28,7 @@ object UserManager {
 }
 
 
-class UserManager(userStorage: UserStorage, randomUtil: RandomGenerator, clock: Clock) extends Actor {
+class UserManager(userStorage: UserStorage, randomUtil: RandomGenerator, clock: Clock, passwordUtil: PasswordUtil) extends Actor {
 
   import UserManager._
 
@@ -46,7 +46,9 @@ class UserManager(userStorage: UserStorage, randomUtil: RandomGenerator, clock: 
   private def registerUser(msg: RegisterUser) {
 
     if (userStorage.findByName(msg.name).isEmpty && userStorage.findByEmail(msg.email).isEmpty) {
-      userStorage.add(User(None, msg.name, msg.email, msg.password, "salt"))
+      val salt = passwordUtil.generateRandomSalt
+      val passwordHash = passwordUtil.hashPassword(msg.password, salt)
+      userStorage.add(User(None, msg.name, msg.email, passwordHash, salt))
       sender ! RegistrationResult(true)
     } else {
       sender ! RegistrationResult(false)
@@ -56,18 +58,26 @@ class UserManager(userStorage: UserStorage, randomUtil: RandomGenerator, clock: 
 
   private def authenticateUser(msg: AuthenticateUser) {
 
-    val user = userStorage.findByName(msg.user) orElse userStorage.findByEmail(msg.user)
+    val userOption = userStorage.findByName(msg.user) orElse userStorage.findByEmail(msg.user)
 
-    if (user.isDefined && user.get.password == msg.password) {
-      var sessionId = ""
-      do {
-        sessionId = randomUtil.generateSessionIdentifier
-      } while (sessions.contains(sessionId))
-      val now = clock.now
-      val sessionInfo = SessionInfo(user.get.id.get, user.get.name, "whoKnows", now, now)
-      sessions += sessionId -> sessionInfo
 
-      sender ! AuthenticationResult(true, Some(SessionInfoClientSide(sessionId, sessionInfo.userName)))
+
+    if (userOption.isDefined) {
+      val user = userOption.get
+      val passwordHash = passwordUtil.hashPassword(msg.password, user.salt)
+      if (user.passwordHash == passwordHash) {
+        var sessionId = ""
+        do {
+          sessionId = randomUtil.generateSessionIdentifier
+        } while (sessions.contains(sessionId))
+        val now = clock.now
+        val sessionInfo = SessionInfo(user.id.get, user.name, "whoKnows", now, now)
+        sessions += sessionId -> sessionInfo
+
+        sender ! AuthenticationResult(true, Some(SessionInfoClientSide(sessionId, sessionInfo.userName)))
+      } else {
+        sender ! AuthenticationResult(false)
+      }
     } else {
       sender ! AuthenticationResult(false)
     }

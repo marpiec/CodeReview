@@ -7,7 +7,7 @@ import collection.JavaConverters._
 import org.fest.assertions.api.Assertions._
 import akka.actor.{ActorSystem, PoisonPill}
 import pl.mpieciukiewicz.codereview.database.UserStorage
-import pl.mpieciukiewicz.codereview.utils.RandomGenerator
+import pl.mpieciukiewicz.codereview.utils.{PasswordUtil, RandomGenerator}
 import pl.mpieciukiewicz.codereview.utils.clock.DefaultTimeZoneClock
 import pl.mpieciukiewicz.codereview.TestsUtil._
 import pl.mpieciukiewicz.codereview.system.UserManager.AuthenticationResult
@@ -23,7 +23,7 @@ class UserManagerSpec extends TestKit(ActorSystem("test")) with FeatureSpecLike 
 
   before {
     userStorage = new UserStorage(createTemporaryDataStorage)
-    userManager = TestActorRef(new UserManager(userStorage, new RandomGenerator, new DefaultTimeZoneClock))
+    userManager = TestActorRef(new UserManager(userStorage, new RandomGenerator, new DefaultTimeZoneClock, new PasswordUtil("systemSalt")))
   }
 
   after {

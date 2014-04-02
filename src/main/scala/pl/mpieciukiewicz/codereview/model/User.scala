@@ -9,7 +9,7 @@ import scala.annotation.meta.field
 case class User(@(FirstSubType @field)(classOf[Int]) id: Option[Int],
                 name: String,
                 email: String,
-                password: String,
+                passwordHash: String,
                 salt: String)
 
 

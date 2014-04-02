@@ -75,7 +75,7 @@ class PasswordUtilSpec extends FeatureSpec with GivenWhenThen {
 
     scenario("Generates proper random salt") {
       Given("Random generator")
-      val generator = new PasswordUtil()
+      val generator = new PasswordUtil("systemSalt")
 
       When("Multiple salts are generated")
 

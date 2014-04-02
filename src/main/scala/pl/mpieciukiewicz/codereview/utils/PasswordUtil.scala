@@ -3,7 +3,7 @@ package pl.mpieciukiewicz.codereview.utils
 import org.apache.commons.codec.digest.DigestUtils
 import org.apache.commons.lang3.{StringUtils, RandomStringUtils}
 
-class PasswordUtil(systemSalt: String = "SYSTEM_SALT_NOT_DEFINED") {
+class PasswordUtil(systemSalt: String) {
 
   final val saltLength = 24
   val HASH_COMPUTATION_TIMES = 4000 //As recommended by OWASP
