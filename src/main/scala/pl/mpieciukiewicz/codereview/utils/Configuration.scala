@@ -1,10 +1,15 @@
 package pl.mpieciukiewicz.codereview.utils
 
 import com.typesafe.config._
+import java.io.InputStreamReader
 
-/**
- *
- */
+
+object Configuration {
+  def fromClasspath(fileName: String):Configuration = {
+    new Configuration(ConfigFactory.parseReader(new InputStreamReader(classOf[Configuration].getResourceAsStream(fileName))))
+  }
+}
+
 class Configuration(c: Config) {
   implicit val globalConfig = c
 

@@ -16,7 +16,7 @@ import pl.mpieciukiewicz.codereview.utils.clock.DefaultTimeZoneClock
 class Container {
 
   private val MAIN_CONFIG_FILE = "/application.conf"
-  val configuration = new Configuration(ConfigFactory.parseReader(new InputStreamReader(classOf[Container].getResourceAsStream(MAIN_CONFIG_FILE))))
+  val configuration = Configuration.fromClasspath(MAIN_CONFIG_FILE)
 
   val clock = new DefaultTimeZoneClock
   val jsonUtil = new JsonUtil
