@@ -2,7 +2,7 @@ name := "CodeReview"
 
 version := "0.0.1"
 
-scalaVersion := "2.10.3"
+scalaVersion := "2.10.4"
 
 resolvers ++= Seq("eclipse repo" at "https://repo.eclipse.org/content/groups/releases/",
   "Local Maven" at Path.userHome.asFile.toURI.toURL + ".m2/repository")
@@ -37,6 +37,6 @@ scalacOptions ++= Seq(
 
 seq(lessSettings: _*)
 
-fork := true
+//fork := true
 
-javaOptions := Seq("-DdevelopmentMode=true", "-Xdebug", "-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5005")
+//javaOptions := Seq("-DdevelopmentMode=true", "-Xdebug", "-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5005")
