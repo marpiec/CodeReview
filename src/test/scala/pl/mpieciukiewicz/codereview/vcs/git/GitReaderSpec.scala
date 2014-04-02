@@ -10,14 +10,14 @@ import org.joda.time.DateTime
 /**
  *
  */
-class GitReaderSpec extends FeatureSpec with GivenWhenThen {
+class GitReaderSpec extends FeatureSpec with GivenWhenThen with GitBeforeAndAfter {
 
   feature("GIT repository analysis support") {
 
     scenario("Get recent commits") {
       Given("Repository and GitReader instance")
 
-      val gitReader = new GitReader("c:/TmpRepo/")
+      val gitReader = new GitReader(repoDirectory.getAbsolutePath)
 
       When("Getting 4 Commits")
 
@@ -45,7 +45,8 @@ class GitReaderSpec extends FeatureSpec with GivenWhenThen {
     scenario("Get files names from commit") {
       Given("Repository and GitReader instance, and commit id")
 
-      val gitReader = new GitReader("c:/TmpRepo/")
+
+      val gitReader = new GitReader(repoDirectory.getAbsolutePath)
       val commitId = "e20b7e4df6d4b7df4816a75981331201317e90e8"
 
       When("Getting committed files")
@@ -63,7 +64,7 @@ class GitReaderSpec extends FeatureSpec with GivenWhenThen {
     scenario("Get files content from commit") {
       Given("Repository and GitReader instance, and commit id")
 
-      val gitReader = new GitReader("c:/TmpRepo/")
+      val gitReader = new GitReader(repoDirectory.getAbsolutePath)
       val commitId = "e20b7e4df6d4b7df4816a75981331201317e90e8"
 
       When("Getting committed files")
@@ -100,7 +101,7 @@ class GitReaderSpec extends FeatureSpec with GivenWhenThen {
     scenario("Get files diff from commit") {
       Given("Repository and GitReader instance, and commit id")
 
-      val gitReader = new GitReader("c:/TmpRepo/")
+      val gitReader = new GitReader(repoDirectory.getAbsolutePath)
       val commitId = "e20b7e4df6d4b7df4816a75981331201317e90e8"
 
       When("Getting committed files")

@@ -28,7 +28,9 @@ class GitLocalRepositoryManagerSpec extends FeatureSpec with GivenWhenThen with 
     scenario("Can clone repository from GitLab") {
 
       Given("Repository remote url and repository manager initialized with local directory")
-      val remoteUrl = "https://github.com/marpiec/AngularJSCalculator.git"
+      //val remoteUrl = "https://github.com/marpiec/AngularJSCalculator.git"
+
+      val remoteUrl = "file://"+System.getProperty("user.dir")+"/testdata/AngularJSCalculator.bundle"
       val repositoryManager = new GitLocalRepositoryManager(tmpDir.getAbsolutePath)
 
       When("Repository is cloned")
