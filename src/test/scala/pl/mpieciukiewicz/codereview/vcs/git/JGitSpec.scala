@@ -4,6 +4,8 @@ import org.scalatest.{GivenWhenThen, FeatureSpec}
 import java.io.File
 import org.eclipse.jgit.api.Git
 import org.apache.commons.io.FileUtils
+import org.apache.commons.compress.archivers.zip.ZipUtil
+
 
 /**
  * @author Marcin Pieciukiewicz
@@ -13,6 +15,7 @@ class JGitSpec extends FeatureSpec with GivenWhenThen {
   feature("GIT repository support") {
     scenario("Clone GitHub repository") {
       Given("Local directory")
+
       val directory = File.createTempFile("TestGitRepository", "")
       directory.delete()
 

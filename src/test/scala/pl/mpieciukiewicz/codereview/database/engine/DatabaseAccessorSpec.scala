@@ -13,7 +13,7 @@ class DatabaseAccessorSpec extends FeatureSpec with GivenWhenThen with BeforeAnd
   var dba:DatabaseAccessor = _
 
   before {
-    dba = new DatabaseAccessor(TestsUtil.randomMemoryH2Url, "sa", "sa")
+    dba = new DatabaseAccessor(TestsUtil.uniqueMemoryH2Url, "sa", "sa")
   }
 
   after {

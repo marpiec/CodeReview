@@ -6,8 +6,7 @@ import pl.mpieciukiewicz.codereview.database.engine.{DocumentDataStorage, Databa
 import org.joda.time.DateTime
 import collection.JavaConverters._
 import org.fest.assertions.api.Assertions._
-import pl.mpieciukiewicz.codereview.utils.json.JsonUtil
-import pl.mpieciukiewicz.codereview.TestsUtil
+import pl.mpieciukiewicz.codereview.TestsUtil._
 
 /**
  *
@@ -17,8 +16,7 @@ class RepositoryStorageSpec extends FeatureSpec with GivenWhenThen with BeforeAn
   var storage: RepositoryStorage = _
 
   before {
-    storage = new RepositoryStorage(new DocumentDataStorage(new DatabaseAccessor(TestsUtil.randomMemoryH2Url, "sa", "sa"), new JsonUtil))
-    storage.dds.initDatabaseStructure()
+    storage = new RepositoryStorage(createTemporaryDataStorage)
   }
 
   after {

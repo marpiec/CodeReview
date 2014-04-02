@@ -7,7 +7,8 @@ import pl.mpieciukiewicz.codereview.model.{Commit, Project}
 import pl.mpieciukiewicz.codereview.database.engine.{DatabaseAccessor, DocumentDataStorage}
 import pl.mpieciukiewicz.codereview.utils.json.JsonUtil
 import org.joda.time.DateTime
-import pl.mpieciukiewicz.codereview.TestsUtil
+import pl.mpieciukiewicz.codereview.TestsUtil._
+import pl.mpieciukiewicz.codereview.model.Commit
 
 /**
  *
@@ -17,8 +18,7 @@ class CommitStorageSpec extends FeatureSpec with GivenWhenThen with BeforeAndAft
   var storage:CommitStorage = _
 
   before {
-    storage = new CommitStorage(new DocumentDataStorage(new DatabaseAccessor(TestsUtil.randomMemoryH2Url, "sa", "sa"), new JsonUtil))
-    storage.dds.initDatabaseStructure()
+    storage = new CommitStorage(createTemporaryDataStorage)
   }
 
   after {

@@ -8,6 +8,8 @@ import collection.JavaConverters._
 import org.fest.assertions.api.Assertions._
 import pl.mpieciukiewicz.codereview.utils.json.JsonUtil
 import pl.mpieciukiewicz.codereview.TestsUtil
+import pl.mpieciukiewicz.codereview.TestsUtil._
+import pl.mpieciukiewicz.codereview.model.UserRole
 
 /**
  *
@@ -17,8 +19,7 @@ class UserRoleStorageSpec extends FeatureSpec with GivenWhenThen with BeforeAndA
   var storage: UserRoleStorage = _
 
   before {
-    storage = new UserRoleStorage(new DocumentDataStorage(new DatabaseAccessor(TestsUtil.randomMemoryH2Url, "sa", "sa"), new JsonUtil))
-    storage.dds.initDatabaseStructure()
+    storage = new UserRoleStorage(createTemporaryDataStorage)
   }
 
   after {

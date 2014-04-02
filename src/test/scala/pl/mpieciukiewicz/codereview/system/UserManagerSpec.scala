@@ -1,34 +1,28 @@
 package pl.mpieciukiewicz.codereview.system
 
-import akka.testkit.{TestKit, ImplicitSender, TestActorRef,DefaultTimeout}
+import akka.testkit.{TestKit, ImplicitSender, TestActorRef, DefaultTimeout}
 import akka.pattern.ask
 import org.scalatest._
 import collection.JavaConverters._
 import org.fest.assertions.api.Assertions._
 import akka.actor.{ActorSystem, PoisonPill}
 import pl.mpieciukiewicz.codereview.database.UserStorage
-import pl.mpieciukiewicz.codereview.database.engine.{DatabaseAccessor, DocumentDataStorage}
-import pl.mpieciukiewicz.codereview.utils.json.JsonUtil
 import pl.mpieciukiewicz.codereview.utils.RandomGenerator
-import pl.mpieciukiewicz.codereview.model.authorization.SessionInfo
-import pl.mpieciukiewicz.codereview.system.UserManager.AuthenticationResult
-import pl.mpieciukiewicz.codereview.system.UserManager.AuthenticationResult
 import pl.mpieciukiewicz.codereview.utils.clock.DefaultTimeZoneClock
-import pl.mpieciukiewicz.codereview.TestsUtil
+import pl.mpieciukiewicz.codereview.TestsUtil._
+import pl.mpieciukiewicz.codereview.system.UserManager.AuthenticationResult
 
 /**
  *
  */
-class UserManagerSpec extends TestKit(ActorSystem("test")) with FeatureSpecLike with GivenWhenThen with BeforeAndAfter with ImplicitSender with DefaultTimeout{
+class UserManagerSpec extends TestKit(ActorSystem("test")) with FeatureSpecLike with GivenWhenThen with BeforeAndAfter with ImplicitSender with DefaultTimeout {
 
-  var userManager:TestActorRef[UserManager] = _
-  var userStorage:UserStorage = _
+  var userManager: TestActorRef[UserManager] = _
+  var userStorage: UserStorage = _
 
 
   before {
-    val documentDataStorage = new DocumentDataStorage(new DatabaseAccessor(TestsUtil.randomMemoryH2Url, "sa", "sa"), new JsonUtil)
-    documentDataStorage.initDatabaseStructure()
-    userStorage = new UserStorage(documentDataStorage)
+    userStorage = new UserStorage(createTemporaryDataStorage)
     userManager = TestActorRef(new UserManager(userStorage, new RandomGenerator, new DefaultTimeZoneClock))
   }
 
