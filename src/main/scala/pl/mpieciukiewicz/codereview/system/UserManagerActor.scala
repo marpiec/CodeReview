@@ -1,12 +1,7 @@
 package pl.mpieciukiewicz.codereview.system
 
 import akka.actor.Actor
-import pl.mpieciukiewicz.codereview.database.UserStorage
-import pl.mpieciukiewicz.codereview.model.User
-import pl.mpieciukiewicz.codereview.model.authorization.{SessionInfoClientSide, SessionInfo}
-import pl.mpieciukiewicz.codereview.utils.{PasswordUtil, RandomGenerator}
-import org.joda.time.Duration
-import pl.mpieciukiewicz.codereview.utils.clock.Clock
+import pl.mpieciukiewicz.codereview.model.authorization.SessionInfoClientSide
 import scala.util.{Failure, Success}
 
 
@@ -18,13 +13,16 @@ object UserManagerActor {
 
 
   case class AuthenticateUser(user: String, password: String, ip: String)
+
   case class Logout(sessionId: String)
 
   case class AuthenticationResult(userAuthenticated: Boolean, sessionInfo: Option[SessionInfoClientSide] = None)
 
 
   case class CheckSession(sessionId: String, ip: String)
+
   case class CheckSessionResponse(userId: Option[Int])
+
 }
 
 
