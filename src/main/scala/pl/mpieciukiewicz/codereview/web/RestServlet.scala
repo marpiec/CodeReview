@@ -1,14 +1,15 @@
 package pl.mpieciukiewicz.codereview.web
 
 import org.scalatra.{Unauthorized, FutureSupport, AsyncResult, ScalatraServlet}
-import pl.mpieciukiewicz.codereview.system.{ProjectManagerActor, UserManager, RepositoryManagerActor, DocumentsCache}
+import pl.mpieciukiewicz.codereview.system._
 import pl.mpieciukiewicz.codereview.ioc.Container
 import akka.actor.{ActorSelection, Actor, ActorSystem}
 import akka.pattern.ask
 import scala.concurrent.{Await, ExecutionContext, Future}
 import akka.util.Timeout
 import scala.concurrent.duration._
-import pl.mpieciukiewicz.codereview.system.UserManager.SessionInfoResponse
+import pl.mpieciukiewicz.codereview.system.UserManagerActor.CheckSessionResponse
+import scala.Some
 
 /**
  *
@@ -43,7 +44,7 @@ class RestServlet(system: ActorSystem) extends ScalatraServlet with FutureSuppor
   post("/register-user") {
     async {
       val actor = system.actorSelection("akka://application/user/userManager")
-      val msg = UserManager.RegisterUser(params("name"), params("email"), params("password"))
+      val msg = UserManagerActor.RegisterUser(params("name"), params("email"), params("password"))
       actor.askForJson(msg)
     }
   }
@@ -51,7 +52,7 @@ class RestServlet(system: ActorSystem) extends ScalatraServlet with FutureSuppor
   post("/authenticate-user") {
     async {
       val actor = system.actorSelection("akka://application/user/userManager")
-      val msg = UserManager.AuthenticateUser(params("user"), params("password"), request.getRemoteAddr)
+      val msg = UserManagerActor.AuthenticateUser(params("user"), params("password"), request.getRemoteAddr)
       actor.askForJson(msg)
     }
   }
@@ -59,7 +60,7 @@ class RestServlet(system: ActorSystem) extends ScalatraServlet with FutureSuppor
   get("/logout") {
     async {
       val actor = system.actorSelection("akka://application/user/userManager")
-      val msg = UserManager.Logout(cookies.get("sessionId").getOrElse(""))
+      val msg = UserManagerActor.Logout(cookies.get("sessionId").getOrElse(""))
       actor.askForJson(msg)
     }
   }
@@ -100,8 +101,8 @@ class RestServlet(system: ActorSystem) extends ScalatraServlet with FutureSuppor
     async {
       val userManager = system.actorSelection("akka://application/user/userManager")
       val sessionId = cookies.get("sessionId")
-      val userInfo = userManager ? UserManager.GetSessionInfo(sessionId.getOrElse(""), request.getRemoteAddr)
-      val userInfoResponse = Await.result(userInfo, 10 seconds).asInstanceOf[SessionInfoResponse]
+      val userInfo = userManager ? UserManagerActor.CheckSession(sessionId.getOrElse(""), request.getRemoteAddr)
+      val userInfoResponse = Await.result(userInfo, 10 seconds).asInstanceOf[CheckSessionResponse]
 
       val future:Future[_] = userInfoResponse.userId match {
         case Some(userId) =>
