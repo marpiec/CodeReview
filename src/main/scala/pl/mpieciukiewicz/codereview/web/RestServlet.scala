@@ -51,7 +51,7 @@ class RestServlet(system: ActorSystem) extends ScalatraServlet with FutureSuppor
   post("/authenticate-user") {
     async {
       val actor = system.actorSelection("akka://application/user/userManager")
-      val msg = UserManager.AuthenticateUser(params("user"), params("password"))
+      val msg = UserManager.AuthenticateUser(params("user"), params("password"), request.getRemoteAddr)
       actor.askForJson(msg)
     }
   }
@@ -100,15 +100,15 @@ class RestServlet(system: ActorSystem) extends ScalatraServlet with FutureSuppor
     async {
       val userManager = system.actorSelection("akka://application/user/userManager")
       val sessionId = cookies.get("sessionId")
-      val userInfo = userManager ? UserManager.GetSessionInfo(sessionId.getOrElse(""))
+      val userInfo = userManager ? UserManager.GetSessionInfo(sessionId.getOrElse(""), request.getRemoteAddr)
       val userInfoResponse = Await.result(userInfo, 10 seconds).asInstanceOf[SessionInfoResponse]
 
-      val future:Future[_] = if(userInfoResponse.sessionInfo.isDefined) {
-        val actor = system.actorSelection("akka://application/user/projectManager")
-        val msg = ProjectManager.LoadUserProjects(userInfoResponse.sessionInfo.get.userId)
-        actor.askForJson(msg)
-      } else {
-        Future.successful(Unauthorized())
+      val future:Future[_] = userInfoResponse.userId match {
+        case Some(userId) =>
+          val actor = system.actorSelection("akka://application/user/projectManager")
+          val msg = ProjectManager.LoadUserProjects(userId)
+          actor.askForJson(msg)
+        case None => Future.successful(Unauthorized())
       }
 
       future

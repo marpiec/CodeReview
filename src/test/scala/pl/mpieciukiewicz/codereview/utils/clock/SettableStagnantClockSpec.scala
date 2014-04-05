@@ -30,11 +30,10 @@ class SettableStagnantClockSpec extends FeatureSpecLike with GivenWhenThen {
 
     scenario("Time of the clock is modifiable") {
       Given("New clock instance")
-      var clock = new SettableStagnantClock
+      val clock = new SettableStagnantClock
 
       When("Hour, minute and second is set, and dateTime taken")
-      clock = clock.setHour(15).setMinute(10).setSecond(32)
-      var now = clock.now
+      var now = clock.setHour(15).setMinute(10).setSecond(32).now
 
       Then("Time taken from the clock has proper hour, minute and second set")
       assertThat(now.getHourOfDay).isEqualTo(15)
@@ -42,8 +41,7 @@ class SettableStagnantClockSpec extends FeatureSpecLike with GivenWhenThen {
       assertThat(now.getSecondOfMinute).isEqualTo(32)
 
       When("Hours, minutes and seconds are added to the clock")
-      clock = clock.plusHours(2).plusMinutes(3).plusSeconds(1)
-      now = clock.now
+      now = clock.plusHours(2).plusMinutes(3).plusSeconds(1).now
 
       Then("Time taken from the clock has proper hour, minute and second set")
       assertThat(now.getHourOfDay).isEqualTo(17)

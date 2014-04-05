@@ -5,8 +5,7 @@ import pl.mpieciukiewicz.codereview.database.UserStorage
 import pl.mpieciukiewicz.codereview.model.User
 import pl.mpieciukiewicz.codereview.model.authorization.{SessionInfoClientSide, SessionInfo}
 import pl.mpieciukiewicz.codereview.utils.{PasswordUtil, RandomGenerator}
-import org.joda.time.{Duration, DateTime}
-import akka.actor.FSM.->
+import org.joda.time.Duration
 import pl.mpieciukiewicz.codereview.utils.clock.Clock
 
 
@@ -17,14 +16,14 @@ object UserManager {
   case class RegistrationResult(userRegistered: Boolean)
 
 
-  case class AuthenticateUser(user: String, password: String)
+  case class AuthenticateUser(user: String, password: String, ip: String)
   case class Logout(sessionId: String)
 
   case class AuthenticationResult(userAuthenticated: Boolean, sessionInfo: Option[SessionInfoClientSide] = None)
 
 
-  case class GetSessionInfo(sessionId: String)
-  case class SessionInfoResponse(sessionInfo: Option[SessionInfo])
+  case class GetSessionInfo(sessionId: String, ip: String)
+  case class SessionInfoResponse(userId: Option[Int])
 }
 
 
@@ -71,7 +70,7 @@ class UserManager(userStorage: UserStorage, randomUtil: RandomGenerator, clock: 
           sessionId = randomUtil.generateSessionIdentifier
         } while (sessions.contains(sessionId))
         val now = clock.now
-        val sessionInfo = SessionInfo(user.id.get, user.name, "whoKnows", now, now)
+        val sessionInfo = SessionInfo(user.id.get, user.name, "whoKnows", msg.ip, now, now)
         sessions += sessionId -> sessionInfo
 
         sender ! AuthenticationResult(true, Some(SessionInfoClientSide(sessionId, sessionInfo.userName)))
@@ -90,22 +89,21 @@ class UserManager(userStorage: UserStorage, randomUtil: RandomGenerator, clock: 
   }
 
   private def sessionInfo(msg: GetSessionInfo) {
-     sender ! SessionInfoResponse(readSessionInfo(msg.sessionId))
+     sender ! SessionInfoResponse(checkSession(msg.sessionId, msg.ip))
   }
 
 
-  private def readSessionInfo(sessionId: String): Option[SessionInfo] = {
+  private def checkSession(sessionId: String, ip: String): Option[Int] = {
     val now = clock.now
     sessions.get(sessionId) match {
-      case Some(info) => if(info.lastAction.plus(timeout).isBefore(now)) {
-        sessions -= sessionId
-        None
-      } else {
-        val updatedInfo = info.copy(lastAction = now)
-        sessions += sessionId -> updatedInfo
-        Some(updatedInfo)
-      }
-
+      case Some(info) => if(info.lastAction.plus(timeout).isAfter(now) && info.ip == ip) {
+          val updatedInfo = info.copy(lastAction = now)
+          sessions += sessionId -> updatedInfo
+          Some(updatedInfo.userId)
+        } else {
+          sessions -= sessionId
+          None
+        }
       case None => None
     }
   }

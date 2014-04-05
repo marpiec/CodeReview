@@ -2,34 +2,42 @@ package pl.mpieciukiewicz.codereview.utils.clock
 
 import org.joda.time.{Instant, DateTime}
 
-class SettableStagnantClock(time: DateTime = new DateTime) extends Clock {
+class SettableStagnantClock extends Clock {
 
+  var time: DateTime = new DateTime
+  
   override def now: DateTime = time
 
   override def instantNow: Instant = time.toInstant
 
   def setHour(hour: Int) = {
-    new SettableStagnantClock(time.withHourOfDay(hour))
+    time = time.withHourOfDay(hour)
+    this
   }
 
   def setMinute(minute: Int) = {
-    new SettableStagnantClock(time.withMinuteOfHour(minute))
+    time = time.withMinuteOfHour(minute)
+    this
   }
 
   def setSecond(second: Int) = {
-    new SettableStagnantClock(time.withSecondOfMinute(second))
+    time = time.withSecondOfMinute(second)
+    this
   }
 
   def plusHours(hours: Int) = {
-    new SettableStagnantClock(time.plusHours(hours))
+    time = time.plusHours(hours)
+    this
   }
 
   def plusMinutes(minutes: Int) = {
-    new SettableStagnantClock(time.plusMinutes(minutes))
+    time = time.plusMinutes(minutes)
+    this
   }
 
   def plusSeconds(seconds: Int) = {
-    new SettableStagnantClock(time.plusSeconds(seconds))
+    time = time.plusSeconds(seconds)
+    this
   }
 
 }

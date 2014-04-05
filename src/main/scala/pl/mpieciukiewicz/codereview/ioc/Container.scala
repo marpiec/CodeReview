@@ -32,7 +32,7 @@ class Container {
   val repositoryStorage = new RepositoryStorage(documentDataStorage)
   val commitStorage = new CommitStorage(documentDataStorage)
 
-  val documentsCache = new DocumentsCache(clock)
+  val documentsCache = new DocumentsCache()
 
 }
 

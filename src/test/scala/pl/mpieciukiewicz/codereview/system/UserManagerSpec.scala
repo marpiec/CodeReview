@@ -8,22 +8,32 @@ import org.fest.assertions.api.Assertions._
 import akka.actor.{ActorSystem, PoisonPill}
 import pl.mpieciukiewicz.codereview.database.UserStorage
 import pl.mpieciukiewicz.codereview.utils.{PasswordUtil, RandomGenerator}
-import pl.mpieciukiewicz.codereview.utils.clock.DefaultTimeZoneClock
+import pl.mpieciukiewicz.codereview.utils.clock.{SettableStagnantClock, SettableStagnantClockSpec, DefaultTimeZoneClock}
 import pl.mpieciukiewicz.codereview.TestsUtil._
+import pl.mpieciukiewicz.codereview.system.UserManager.{SessionInfoResponse, AuthenticationResult}
 import pl.mpieciukiewicz.codereview.system.UserManager.AuthenticationResult
+import pl.mpieciukiewicz.codereview.system.UserManager.SessionInfoResponse
+import pl.mpieciukiewicz.codereview.system.UserManager.AuthenticationResult
+import pl.mpieciukiewicz.codereview.system.UserManager.SessionInfoResponse
+import pl.mpieciukiewicz.codereview.system.UserManager.AuthenticationResult
+import pl.mpieciukiewicz.codereview.system.UserManager.SessionInfoResponse
+import pl.mpieciukiewicz.codereview.system.UserManager.AuthenticationResult
+import pl.mpieciukiewicz.codereview.system.UserManager.SessionInfoResponse
 
 /**
  *
  */
 class UserManagerSpec extends TestKit(ActorSystem("test")) with FeatureSpecLike with GivenWhenThen with BeforeAndAfter with ImplicitSender with DefaultTimeout {
 
-  var userManager: TestActorRef[UserManager] = _
-  var userStorage: UserStorage = _
 
+  var userManager: TestActorRef[UserManager] = null
+  var userStorage: UserStorage = _
+  var clock:SettableStagnantClock = null
 
   before {
+    clock = new SettableStagnantClock
     userStorage = new UserStorage(createTemporaryDataStorage)
-    userManager = TestActorRef(new UserManager(userStorage, new RandomGenerator, new DefaultTimeZoneClock, new PasswordUtil("systemSalt")))
+    userManager = TestActorRef(new UserManager(userStorage, new RandomGenerator, clock, new PasswordUtil("systemSalt")))
   }
 
   after {
@@ -31,7 +41,12 @@ class UserManagerSpec extends TestKit(ActorSystem("test")) with FeatureSpecLike 
     userManager ! PoisonPill
   }
 
+
+
+
   feature("Can register and authenticate user correctly") {
+
+
 
     scenario("User registration") {
       Given("User Manager with empty user storage")
@@ -72,10 +87,9 @@ class UserManagerSpec extends TestKit(ActorSystem("test")) with FeatureSpecLike 
     scenario("Correct user authentication") {
       Given("User Manager with one user registered")
       var response = userManager ? UserManager.RegisterUser("Marcin", "m.p@g.p", "mySecret")
-      val userId = userStorage.findByName("Marcin").get.id.get
 
       When("User tries to authenticate with correct name and password")
-      response = userManager ? UserManager.AuthenticateUser("Marcin", "mySecret")
+      response = userManager ? UserManager.AuthenticateUser("Marcin", "mySecret", "127.0.0.1")
 
       Then("Is successfully registered with correct id")
       var result = response.value.get.get.asInstanceOf[AuthenticationResult]
@@ -83,7 +97,7 @@ class UserManagerSpec extends TestKit(ActorSystem("test")) with FeatureSpecLike 
       assertThat(result.sessionInfo.get.userName).isEqualTo("Marcin")
 
       When("User tries to authenticate with correct email and password")
-      response = userManager ? UserManager.AuthenticateUser("m.p@g.p", "mySecret")
+      response = userManager ? UserManager.AuthenticateUser("m.p@g.p", "mySecret", "192.168.0.2")
 
       Then("Is successfully authenticate with correct id")
       result = response.value.get.get.asInstanceOf[AuthenticationResult]
@@ -99,17 +113,122 @@ class UserManagerSpec extends TestKit(ActorSystem("test")) with FeatureSpecLike 
       var response = userManager ? UserManager.RegisterUser("Marcin", "m.p@g.p", "mySecret")
 
       When("User tries to authenticate with incorrect password")
-      response = userManager ? UserManager.AuthenticateUser("Marcin", "iDontKnow")
+      response = userManager ? UserManager.AuthenticateUser("Marcin", "iDontKnow", "127.0.0.1")
 
       Then("Is denied of registration")
       assertThat(response.value.get.get).isEqualTo(UserManager.AuthenticationResult(false))
 
       When("User tries to authenticate with incorrect name or email")
-      response = userManager ? UserManager.AuthenticateUser("John", "mySecret")
+      response = userManager ? UserManager.AuthenticateUser("John", "mySecret", "192.168.0.2")
 
       Then("Is denied of registration")
       assertThat(response.value.get.get).isEqualTo(UserManager.AuthenticationResult(false))
     }
+  }
+
+
+  feature("Session management") {
+
+
+    scenario("User logs in and logs out") {
+      Given("Registered user")
+      var response = userManager ? UserManager.RegisterUser("Marcin", "m.p@g.p", "mySecret")
+
+      When("User logs in correctly and session id is retrieved")
+      response = userManager ? UserManager.AuthenticateUser("m.p@g.p", "mySecret", "192.168.0.2")
+      val sessionId = response.value.get.get.asInstanceOf[AuthenticationResult].sessionInfo.get.sessionId
+
+      Then("Session info with user id is retrieved when getting it by session id")
+      response = userManager ? UserManager.GetSessionInfo(sessionId, "192.168.0.2")
+      var userIdOption = response.value.get.get.asInstanceOf[SessionInfoResponse].userId
+      assertThat(userIdOption.isDefined).isTrue
+
+      When("User logs out")
+      userManager ? UserManager.Logout(sessionId)
+
+      Then("Session info without user id is retrieved when getting it by session id")
+      response = userManager ? UserManager.GetSessionInfo(sessionId, "192.168.0.2")
+      userIdOption = response.value.get.get.asInstanceOf[SessionInfoResponse].userId
+      assertThat(userIdOption.isDefined).isFalse
+
+    }
+
+    scenario("User logs in and session times out") {
+      Given("Registered user, and new session id")
+      var response = userManager ? UserManager.RegisterUser("Marcin", "m.p@g.p", "mySecret")
+      response = userManager ? UserManager.AuthenticateUser("m.p@g.p", "mySecret", "192.168.0.2")
+      val sessionId = response.value.get.get.asInstanceOf[AuthenticationResult].sessionInfo.get.sessionId
+
+      When("15 minutes 01 second passes")
+      clock.plusMinutes(15).plusSeconds(1)
+
+      Then("Session is invalid")
+      response = userManager ? UserManager.GetSessionInfo(sessionId, "192.168.0.2")
+      val userIdOption = response.value.get.get.asInstanceOf[SessionInfoResponse].userId
+      assertThat(userIdOption.isDefined).isFalse
+    }
+
+    scenario("User logs in has some activity then session times out") {
+      Given("Registered user, and new session id")
+      var response = userManager ? UserManager.RegisterUser("Marcin", "m.p@g.p", "mySecret")
+      response = userManager ? UserManager.AuthenticateUser("m.p@g.p", "mySecret", "192.168.0.2")
+      val sessionId = response.value.get.get.asInstanceOf[AuthenticationResult].sessionInfo.get.sessionId
+
+      When("14 minutes 59 second passes")
+      clock.plusMinutes(14).plusSeconds(59)
+
+      Then("Session is valid")
+      response = userManager ? UserManager.GetSessionInfo(sessionId, "192.168.0.2")
+      var userIdOption = response.value.get.get.asInstanceOf[SessionInfoResponse].userId
+      assertThat(userIdOption.isDefined).isTrue
+
+      When("14 again minutes 59 second passes")
+      clock.plusMinutes(14).plusSeconds(59)
+
+      Then("Session is valid")
+      response = userManager ? UserManager.GetSessionInfo(sessionId, "192.168.0.2")
+      userIdOption = response.value.get.get.asInstanceOf[SessionInfoResponse].userId
+      assertThat(userIdOption.isDefined).isTrue
+
+      When("15 minutes 01 second passes")
+      clock.plusMinutes(15).plusSeconds(1)
+
+      Then("Session is invalid")
+      response = userManager ? UserManager.GetSessionInfo(sessionId, "192.168.0.2")
+      userIdOption = response.value.get.get.asInstanceOf[SessionInfoResponse].userId
+      assertThat(userIdOption.isDefined).isFalse
+
+    }
+
+    scenario("User logs in, and then some request with the session id occurs from different host") {
+      Given("Registered user, and new session id")
+      var response = userManager ? UserManager.RegisterUser("Marcin", "m.p@g.p", "mySecret")
+      response = userManager ? UserManager.AuthenticateUser("m.p@g.p", "mySecret", "192.168.0.2")
+      val sessionId = response.value.get.get.asInstanceOf[AuthenticationResult].sessionInfo.get.sessionId
+
+      When("User has some activity from proper id")
+      response = userManager ? UserManager.GetSessionInfo(sessionId, "192.168.0.2")
+      var userIdOption = response.value.get.get.asInstanceOf[SessionInfoResponse].userId
+
+      Then("Session is valid")
+      assertThat(userIdOption.isDefined).isTrue
+
+      When("Same session id is used from different host")
+      response = userManager ? UserManager.GetSessionInfo(sessionId, "100.100.100.1")
+      userIdOption = response.value.get.get.asInstanceOf[SessionInfoResponse].userId
+
+      Then("Session is invalidated")
+      assertThat(userIdOption.isDefined).isFalse
+
+      When("Same session id is used from correct host")
+      response = userManager ? UserManager.GetSessionInfo(sessionId, "192.168.0.2")
+      userIdOption = response.value.get.get.asInstanceOf[SessionInfoResponse].userId
+
+      Then("Session was invalidated after improper access")
+      assertThat(userIdOption.isDefined).isFalse
+
+    }
+
   }
 
 }
