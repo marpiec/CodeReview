@@ -1,58 +1,26 @@
 package pl.mpieciukiewicz.codereview.system
 
-import pl.mpieciukiewicz.codereview.database.{RepositoryStorage, ProjectStorage}
-import akka.actor.Actor
 import pl.mpieciukiewicz.codereview.model.Project
-import pl.mpieciukiewicz.codereview.system.RepositoryManager.LoadRepositoriesForProject
+import pl.mpieciukiewicz.codereview.database.{RepositoryStorage, ProjectStorage}
+import scala.util.{Success, Failure, Try}
 
-object ProjectManager {
+class ProjectManager(projectStorage: ProjectStorage, repositoryStorage: RepositoryStorage) {
 
-  case class CreateProject(projectName: String)
-
-  case class ProjectCreated(successful: Boolean, projectId: Option[Int] = None)
-
-  case class LoadUserProjects(userId: Int)
-  case class UserProjects(projects: List[Project])
-
-  case class LoadProject(projectId: Int)
-  case class ProjectResponse(project: Option[Project])
-
-}
-
-
-class ProjectManager(projectStorage: ProjectStorage, repositoryStorage: RepositoryStorage) extends Actor {
-
-  import ProjectManager._
-
-
-  override def receive: Receive = {
-    case msg: CreateProject => createProject(msg)
-    case msg: LoadUserProjects => loadUserProjects(msg)
-    case msg: LoadProject => loadProject(msg)
-  }
-
-
-  def createProject(msg: CreateProject) {
-    projectStorage.findByName(msg.projectName) match {
-      case Some(project) => sender ! ProjectCreated(false)
+  def createProject(projectName: String):Try[Int] = {
+    projectStorage.findByName(projectName) match {
+      case Some(project) => Failure(new AlreadyExistsException)
       case None =>
-        val newProject = projectStorage.add(Project(None, msg.projectName))
-        sender ! ProjectCreated(true, newProject.id)
+        val newProject = projectStorage.add(Project(None, projectName))
+        Success(newProject.id.get)
     }
-
-
   }
 
-  def loadUserProjects(msg: LoadUserProjects) {
-    val projects = projectStorage.loadAll() //TODO find only user projects
-    sender ! UserProjects(projects)
+  def loadUserProjects(userId: Int):List[Project] = {
+    projectStorage.loadAll() //TODO find only user projects
   }
 
 
-  def loadProject(msg: LoadProject) {
-    val project = projectStorage.findById(msg.projectId)
-    sender ! ProjectResponse(project)
+  def loadProject(projectId: Int):Option[Project] = {
+    projectStorage.findById(projectId)
   }
-
-
 }

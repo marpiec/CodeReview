@@ -3,7 +3,7 @@ package pl.mpieciukiewicz.codereview.ioc
 import pl.mpieciukiewicz.codereview.database._
 import pl.mpieciukiewicz.codereview.database.engine.{DatabaseAccessor, DocumentDataStorage}
 import pl.mpieciukiewicz.codereview.utils.json.JsonUtil
-import pl.mpieciukiewicz.codereview.system.DocumentsCache
+import pl.mpieciukiewicz.codereview.system.{ProjectManager, RepositoryManager, DocumentsCache}
 import pl.mpieciukiewicz.codereview.utils.{PasswordUtil, RandomGenerator, Configuration}
 import com.typesafe.config.ConfigFactory
 import java.io.InputStreamReader
@@ -33,6 +33,10 @@ class Container {
   val commitStorage = new CommitStorage(documentDataStorage)
 
   val documentsCache = new DocumentsCache()
+
+
+  val repositoryManager = new RepositoryManager(repositoryStorage, commitStorage, randomUtil, configuration, clock)
+  val projectManager = new ProjectManager(projectStorage, repositoryStorage)
 
 }
 

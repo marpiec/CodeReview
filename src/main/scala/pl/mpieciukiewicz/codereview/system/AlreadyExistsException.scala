@@ -1,0 +1,3 @@
+package pl.mpieciukiewicz.codereview.system
+
+class AlreadyExistsException extends RuntimeException

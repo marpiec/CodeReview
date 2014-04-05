@@ -1,7 +1,7 @@
 package pl.mpieciukiewicz.codereview.web
 
 import org.scalatra.{Unauthorized, FutureSupport, AsyncResult, ScalatraServlet}
-import pl.mpieciukiewicz.codereview.system.{ProjectManager, UserManager, RepositoryManager, DocumentsCache}
+import pl.mpieciukiewicz.codereview.system.{ProjectManagerActor, UserManager, RepositoryManagerActor, DocumentsCache}
 import pl.mpieciukiewicz.codereview.ioc.Container
 import akka.actor.{ActorSelection, Actor, ActorSystem}
 import akka.pattern.ask
@@ -34,7 +34,7 @@ class RestServlet(system: ActorSystem) extends ScalatraServlet with FutureSuppor
     async {
       cache.getOrInsert(request.getRequestURI) {
         val actor = system.actorSelection("akka://application/user/repositoryManager")
-        val msg = RepositoryManager.LoadCommits(params("repository").toInt, params("start").toInt, params("count").toInt)
+        val msg = RepositoryManagerActor.LoadCommits(params("repository").toInt, params("start").toInt, params("count").toInt)
         actor.askForJson(msg)
       }
     }
@@ -67,7 +67,7 @@ class RestServlet(system: ActorSystem) extends ScalatraServlet with FutureSuppor
   post("/add-repository") {
     async {
       val actor = system.actorSelection("akka://application/user/repositoryManager")
-      val msg = RepositoryManager.AddRepository(params("cloneUrl"), params("repoName"), params("projectId").toInt)
+      val msg = RepositoryManagerActor.AddRepository(params("cloneUrl"), params("repoName"), params("projectId").toInt)
       actor.askForJson(msg)
     }
   }
@@ -75,7 +75,7 @@ class RestServlet(system: ActorSystem) extends ScalatraServlet with FutureSuppor
   post("/add-project") {
     async {
       val actor = system.actorSelection("akka://application/user/projectManager")
-      val msg =  ProjectManager.CreateProject(params("projectName"))
+      val msg =  ProjectManagerActor.CreateProject(params("projectName"))
       actor.askForJson(msg)
     }
   }
@@ -83,7 +83,7 @@ class RestServlet(system: ActorSystem) extends ScalatraServlet with FutureSuppor
   get("/project/:projectId") {
     async {
       val actor = system.actorSelection("akka://application/user/projectManager")
-      val msg =  ProjectManager.LoadProject(params("projectId").toInt)
+      val msg =  ProjectManagerActor.LoadProject(params("projectId").toInt)
       actor.askForJson(msg)
     }
   }
@@ -91,7 +91,7 @@ class RestServlet(system: ActorSystem) extends ScalatraServlet with FutureSuppor
   get("/project/:projectId/repositories") {
     async {
       val actor = system.actorSelection("akka://application/user/repositoryManager")
-      val msg =  RepositoryManager.LoadRepositoriesForProject(params("projectId").toInt)
+      val msg =  RepositoryManagerActor.LoadRepositoriesForProject(params("projectId").toInt)
       actor.askForJson(msg)
     }
   }
@@ -106,7 +106,7 @@ class RestServlet(system: ActorSystem) extends ScalatraServlet with FutureSuppor
       val future:Future[_] = userInfoResponse.userId match {
         case Some(userId) =>
           val actor = system.actorSelection("akka://application/user/projectManager")
-          val msg = ProjectManager.LoadUserProjects(userId)
+          val msg = ProjectManagerActor.LoadUserProjects(userId)
           actor.askForJson(msg)
         case None => Future.successful(Unauthorized())
       }

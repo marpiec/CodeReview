@@ -13,12 +13,11 @@ class ActorSystemInitializator(context: ActorSystem) {
 
   def createActors() {
     val ioc = Container.instance
-    context.actorOf(Props(classOf[UserManager], ioc.userStorage, ioc.randomUtil, ioc.clock), "userManager")
+    context.actorOf(Props(classOf[UserManager], ioc.userStorage, ioc.randomUtil, ioc.clock, ioc.passwordUtil), "userManager")
 
-    context.actorOf(Props(classOf[RepositoryManager], ioc.repositoryStorage, ioc.commitStorage, ioc.randomUtil, ioc.configuration, ioc.clock),
-      "repositoryManager")
+    context.actorOf(Props(classOf[RepositoryManagerActor], ioc.repositoryManager), "repositoryManager")
 
-    context.actorOf(Props(classOf[ProjectManager], ioc.projectStorage, ioc.repositoryStorage), "projectManager")
+    context.actorOf(Props(classOf[ProjectManagerActor], ioc.projectManager), "projectManager")
   }
 
 }
