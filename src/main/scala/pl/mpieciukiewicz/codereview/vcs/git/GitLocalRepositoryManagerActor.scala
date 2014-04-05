@@ -13,11 +13,9 @@ object GitLocalRepositoryManagerActor {
 }
 
 
-class GitLocalRepositoryManagerActor(localDirectory: String) extends Actor {
+class GitLocalRepositoryManagerActor(worker: GitLocalRepositoryManager) extends Actor {
 
   import GitLocalRepositoryManagerActor._
-
-  val worker = new GitLocalRepositoryManager(localDirectory)
 
   override def receive: Receive = {
     case msg: CloneRemoteRepository => worker.cloneRemoteRepository(msg.remoteUrl)
