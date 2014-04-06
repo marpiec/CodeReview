@@ -9,6 +9,7 @@ import pl.mpieciukiewicz.codereview.utils.json.JsonUtil
 import pl.mpieciukiewicz.codereview.TestsUtil
 import pl.mpieciukiewicz.codereview.TestsUtil._
 import pl.mpieciukiewicz.codereview.model.User
+import pl.mpieciukiewicz.codereview.model.constant.SystemRole
 
 /**
  *
@@ -31,8 +32,8 @@ class UserStorageSpec extends FeatureSpec with GivenWhenThen with BeforeAndAfter
       Given("Initialized data storage")
 
       When("Users are stored")
-      val prototypeA = User(None, "Marcin", "m.p@mp.pl", "12431234", "abc")
-      val prototypeB = User(None, "John", "j.s@mp.pl", "fweffe", "123")
+      val prototypeA = User(None, "Marcin", "m.p@mp.pl", "12431234", "abc", SystemRole.Admin)
+      val prototypeB = User(None, "John", "j.s@mp.pl", "fweffe", "123", SystemRole.User)
       val entityA = storage.add(prototypeA)
       val entityB = storage.add(prototypeB)
 
@@ -45,8 +46,8 @@ class UserStorageSpec extends FeatureSpec with GivenWhenThen with BeforeAndAfter
       Given("Initialized data storage")
 
       When("Users are stored")
-      val prototypeA = User(None, "Marcin", "m.p@mp.pl", "234235", "abc")
-      val prototypeB = User(None, "John", "j.s@mp.pl", "gwergw", "123")
+      val prototypeA = User(None, "Marcin", "m.p@mp.pl", "234235", "abc", SystemRole.Admin)
+      val prototypeB = User(None, "John", "j.s@mp.pl", "gwergw", "123", SystemRole.User)
       val entityA = storage.add(prototypeA)
       val entityB = storage.add(prototypeB)
 

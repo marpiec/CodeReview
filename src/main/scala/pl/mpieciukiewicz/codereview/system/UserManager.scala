@@ -7,6 +7,7 @@ import pl.mpieciukiewicz.codereview.utils.{PasswordUtil, RandomGenerator}
 import org.joda.time.Duration
 import pl.mpieciukiewicz.codereview.utils.clock.Clock
 import scala.util.{Failure, Success, Try}
+import pl.mpieciukiewicz.codereview.model.constant.SystemRole
 
 
 class UserManager(userStorage: UserStorage, randomUtil: RandomGenerator, clock: Clock, passwordUtil: PasswordUtil) {
@@ -19,7 +20,7 @@ class UserManager(userStorage: UserStorage, randomUtil: RandomGenerator, clock: 
     if (userStorage.findByName(name).isEmpty && userStorage.findByEmail(email).isEmpty) {
       val salt = passwordUtil.generateRandomSalt
       val passwordHash = passwordUtil.hashPassword(password, salt)
-      userStorage.add(User(None, name, email, passwordHash, salt))
+      userStorage.add(User(None, name, email, passwordHash, salt, SystemRole.User))
       true
     } else {
       false

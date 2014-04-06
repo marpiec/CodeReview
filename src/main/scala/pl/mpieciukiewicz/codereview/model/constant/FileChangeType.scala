@@ -1,10 +1,9 @@
 package pl.mpieciukiewicz.codereview.model.constant
 
-import pl.mpieciukiewicz.codereview.utils.enums.{EnumType, EnumHolder}
+import pl.mpieciukiewicz.codereview.utils.enums.{SEnum, SEnumObject}
 
-final case class FileChangeType(name: String) extends EnumType
 
-object FileChangeType extends EnumHolder[FileChangeType] {
+object FileChangeType extends SEnumObject[FileChangeType] {
 
   val Add = new FileChangeType("Add")
   val Modify = new FileChangeType("Modify")
@@ -12,5 +11,11 @@ object FileChangeType extends EnumHolder[FileChangeType] {
   val Rename = new FileChangeType("Rename")
   val Copy = new FileChangeType("Copy")
 
-  val values = List[FileChangeType](Add, Modify, Delete, Rename, Copy)
+  val values = List(Add, Modify, Delete, Rename, Copy)
+
+  def getValues = values
+}
+
+case class FileChangeType(name: String) extends SEnum[FileChangeType] {
+  def getName = name
 }
