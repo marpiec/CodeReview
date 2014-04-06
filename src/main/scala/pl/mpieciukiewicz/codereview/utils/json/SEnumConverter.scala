@@ -22,7 +22,7 @@ object SEnumConverter extends JsonTypeConverter[SEnum[_]] {
   }
 
 
-  def companion(clazz: Class[_])(implicit man: Manifest[SEnum[_]]): AnyRef = {
-    clazz.getField("MODULE$").get(man.erasure)
+  def companion(clazz: Class[_])(implicit tag : reflect.ClassTag[SEnum[_]]): AnyRef = {
+    clazz.getField("MODULE$").get(tag.runtimeClass.getName)
   }
 }
