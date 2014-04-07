@@ -2,6 +2,7 @@ package pl.mpieciukiewicz.codereview.system
 
 import akka.actor.Actor
 import pl.mpieciukiewicz.codereview.model.{CommitWithFiles, Repository}
+import pl.mpieciukiewicz.codereview.vcs.{FileDiff, FileContent}
 
 object RepositoryManagerActor {
 
@@ -13,6 +14,16 @@ object RepositoryManagerActor {
 
   case class LoadRepositoriesForProject(projectId: Int)
   case class LoadRepositoriesResponse(repositories: List[Repository])
+
+  case class LoadCommit(repositoryId: Int, commitId: Int)
+  case class LoadCommitResponse(commit: Option[CommitWithFiles])
+
+  case class LoadFilesContentFromCommit(repositoryId: Int, commitId: Int)
+  case class LoadFilesContentFromCommitResponse(files: List[FileContent])
+
+  case class LoadFilesDiffFromCommit(repositoryId: Int, commitId: Int)
+  case class LoadFilesDiffFromCommitResponse(files: List[FileDiff])
+
 }
 
 class RepositoryManagerActor(worker: RepositoryManager) extends Actor {
@@ -26,9 +37,19 @@ class RepositoryManagerActor(worker: RepositoryManager) extends Actor {
     case msg: LoadCommits =>
       val commits = worker.loadCommits(msg.repositoryId, msg.start, msg.count)
       sender ! LoadCommitsResponse(commits)
+    case msg: LoadCommit =>
+      val commit = worker.loadCommit(msg.repositoryId, msg.commitId)
+      sender ! LoadCommitResponse(commit)
     case msg: LoadRepositoriesForProject =>
       val repositories = worker.loadRepositoriesForProject(msg.projectId)
       sender ! LoadRepositoriesResponse(repositories)
+    case msg: LoadFilesContentFromCommit =>
+      val files = worker.loadFilesContentFromCommit(msg.repositoryId, msg.commitId)
+      sender ! LoadFilesContentFromCommitResponse(files)
+    case msg: LoadFilesDiffFromCommit =>
+      val files = worker.loadFilesDiffFromCommit(msg.repositoryId, msg.commitId)
+      sender ! LoadFilesDiffFromCommitResponse(files)
+
   }
 
 }

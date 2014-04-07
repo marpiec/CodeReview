@@ -35,6 +35,11 @@ var app = angular.module("application", ["ngRoute", "ngCookies"]).config(functio
         controller: "ProjectController"
     });
 
+    $routeProvider.when("/commit/:repositoryId/:commitId", {
+        templateUrl: "app/view/commit.html",
+        controller: "CommitController"
+    });
+
     $routeProvider.otherwise({
         redirectTo: "/home"
     });

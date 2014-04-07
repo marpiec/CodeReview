@@ -9,30 +9,12 @@
     Last commits:
     <div ng-repeat="commit in commits">
         <div>
-            id: {{ commit.info.hash }} <br />
-            commited: {{ commit.info.time }} <br />
-            commiter: {{ commit.info.commiter }} <br />
             author: {{ commit.info.author }} <br />
-            message: {{ commit.info.message }} <br />
+            commited: {{ commit.info.time }} <br />
+            <a ng-href="#/commit/{{ repositoryId }}/{{ commit.info.id[0] }}">message: {{ commit.info.message }}</a><br />
+            files: {{ commit.files.length }}
         </div>
-        <div ng-repeat="file in commit.files">
-            change: {{ file.changeType }}
-            <div ng-show="file.changeType == 'add'">
-                +{{ file.newPath }}
-            </div>
-            <div ng-show="file.changeType == 'modify'">
-                {{ file.path }}
-            </div>
-            <div ng-show="file.changeType == 'delete'">
-                -{{ file.oldPath }}
-            </div>
-            <div ng-show="file.changeType == 'rename'">
-                -{{ file.oldPath }} +{{ file.newPath }}
-            </div>
-            <div ng-show="file.changeType == 'copy'">
-                {{ file.oldPath }} +{{ file.newPath }}
-            </div>
-        </div>
+
 
 
     </div>

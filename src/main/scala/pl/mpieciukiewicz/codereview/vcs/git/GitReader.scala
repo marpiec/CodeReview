@@ -118,7 +118,7 @@ class GitReader(val repoDir: String) {
 
   }
 
-  private def readFileContentAfterCommit(commit: RevCommit, filePath: String): Array[Byte] = {
+  private def readFileContentAfterCommit(commit: RevCommit, filePath: String): String = {
     val treeWalk = new TreeWalk(repository)
     treeWalk.addTree(commit.getTree)
     treeWalk.setRecursive(true)
@@ -131,7 +131,7 @@ class GitReader(val repoDir: String) {
     val objectId = treeWalk.getObjectId(0)
     val loader = repository.open(objectId)
 
-    loader.getBytes
+    new String(loader.getBytes)
   }
 
   def readFilesDiffFromCommit(commitId: String): List[FileDiff] = {
@@ -145,9 +145,9 @@ class GitReader(val repoDir: String) {
   private def createDiffFromContents(fileContent: FileContent): FileDiff = {
 
     val diffText = fileContent match {
-      case content: FileContentAdd => readFileDiffFromCommit(Array[Byte](), content.content)
+      case content: FileContentAdd => readFileDiffFromCommit("", content.content)
       case content: FileContentModify => readFileDiffFromCommit(content.fromContent, content.toContent)
-      case content: FileContentDelete => readFileDiffFromCommit(content.oldContent, Array[Byte]())
+      case content: FileContentDelete => readFileDiffFromCommit(content.oldContent, "")
       case content: FileContentRename => readFileDiffFromCommit(content.fromContent, content.toContent)
       case content: FileContentCopy => readFileDiffFromCommit(content.fromContent, content.toContent)
     }
@@ -156,7 +156,7 @@ class GitReader(val repoDir: String) {
 
   }
 
-  private def readFileDiffFromCommit(oldContent: Array[Byte], newContent: Array[Byte]): String = {
+  private def readFileDiffFromCommit(oldContent: String, newContent: String): String = {
 
     val out = new ByteArrayOutputStream()
     val df = new DiffFormatter(out)
@@ -166,8 +166,8 @@ class GitReader(val repoDir: String) {
 
     val diffAlgorithm = DiffAlgorithm.getAlgorithm(repository.getConfig.getEnum(ConfigConstants.CONFIG_DIFF_SECTION, null, ConfigConstants.CONFIG_KEY_ALGORITHM, SupportedAlgorithm.HISTOGRAM))
 
-    val editList = diffAlgorithm.diff(RawTextComparator.DEFAULT, new RawText(oldContent), new RawText(newContent))
-    df.format(editList, new RawText(oldContent), new RawText(newContent))
+    val editList = diffAlgorithm.diff(RawTextComparator.DEFAULT, new RawText(oldContent.getBytes), new RawText(newContent.getBytes))
+    df.format(editList, new RawText(oldContent.getBytes), new RawText(newContent.getBytes))
    //val diffs = df.scan(commit.getParent(0).getId, commit.getTree).asScala.toList
 
 

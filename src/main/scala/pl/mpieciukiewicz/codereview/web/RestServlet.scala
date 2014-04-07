@@ -97,6 +97,30 @@ class RestServlet(system: ActorSystem) extends ScalatraServlet with FutureSuppor
     }
   }
 
+  get("/commit/:repositoryId/:commitId") {
+    async {
+      val actor = system.actorSelection("akka://application/user/repositoryManager")
+      val msg =  RepositoryManagerActor.LoadCommit(params("repositoryId").toInt, params("commitId").toInt)
+      actor.askForJson(msg)
+    }
+  }
+
+  get("/commit-files/:repositoryId/:commitId") {
+    async {
+      val actor = system.actorSelection("akka://application/user/repositoryManager")
+      val msg =  RepositoryManagerActor.LoadFilesContentFromCommit(params("repositoryId").toInt, params("commitId").toInt)
+      actor.askForJson(msg)
+    }
+  }
+
+  get("/commit-files-diffs/:repositoryId/:commitId") {
+    async {
+      val actor = system.actorSelection("akka://application/user/repositoryManager")
+      val msg =  RepositoryManagerActor.LoadFilesDiffFromCommit(params("repositoryId").toInt, params("commitId").toInt)
+      actor.askForJson(msg)
+    }
+  }
+
   get("/user-projects") {
     async {
       authenticated { userId =>

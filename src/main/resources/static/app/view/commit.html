@@ -1,0 +1,136 @@
+<div>
+
+    <style>
+       .fileComparator {
+           overflow: hidden;
+       }
+
+       .fileComparator > .before {
+           width: 48%;
+           float: left;
+           overflow: scroll;
+       }
+
+       .fileComparator > .after {
+           width: 48%;
+           float: right;
+           overflow: scroll;
+       }
+
+        .fileComparator pre {
+            margin: 0;
+            color: #555;
+            font-family: Consolas, "Liberation Mono", Courier, monospace;
+            font-size: 13px;
+            line-height: 17px;
+        }
+
+       .fileComparator pre.add {
+           margin: 0;
+           background-color: rgb(193, 255, 194);
+       }
+
+       .fileComparator pre.delete {
+           margin: 0;
+           background-color: #ffced1;
+       }
+
+    </style>
+
+    <div>
+
+        hash: {{ commit.info.hash }} <br />
+        commiter: {{ commit.info.commiter }} <br />
+        author: {{ commit.info.author }} <br />
+        commited: {{ commit.info.time }} <br />
+        message: {{ commit.info.message }}<br />
+        files: {{ commit.files.length }}
+    </div>
+
+    <div ng-repeat="file in commit.files">
+        change: {{ file.changeType }}
+        <div ng-show="file.changeType == 'add'">
+            +{{ file.newPath }}
+        </div>
+        <div ng-show="file.changeType == 'modify'">
+            {{ file.path }}
+        </div>
+        <div ng-show="file.changeType == 'delete'">
+            -{{ file.oldPath }}
+        </div>
+        <div ng-show="file.changeType == 'rename'">
+            -{{ file.oldPath }} +{{ file.newPath }}
+        </div>
+        <div ng-show="file.changeType == 'copy'">
+            {{ file.oldPath }} +{{ file.newPath }}
+        </div>
+    </div>
+
+    <div ng-repeat="content in filesContent">
+
+        <div ng-show="content.changeType == 'add'">
+            Added:
+            <div class="fileComparator">
+                <div class="before">
+                    <pre></pre>
+                </div>
+                <div class="after">
+                     <pre>{{ content.content }}</pre>
+                </div>
+            </div>
+
+        </div>
+
+        <div ng-show="content.changeType == 'modify'">
+            Modified:
+            <div class="fileComparator">
+                <div class="before">
+
+                    <pre ng-repeat="line in content.fromLines track by $index" ng-class="line.change">{{ line.line }}</pre>
+                </div>
+                <div class="after">
+                    <pre ng-repeat="line in content.toLines track by $index" ng-class="line.change">{{ line.line }}</pre>
+                </div>
+            </div>
+        </div>
+
+        <div ng-show="content.changeType == 'delete'">
+            Deleted:
+            <div class="fileComparator">
+                <div class="before">
+                    <pre>{{ content.oldContent }}</pre>
+                </div>
+                <div class="after">
+                    <pre></pre>
+                </div>
+            </div>
+        </div>
+
+        <div ng-show="content.changeType == 'rename'">
+            Renamed:
+            <div class="fileComparator">
+                <div class="before">
+                    <pre>{{ content.fromContent }}</pre>
+                </div>
+                <div class="after">
+                    <pre>{{ content.toContent }}</pre>
+                </div>
+            </div>
+        </div>
+
+        <div ng-show="content.changeType == 'copy'">
+            Copied:
+            <div class="fileComparator">
+                <div class="before">
+                    <pre>{{ content.fromContent }}</pre>
+                </div>
+                <div class="after">
+                    <pre>{{ content.toContent }}</pre>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+</div>

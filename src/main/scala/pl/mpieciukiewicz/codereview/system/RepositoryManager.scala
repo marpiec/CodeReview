@@ -6,7 +6,7 @@ import pl.mpieciukiewicz.codereview.utils.clock.Clock
 import java.io.File
 import pl.mpieciukiewicz.codereview.vcs.git.{GitReader, GitLocalRepositoryManager}
 import pl.mpieciukiewicz.codereview.model.{CommitWithFiles, Repository}
-
+import pl.mpieciukiewicz.codereview.vcs.{FileDiff, FileContent}
 
 
 class RepositoryManager(repositoryStorage: RepositoryStorage, commitStorage: CommitStorage, randomUtil: RandomGenerator, config: Configuration, clock: Clock) {
@@ -41,6 +41,29 @@ class RepositoryManager(repositoryStorage: RepositoryStorage, commitStorage: Com
     }
 
     commitFiles
+  }
+
+  def loadCommit(repositoryId: Int, commitId: Int): Option[CommitWithFiles] = {
+    val repository = repositoryStorage.findById(repositoryId)
+    val commit = commitStorage.findById(commitId)
+
+    val commitFiles = commit.map { commit =>
+      CommitWithFiles(commit, new GitReader(config.storage.dataDirectory + repository.get.localDir).readFilesFromCommit(commit.hash))
+    }
+
+    commitFiles
+  }
+
+  def loadFilesContentFromCommit(repositoryId: Int, commitId: Int): List[FileContent] = {
+    val repository = repositoryStorage.findById(repositoryId)
+    val commit = commitStorage.findById(commitId)
+    new GitReader(config.storage.dataDirectory + repository.get.localDir).readFilesContentFromCommit(commit.get.hash)
+  }
+
+  def loadFilesDiffFromCommit(repositoryId: Int, commitId: Int): List[FileDiff] = {
+    val repository = repositoryStorage.findById(repositoryId)
+    val commit = commitStorage.findById(commitId)
+    new GitReader(config.storage.dataDirectory + repository.get.localDir).readFilesDiffFromCommit(commit.get.hash)
   }
 
 

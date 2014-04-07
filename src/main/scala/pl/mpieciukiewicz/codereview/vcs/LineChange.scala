@@ -3,17 +3,7 @@ package pl.mpieciukiewicz.codereview.vcs
 /**
  *
  */
-abstract class LineChange {
-  def added: Boolean
-  def delete: Boolean
-}
+abstract class LineChange(val added: Boolean, val deleted: Boolean)
 
-case class LineDeleted(number: Int, content: String) extends LineChange {
-  def added = false
-  def delete = true
-}
-
-case class LineAdded(number: Int, content: String) extends LineChange {
-  def added = true
-  def delete = false
-}
+case class LineDeleted(number: Int, content: String) extends LineChange(false, true)
+case class LineAdded(number: Int, content: String) extends LineChange(true, false)
