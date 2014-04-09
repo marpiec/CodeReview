@@ -1,22 +1,25 @@
-<div>
+<div class="defaultPage repositoryPage">
 
-    <mp-user-info></mp-user-info>
+    <div class="header">
+        <div class="banner">
+            <a href="#/home">Code Review</a>
+        </div>
 
-    <a href="#/home">Go home</a>
+        <mp-user-info></mp-user-info>
+    </div>
+
+
 
     Welcome to repository {{ repositoryId }}
 
-    Last commits:
-    <div ng-repeat="commit in commits">
-        <div>
-            author: {{ commit.info.author }} <br />
-            commited: {{ commit.info.time }} <br />
-            <a ng-href="#/commit/{{ repositoryId }}/{{ commit.info.id[0] }}">message: {{ commit.info.message }}</a><br />
-            files: {{ commit.files.length }}
-        </div>
+    <a ng-repeat="commit in commits" ng-href="#/commit/{{ repositoryId }}/{{ commit.info.id[0] }}" class="commit">
+        <span class="author">{{ commit.info.author }}</span>
+        <span class="message">{{ commit.info.message }}</span>
+        <!--author: {{ commit.info.author }} <br />-->
+        <!--commited: {{ commit.info.time }} <br />-->
+        <!--<a ng-href="#/commit/{{ repositoryId }}/{{ commit.info.id[0] }}">message: {{ commit.info.message }}</a><br />-->
+        <!--files: {{ commit.files.length }}-->
 
-
-
-    </div>
+    </a>
 
 </div>

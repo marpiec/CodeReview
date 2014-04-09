@@ -1,3 +1,26 @@
+.defaultPage .header {
+  position: relative;
+  height: 30px;
+  border: 1px solid #E1E1E1;
+  background-color: #fafafa;
+}
+.defaultPage .header .banner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  font-size: 16px;
+  font-weight: bold;
+  margin: 6px;
+}
+.defaultPage .header .banner a {
+  text-decoration: none;
+}
+.defaultPage .header .userInfo {
+  padding: 6px;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
 .loginPage .banner {
   position: absolute;
   left: 160px;
@@ -57,6 +80,83 @@
   right: 50px;
   font-size: 16px;
 }
+.registerPage .banner {
+  position: absolute;
+  left: 160px;
+  top: 10px;
+  font-size: 20px;
+  font-weight: bold;
+  color: #435786;
+}
+.registerPage .banner a {
+  text-decoration: none;
+}
+.registerPage .horizontalBar {
+  position: absolute;
+  left: 150px;
+  width: 300px;
+  top: 0;
+  bottom: 0;
+  border: 1px solid #E1E1E1;
+  background-color: #fafafa;
+}
+.registerPage .verticalBar {
+  position: absolute;
+  left: 0px;
+  right: 0px;
+  top: 150px;
+  height: 325px;
+  border: 1px solid #E1E1E1;
+  background-color: #FDFDFD;
+}
+.registerPage .registerForm {
+  position: absolute;
+  left: 150px;
+  top: 150px;
+  width: 258px;
+  height: 283px;
+  background-color: #fff;
+  border: 2px solid #435786;
+  padding: 20px;
+}
+.registerPage .registerForm input {
+  margin-top: 5px;
+  margin-bottom: 15px;
+  display: block;
+  width: 246px;
+  padding: 4px;
+}
+.registerPage .registerForm label {
+  display: block;
+}
+.registerPage .registerForm button {
+  padding: 4px 20px;
+  float: right;
+}
+.registerPage .navigation {
+  position: absolute;
+  bottom: 40px;
+  right: 50px;
+  font-size: 16px;
+}
+.repositoryPage .commit {
+  display: block;
+  width: 400px;
+  height: 60px;
+  border: 1px solid #E1E1E1;
+  padding: 5px;
+  margin: 20px;
+  text-decoration: none;
+  font-size: 13px;
+}
+.repositoryPage .commit:hover {
+  background-color: #fafafa;
+}
+.repositoryPage .commit .author {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 4px;
+}
 .fileComparator {
   overflow: hidden;
 }
@@ -89,6 +189,10 @@ html {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 14px;
 }
+body {
+  margin: 0px;
+}
 a {
   color: #000000;
+  cursor: pointer;
 }

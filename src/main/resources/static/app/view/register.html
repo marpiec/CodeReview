@@ -1,31 +1,23 @@
-<div>
-    <mp-user-info></mp-user-info>
-    <div>
-        This is user registration page
-    </div>
+<div class="registerPage">
 
-    <div>
-        <a href="#/home">Go home</a>
+
+    <div class="horizontalBar"></div>
+    <div class="verticalBar"></div>
+
+    <div class="registerForm">
+
 
         <div ng-show="registerFormVisible">
 
             <form ng-submit="registerUser()">
-                <div>
-                    User name:
-                    <input type="text" ng-model="form.userName"/>
-                </div>
-                <div>
-                    Email:
-                    <input type="text" ng-model="form.email"/>
-                </div>
-                <div>
-                    Password:
-                    <input type="password" ng-model="form.password"/>
-                </div>
-                <div>
-                    Repeat password:
-                    <input type="password" ng-model="form.passwordRepeat"/>
-                </div>
+                <label>User name</label>
+                <input type="text" ng-model="form.userName" auto-focus/>
+                <label>Email address</label>
+                <input type="text" ng-model="form.email"/>
+                <label>Password</label>
+                <input type="password" ng-model="form.password"/>
+                <label>Repeat password</label>
+                <input type="password" ng-model="form.passwordRepeat"/>
                 <button type="submit">Register</button>
              </form>
         </div>
@@ -40,5 +32,16 @@
             <a href="#/login">Login</a>
         </div>
     </div>
+
+
+    <div class="banner">
+        <a href="#/home">Code Review</a>
+    </div>
+
+    <div class="navigation">
+        <mp-user-info></mp-user-info>
+    </div>
+
+
 
 </div>
