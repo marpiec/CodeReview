@@ -1,30 +1,28 @@
-<div>
-    <div>
-        This is user login page
+<div class="loginPage">
+
+    <div ng-show="loginIncorrectVisible">
+        Incorrect login or password.
     </div>
 
-    <div>
-        <a href="#/home">Go home</a>
+
+
+    <div class="horizontalBar"></div>
+    <div class="verticalBar"></div>
+    <form class="loginForm" ng-submit="loginUser()">
+        <label>User</label>
+        <input type="text" ng-model="userName" auto-focus />
+        <label>Password</label>
+        <input type="password" ng-model="password"/>
+        <button type="submit">Login</button>
+
+    </form>
+
+    <div class="banner">
+        <a href="#/home">Code Review</a>
+    </div>
+
+    <div class="navigation">
         <a href="#/register">Register</a>
-
-        <div ng-show="loginIncorrectVisible">
-            Incorrect login or password.
-        </div>
-
-        <form ng-submit="loginUser()">
-
-            <div>
-                User:
-                <input type="text" ng-model="userName"/>
-            </div>
-            <div>
-                Password:
-                <input type="password" ng-model="password"/>
-            </div>
-            <button type="submit">Login</button>
-
-        </form>
-
     </div>
 
 </div>

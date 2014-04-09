@@ -1,0 +1,33 @@
+.fileComparator {
+  overflow: hidden;
+
+  > .before {
+    width: 48%;
+    float: left;
+    overflow: scroll;
+  }
+
+  > .after {
+    width: 48%;
+    float: right;
+    overflow: scroll;
+  }
+
+  pre {
+    margin: 0;
+    color: #555;
+    font-family: Consolas, "Liberation Mono", Courier, monospace;
+    font-size: 13px;
+    line-height: 17px;
+
+    &.add {
+      margin: 0;
+      background-color: rgb(193, 255, 194);
+    }
+
+    &.delete {
+      margin: 0;
+      background-color: #ffced1;
+    }
+  }
+}

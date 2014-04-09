@@ -1,0 +1,94 @@
+.loginPage .banner {
+  position: absolute;
+  left: 160px;
+  top: 10px;
+  font-size: 20px;
+  font-weight: bold;
+  color: #435786;
+}
+.loginPage .banner a {
+  text-decoration: none;
+}
+.loginPage .horizontalBar {
+  position: absolute;
+  left: 150px;
+  width: 300px;
+  top: 0;
+  bottom: 0;
+  border: 1px solid #E1E1E1;
+  background-color: #fafafa;
+}
+.loginPage .verticalBar {
+  position: absolute;
+  left: 0px;
+  right: 0px;
+  top: 150px;
+  height: 200px;
+  border: 1px solid #E1E1E1;
+  background-color: #FDFDFD;
+}
+.loginPage .loginForm {
+  position: absolute;
+  left: 150px;
+  top: 150px;
+  width: 258px;
+  height: 158px;
+  background-color: #fff;
+  border: 2px solid #435786;
+  padding: 20px;
+}
+.loginPage .loginForm input {
+  margin-top: 5px;
+  margin-bottom: 15px;
+  display: block;
+  width: 246px;
+  padding: 4px;
+}
+.loginPage .loginForm label {
+  display: block;
+}
+.loginPage .loginForm button {
+  padding: 4px 20px;
+  float: right;
+}
+.loginPage .navigation {
+  position: absolute;
+  bottom: 40px;
+  right: 50px;
+  font-size: 16px;
+}
+.fileComparator {
+  overflow: hidden;
+}
+.fileComparator > .before {
+  width: 48%;
+  float: left;
+  overflow: scroll;
+}
+.fileComparator > .after {
+  width: 48%;
+  float: right;
+  overflow: scroll;
+}
+.fileComparator pre {
+  margin: 0;
+  color: #555;
+  font-family: Consolas, "Liberation Mono", Courier, monospace;
+  font-size: 13px;
+  line-height: 17px;
+}
+.fileComparator pre.add {
+  margin: 0;
+  background-color: #c1ffc2;
+}
+.fileComparator pre.delete {
+  margin: 0;
+  background-color: #ffced1;
+}
+html {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 14px;
+}
+a {
+  color: #000000;
+}
