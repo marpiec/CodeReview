@@ -22,11 +22,11 @@
       color: #000;
       font-family: "Lucida Console", Monaco, monospace;
       font-size: 11px;
-      line-height: 17px;
-      height: 17px;
+      line-height: 16px;
+      height: 16px;
 
       &.placeholder {
-        background-color: rgb(236, 234, 240);
+        background: url(../graph/empty-background.png);
       }
 
       &.added {
@@ -44,6 +44,11 @@
 
       &.modifiedTo {
         background-color: rgb(233, 248, 255);
+      }
+
+      &:hover {
+        cursor: pointer;
+        background-color: #fff591;
       }
 
 
