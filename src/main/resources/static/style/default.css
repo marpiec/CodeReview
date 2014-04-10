@@ -85,6 +85,24 @@ a {
 .homePage .addProject:hover {
   background-color: #fafafa;
 }
+.homePage .registerUser {
+  border: 1px solid #e1e1e1;
+  background-color: #ffffff;
+  padding: 5px;
+  margin: 20px;
+  text-decoration: none;
+  display: block;
+  position: absolute;
+  right: 20px;
+  bottom: 20px;
+  width: 200px;
+  height: 50px;
+  line-height: 50px;
+  text-align: center;
+}
+.homePage .registerUser:hover {
+  background-color: #fafafa;
+}
 .loginPage .banner {
   position: absolute;
   left: 160px;
@@ -242,6 +260,24 @@ a {
   right: 0;
   top: 0;
 }
+.projectPage .addRepository {
+  border: 1px solid #e1e1e1;
+  background-color: #ffffff;
+  padding: 5px;
+  margin: 20px;
+  text-decoration: none;
+  display: block;
+  position: absolute;
+  right: 20px;
+  bottom: 20px;
+  width: 200px;
+  height: 50px;
+  line-height: 50px;
+  text-align: center;
+}
+.projectPage .addRepository:hover {
+  background-color: #fafafa;
+}
 .repositoryPage .header {
   position: relative;
   height: 30px;
@@ -350,6 +386,73 @@ a {
   text-transform: lowercase;
   left: 670px;
   top: 365px;
+}
+.addProjectPage .banner {
+  position: absolute;
+  left: 410px;
+  top: 10px;
+  font-size: 20px;
+  font-weight: bold;
+  color: #435786;
+}
+.addProjectPage .banner a {
+  text-decoration: none;
+}
+.addProjectPage .horizontalBar {
+  position: absolute;
+  left: 400px;
+  width: 300px;
+  top: 0;
+  bottom: 0;
+  border: 1px solid #E1E1E1;
+  background-color: #fafafa;
+}
+.addProjectPage .verticalBar {
+  position: absolute;
+  left: 0px;
+  right: 0px;
+  top: 100px;
+  height: 130px;
+  border: 1px solid #E1E1E1;
+  background-color: #FDFDFD;
+}
+.addProjectPage .mainForm {
+  position: absolute;
+  left: 400px;
+  top: 100px;
+  width: 258px;
+  height: 88px;
+  background-color: #fff;
+  border: 2px solid #435786;
+  padding: 20px;
+}
+.addProjectPage .mainForm input {
+  margin-top: 5px;
+  margin-bottom: 15px;
+  display: block;
+  width: 246px;
+  padding: 4px;
+}
+.addProjectPage .mainForm label {
+  display: block;
+}
+.addProjectPage .mainForm button {
+  padding: 4px 20px;
+  float: right;
+}
+.addProjectPage .navigation {
+  position: absolute;
+  bottom: 40px;
+  right: 50px;
+  font-size: 16px;
+}
+.addProjectPage .formName {
+  position: absolute;
+  color: #eee;
+  font-size: 50px;
+  text-transform: lowercase;
+  left: 720px;
+  top: 250px;
 }
 .userProjects .project {
   border: 1px solid #e1e1e1;
