@@ -36,7 +36,7 @@ scalacOptions ++= Seq(
   "-encoding", "UTF-8"
 )
 
-seq(lessSettings: _*)
+//seq(lessSettings: _*)
 
 //fork := true
 

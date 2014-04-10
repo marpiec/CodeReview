@@ -3,22 +3,23 @@
     <div class="header">
         <div class="banner">
             <a href="#/home">Code Review</a>
+            / Repository {{ repositoryId }}
         </div>
 
         <mp-user-info></mp-user-info>
     </div>
 
 
-
-    Welcome to repository {{ repositoryId }}
-
     <a ng-repeat="commit in commits" ng-href="#/commit/{{ repositoryId }}/{{ commit.info.id[0] }}" class="commit">
         <span class="author">{{ commit.info.author }}</span>
+        <span class="time">{{commit.info.time}}</span>
         <span class="message">{{ commit.info.message }}</span>
+        <span class="filesCount">{{ commit.files.length }} <span ng-show="commit.files.length == 1">file</span><span ng-show="commit.files.length != 1">files</span></span>
+
         <!--author: {{ commit.info.author }} <br />-->
         <!--commited: {{ commit.info.time }} <br />-->
         <!--<a ng-href="#/commit/{{ repositoryId }}/{{ commit.info.id[0] }}">message: {{ commit.info.message }}</a><br />-->
-        <!--files: {{ commit.files.length }}-->
+
 
     </a>
 

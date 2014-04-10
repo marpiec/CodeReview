@@ -14,7 +14,7 @@
 
     <a ng-href="#/project/{{ project.id[0] }}/{{ project.name }}/add-repository" class="addRepository">Add repository</a>
 
-    <div>
+
         <div ng-repeat="repository in repositories">
             <a ng-href="#/repository/{{ repository.id[0] }}/{{ repository.name }}">{{ repository.name }}</a>
             Url: {{ repository.remoteUrl }}

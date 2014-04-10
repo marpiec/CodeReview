@@ -1,0 +1,54 @@
+.commitPage {
+  .defaultPage;
+
+
+  .fileComparator {
+    overflow: hidden;
+
+    > .before {
+      width: 48%;
+      float: left;
+      overflow: scroll;
+    }
+
+    > .after {
+      width: 48%;
+      float: right;
+      overflow: scroll;
+    }
+
+    pre {
+      margin: 0;
+      color: #000;
+      font-family: "Lucida Console", Monaco, monospace;
+      font-size: 11px;
+      line-height: 17px;
+      height: 17px;
+
+      &.placeholder {
+        background-color: rgb(236, 234, 240);
+      }
+
+      &.added {
+        background-color: rgb(193, 255, 194);
+      }
+
+      &.deleted {
+        background-color: #ffced1;
+        text-decoration: line-through;
+      }
+
+      &.modifiedFrom {
+        background-color: rgb(233, 248, 255);
+      }
+
+      &.modifiedTo {
+        background-color: rgb(233, 248, 255);
+      }
+
+
+
+    }
+  }
+
+}

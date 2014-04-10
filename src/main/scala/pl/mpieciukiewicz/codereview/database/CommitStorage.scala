@@ -28,5 +28,9 @@ class CommitStorage(val dds: DocumentDataStorage) {
     loadAllEntitiesByType(classOf[Commit]).filter(commit => commit.repositoryId == repositoryId)
   }
 
+  def findByRepositoryId(repositoryId: Int, from: Int, count: Int):List[Commit] = {
+    loadAllEntitiesByType(classOf[Commit]).filter(commit => commit.repositoryId == repositoryId).slice(from, from + count)
+  }
+
 
 }

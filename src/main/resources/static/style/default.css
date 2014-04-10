@@ -316,9 +316,22 @@ a {
   background-color: #fafafa;
 }
 .repositoryPage .commit .author {
+  float: left;
   display: block;
   font-weight: bold;
   margin-bottom: 4px;
+}
+.repositoryPage .commit .time {
+  display: inline-block;
+  float: right;
+}
+.repositoryPage .commit .message {
+  float: left;
+  clear: both;
+}
+.repositoryPage .commit .filesCount {
+  float: right;
+  clear: both;
 }
 .addRepositoryPage .banner {
   position: absolute;
@@ -454,6 +467,66 @@ a {
   left: 720px;
   top: 250px;
 }
+.commitPage .header {
+  position: relative;
+  height: 30px;
+  border: 1px solid #E1E1E1;
+  background-color: #fafafa;
+}
+.commitPage .header .banner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  font-size: 16px;
+  font-weight: bold;
+  margin: 6px;
+}
+.commitPage .header .banner a {
+  text-decoration: none;
+}
+.commitPage .header .userInfo {
+  padding: 6px;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+.commitPage .fileComparator {
+  overflow: hidden;
+}
+.commitPage .fileComparator > .before {
+  width: 48%;
+  float: left;
+  overflow: scroll;
+}
+.commitPage .fileComparator > .after {
+  width: 48%;
+  float: right;
+  overflow: scroll;
+}
+.commitPage .fileComparator pre {
+  margin: 0;
+  color: #000;
+  font-family: "Lucida Console", Monaco, monospace;
+  font-size: 11px;
+  line-height: 17px;
+  height: 17px;
+}
+.commitPage .fileComparator pre.placeholder {
+  background-color: #eceaf0;
+}
+.commitPage .fileComparator pre.added {
+  background-color: #c1ffc2;
+}
+.commitPage .fileComparator pre.deleted {
+  background-color: #ffced1;
+  text-decoration: line-through;
+}
+.commitPage .fileComparator pre.modifiedFrom {
+  background-color: #e9f8ff;
+}
+.commitPage .fileComparator pre.modifiedTo {
+  background-color: #e9f8ff;
+}
 .userProjects .project {
   border: 1px solid #e1e1e1;
   background-color: #ffffff;
@@ -469,32 +542,4 @@ a {
 }
 .userProjects .project:hover {
   background-color: #fafafa;
-}
-.fileComparator {
-  overflow: hidden;
-}
-.fileComparator > .before {
-  width: 48%;
-  float: left;
-  overflow: scroll;
-}
-.fileComparator > .after {
-  width: 48%;
-  float: right;
-  overflow: scroll;
-}
-.fileComparator pre {
-  margin: 0;
-  color: #555;
-  font-family: Consolas, "Liberation Mono", Courier, monospace;
-  font-size: 13px;
-  line-height: 17px;
-}
-.fileComparator pre.add {
-  margin: 0;
-  background-color: #c1ffc2;
-}
-.fileComparator pre.delete {
-  margin: 0;
-  background-color: #ffced1;
 }

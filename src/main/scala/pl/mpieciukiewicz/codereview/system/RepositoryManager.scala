@@ -34,7 +34,7 @@ class RepositoryManager(repositoryStorage: RepositoryStorage, commitStorage: Com
 
   def loadCommits(repositoryId: Int, start: Int, count: Int):List[CommitWithFiles] = {
     val repository = repositoryStorage.findById(repositoryId)
-    val commits = commitStorage.findByRepositoryId(repositoryId)
+    val commits = commitStorage.findByRepositoryId(repositoryId, start, count)
 
     val commitFiles = commits.map { commit =>
       CommitWithFiles(commit, new GitReader(config.storage.dataDirectory + repository.get.localDir).readFilesFromCommit(commit.hash))
