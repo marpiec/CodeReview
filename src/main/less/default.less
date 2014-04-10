@@ -1,19 +1,19 @@
-@import "defaultPage";
-@import "loginPage";
-@import "registerPage";
-@import "repositoryPage";
+@import "colors";
+@import "general";
+@import "common";
+
+@import "page/template/defaultPage";
+@import "page/template/singleFormPage";
+
+@import "page/homePage";
+@import "page/loginPage";
+@import "page/registerPage";
+@import "page/projectPage";
+@import "page/repositoryPage";
+@import "page/addRepositoryPage";
+
+@import "component/userProjects";
+
 @import "commit";
 
-html {
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 14px;
-}
 
-body {
-  margin: 0px;
-}
-
-a {
-  color: #000000;
-  cursor: pointer;
-}

@@ -1,4 +1,4 @@
-<div class="defaultPage">
+<div class="homePage">
 
     <div class="header">
         <div class="banner">
@@ -8,12 +8,17 @@
         <mp-user-info></mp-user-info>
     </div>
 
-    <div>
-        <a href="#/register">Register user</a>
-        <a href="#/add-project">Add project</a>
+    <div ng-show="authenticated">
 
 
         <mp-user-projects></mp-user-projects>
+
+        <a href="#/add-project" class="addProject">Add project</a>
+
+    </div>
+
+    <div ng-hide="authenticated">
+        <a href="#/register">Register user</a>
 
     </div>
 </div>

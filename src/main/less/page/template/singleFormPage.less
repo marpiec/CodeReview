@@ -1,8 +1,8 @@
-.registerPage {
+.singleFormPage(@formWidth, @formHeight, @positionLeft, @positionTop) {
 
   .banner {
     position: absolute;
-    left: 160px;
+    left: @positionLeft + 10px;
     top: 10px;
     font-size: 20px;
     font-weight: bold;
@@ -16,8 +16,8 @@
   .horizontalBar {
 
     position: absolute;
-    left: 150px;
-    width: 300px;
+    left: @positionLeft;
+    width: @formWidth;
     top: 0;
     bottom: 0;
     border: 1px solid #E1E1E1;
@@ -28,20 +28,19 @@
     position: absolute;
     left: 0px;
     right: 0px;
-    top: 150px;
-    height: 325px;
+    top: @positionTop;
+    height: @formHeight;
     border: 1px solid #E1E1E1;
     background-color: #FDFDFD;
 
   }
 
-
-  .registerForm {
+  .mainForm {
     position: absolute;
-    left: 150px;
-    top: 150px;
-    width: 258px;
-    height: 283px;
+    left: @positionLeft;
+    top: @positionTop;
+    width: @formWidth - 42px;
+    height: @formHeight - 42px;
     background-color: #fff;
     border: 2px solid #435786;
     padding: 20px;
@@ -50,7 +49,7 @@
       margin-top: 5px;
       margin-bottom: 15px;
       display: block;
-      width: 246px;
+      width: @formWidth - 54px;
       padding: 4px;
     }
     label {
@@ -68,6 +67,15 @@
     right: 50px;
     font-size: 16px;
 
+  }
+
+  .formName {
+    position: absolute;
+    color: #eee;
+    font-size: 50px;
+    text-transform: lowercase;
+    left: @positionLeft + @formWidth + 20px;
+    top: @positionTop + @formHeight + 20px;
   }
 
 }

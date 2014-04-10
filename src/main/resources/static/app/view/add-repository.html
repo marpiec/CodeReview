@@ -1,26 +1,20 @@
-<div>
+<div class="addRepositoryPage">
 
-    <mp-user-info></mp-user-info>
 
-    <div>
-        This is adding repository page
-    </div>
 
-    <div>
-        <a href="#/home">Go home</a>
+
+    <div class="horizontalBar"></div>
+    <div class="verticalBar"></div>
+
+    <div class="mainForm">
+
 
         <div ng-show="formVisible">
-            <div>
-                Remote repository url:
-                <input type="text" ng-model="form.cloneUrl" />
-            </div>
-            <div>
-                Repository name:
-                <input type="text" ng-model="form.repoName" />
-            </div>
-            <div>
-                <button ng-click="addRepository()">Add repository</button>
-            </div>
+            <label>Repository name</label>
+            <input type="text" ng-model="form.repoName"/>
+            <label>Remote repository url</label>
+            <input type="text" ng-model="form.cloneUrl"/>
+            <button ng-click="addRepository()">Add repository</button>
         </div>
 
         <div ng-show="successMessageVisible">
@@ -28,5 +22,14 @@
             <a ng-href="#/repository/{{ repositoryId }}/{{ form.repoName }}">Go to repository</a>
         </div>
 
+    </div>
+    <div class="formName">Add new repository</div>
+
+    <div class="banner">
+        <a href="#/home">Code Review</a>
+    </div>
+
+    <div class="navigation">
+        <mp-user-info></mp-user-info>
     </div>
 </div>

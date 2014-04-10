@@ -1,3 +1,26 @@
+html {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 14px;
+}
+body {
+  margin: 0px;
+  color: #333333;
+}
+a {
+  color: #000000;
+  cursor: pointer;
+}
+.standardBox {
+  border: 1px solid #e1e1e1;
+  background-color: #ffffff;
+  padding: 5px;
+  margin: 20px;
+  text-decoration: none;
+  display: block;
+}
+.standardBox:hover {
+  background-color: #fafafa;
+}
 .defaultPage .header {
   position: relative;
   height: 30px;
@@ -20,6 +43,47 @@
   position: absolute;
   right: 0;
   top: 0;
+}
+.homePage .header {
+  position: relative;
+  height: 30px;
+  border: 1px solid #E1E1E1;
+  background-color: #fafafa;
+}
+.homePage .header .banner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  font-size: 16px;
+  font-weight: bold;
+  margin: 6px;
+}
+.homePage .header .banner a {
+  text-decoration: none;
+}
+.homePage .header .userInfo {
+  padding: 6px;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+.homePage .addProject {
+  border: 1px solid #e1e1e1;
+  background-color: #ffffff;
+  padding: 5px;
+  margin: 20px;
+  text-decoration: none;
+  display: block;
+  position: absolute;
+  right: 20px;
+  bottom: 20px;
+  width: 200px;
+  height: 50px;
+  line-height: 50px;
+  text-align: center;
+}
+.homePage .addProject:hover {
+  background-color: #fafafa;
 }
 .loginPage .banner {
   position: absolute;
@@ -50,7 +114,7 @@
   border: 1px solid #E1E1E1;
   background-color: #FDFDFD;
 }
-.loginPage .loginForm {
+.loginPage .mainForm {
   position: absolute;
   left: 150px;
   top: 150px;
@@ -60,17 +124,17 @@
   border: 2px solid #435786;
   padding: 20px;
 }
-.loginPage .loginForm input {
+.loginPage .mainForm input {
   margin-top: 5px;
   margin-bottom: 15px;
   display: block;
   width: 246px;
   padding: 4px;
 }
-.loginPage .loginForm label {
+.loginPage .mainForm label {
   display: block;
 }
-.loginPage .loginForm button {
+.loginPage .mainForm button {
   padding: 4px 20px;
   float: right;
 }
@@ -79,6 +143,14 @@
   bottom: 40px;
   right: 50px;
   font-size: 16px;
+}
+.loginPage .formName {
+  position: absolute;
+  color: #eee;
+  font-size: 50px;
+  text-transform: lowercase;
+  left: 470px;
+  top: 370px;
 }
 .registerPage .banner {
   position: absolute;
@@ -109,7 +181,7 @@
   border: 1px solid #E1E1E1;
   background-color: #FDFDFD;
 }
-.registerPage .registerForm {
+.registerPage .mainForm {
   position: absolute;
   left: 150px;
   top: 150px;
@@ -119,17 +191,17 @@
   border: 2px solid #435786;
   padding: 20px;
 }
-.registerPage .registerForm input {
+.registerPage .mainForm input {
   margin-top: 5px;
   margin-bottom: 15px;
   display: block;
   width: 246px;
   padding: 4px;
 }
-.registerPage .registerForm label {
+.registerPage .mainForm label {
   display: block;
 }
-.registerPage .registerForm button {
+.registerPage .mainForm button {
   padding: 4px 20px;
   float: right;
 }
@@ -139,14 +211,69 @@
   right: 50px;
   font-size: 16px;
 }
-.repositoryPage .commit {
-  display: block;
-  width: 400px;
-  height: 60px;
+.registerPage .formName {
+  position: absolute;
+  color: #eee;
+  font-size: 50px;
+  text-transform: lowercase;
+  left: 470px;
+  top: 495px;
+}
+.projectPage .header {
+  position: relative;
+  height: 30px;
   border: 1px solid #E1E1E1;
+  background-color: #fafafa;
+}
+.projectPage .header .banner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  font-size: 16px;
+  font-weight: bold;
+  margin: 6px;
+}
+.projectPage .header .banner a {
+  text-decoration: none;
+}
+.projectPage .header .userInfo {
+  padding: 6px;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+.repositoryPage .header {
+  position: relative;
+  height: 30px;
+  border: 1px solid #E1E1E1;
+  background-color: #fafafa;
+}
+.repositoryPage .header .banner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  font-size: 16px;
+  font-weight: bold;
+  margin: 6px;
+}
+.repositoryPage .header .banner a {
+  text-decoration: none;
+}
+.repositoryPage .header .userInfo {
+  padding: 6px;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+.repositoryPage .commit {
+  border: 1px solid #e1e1e1;
+  background-color: #ffffff;
   padding: 5px;
   margin: 20px;
   text-decoration: none;
+  display: block;
+  width: 400px;
+  height: 60px;
   font-size: 13px;
 }
 .repositoryPage .commit:hover {
@@ -156,6 +283,89 @@
   display: block;
   font-weight: bold;
   margin-bottom: 4px;
+}
+.addRepositoryPage .banner {
+  position: absolute;
+  left: 160px;
+  top: 10px;
+  font-size: 20px;
+  font-weight: bold;
+  color: #435786;
+}
+.addRepositoryPage .banner a {
+  text-decoration: none;
+}
+.addRepositoryPage .horizontalBar {
+  position: absolute;
+  left: 150px;
+  width: 500px;
+  top: 0;
+  bottom: 0;
+  border: 1px solid #E1E1E1;
+  background-color: #fafafa;
+}
+.addRepositoryPage .verticalBar {
+  position: absolute;
+  left: 0px;
+  right: 0px;
+  top: 150px;
+  height: 195px;
+  border: 1px solid #E1E1E1;
+  background-color: #FDFDFD;
+}
+.addRepositoryPage .mainForm {
+  position: absolute;
+  left: 150px;
+  top: 150px;
+  width: 458px;
+  height: 153px;
+  background-color: #fff;
+  border: 2px solid #435786;
+  padding: 20px;
+}
+.addRepositoryPage .mainForm input {
+  margin-top: 5px;
+  margin-bottom: 15px;
+  display: block;
+  width: 446px;
+  padding: 4px;
+}
+.addRepositoryPage .mainForm label {
+  display: block;
+}
+.addRepositoryPage .mainForm button {
+  padding: 4px 20px;
+  float: right;
+}
+.addRepositoryPage .navigation {
+  position: absolute;
+  bottom: 40px;
+  right: 50px;
+  font-size: 16px;
+}
+.addRepositoryPage .formName {
+  position: absolute;
+  color: #eee;
+  font-size: 50px;
+  text-transform: lowercase;
+  left: 670px;
+  top: 365px;
+}
+.userProjects .project {
+  border: 1px solid #e1e1e1;
+  background-color: #ffffff;
+  padding: 5px;
+  margin: 20px;
+  text-decoration: none;
+  display: block;
+  display: inline-block;
+  width: 200px;
+  height: 50px;
+  line-height: 50px;
+  text-align: center;
+}
+.userProjects .project:hover {
+  background-color: #fafafa;
 }
 .fileComparator {
   overflow: hidden;
@@ -184,15 +394,4 @@
 .fileComparator pre.delete {
   margin: 0;
   background-color: #ffced1;
-}
-html {
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 14px;
-}
-body {
-  margin: 0px;
-}
-a {
-  color: #000000;
-  cursor: pointer;
 }
