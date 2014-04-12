@@ -64,12 +64,6 @@ app.controller("CommitController", function ($scope, secureService, $routeParams
                     }
                 }
 
-//                for(var j=0; j<diff.changedLines.length;j++) {
-//                    var line = diff.changedLines[j];
-//                    if(line.added && !lineRemoved(diff, line.number)) {
-//                        processed.from.splice(line.number-1, 0, {change: "placeholder", content: ""})
-//                    }
-//                }
 
                 var toLines = content.toContent.split("\n");
 
@@ -98,13 +92,6 @@ app.controller("CommitController", function ($scope, secureService, $routeParams
 
 
                 }
-//
-//                for(var j=0; j<diff.changedLines.length;j++) {
-//                    var line = diff.changedLines[j];
-//                    if(line.deleted && !lineAdded(diff, line.number)) {
-//                        processed.to.splice(line.number-1, 0, {change: "placeholder", content: ""})
-//                    }
-//                }
             }
         }
 

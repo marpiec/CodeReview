@@ -1,58 +1,79 @@
 .commitPage {
   .defaultPage;
 
+  .file {
+    background: #F4EBD1;
+    border: 1px solid @standard-border-color;
+    padding: 10px;
+    margin: 10px 20px;
 
-  .fileComparator {
-    overflow: hidden;
-
-    > .before {
-      width: 48%;
-      float: left;
-      overflow: scroll;
+    .fileName {
+      padding: 0px 5px 5px;
     }
 
-    > .after {
-      width: 48%;
-      float: right;
-      overflow: scroll;
-    }
+    .fileComparator {
+      width: 100%;
+      overflow: hidden;
+      table-layout: fixed;
+      border-spacing: 5px;
 
-    pre {
-      margin: 0;
-      color: #000;
-      font-family: "Lucida Console", Monaco, monospace;
-      font-size: 11px;
-      line-height: 16px;
-      height: 16px;
+      .before, .after {
+        border: 1px solid @standard-border-color;
+        background-color: white;
+        padding: 5px;
+        margin: 10px;
+        width: 50%;
+        overflow-x: auto;
 
-      &.placeholder {
-        background: url(../graph/empty-background.png);
+        div {
+          display: inline-block;
+          min-width: 100%;
+        }
       }
 
-      &.added {
-        background-color: rgb(193, 255, 194);
+      pre {
+        margin: 0;
+        color: #000;
+        font-family: "Lucida Console", Monaco, monospace;
+        font-size: 11px;
+        line-height: 16px;
+        height: 16px;
+
+        &.placeholder {
+          background: url(../graph/empty-background.png);
+        }
+
+        &:hover {
+          cursor: pointer;
+          background-color: #fff591;
+
+          > span {
+            background-color: #fff591 !important;
+          }
+        }
+
+        > span {
+          display: inline-block;
+
+          &.added {
+            background-color: rgb(193, 255, 194);
+          }
+
+          &.deleted {
+            background-color: #ffced1;
+            text-decoration: line-through;
+          }
+
+          &.modifiedFrom {
+            background-color: rgb(233, 248, 255);
+          }
+
+          &.modifiedTo {
+            background-color: rgb(233, 248, 255);
+          }
+
+        }
       }
-
-      &.deleted {
-        background-color: #ffced1;
-        text-decoration: line-through;
-      }
-
-      &.modifiedFrom {
-        background-color: rgb(233, 248, 255);
-      }
-
-      &.modifiedTo {
-        background-color: rgb(233, 248, 255);
-      }
-
-      &:hover {
-        cursor: pointer;
-        background-color: #fff591;
-      }
-
-
-
     }
   }
 

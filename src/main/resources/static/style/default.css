@@ -5,13 +5,14 @@ html {
 body {
   margin: 0px;
   color: #333333;
+  background-color: #FCF6E2;
 }
 a {
   color: #000000;
   cursor: pointer;
 }
 .standardBox {
-  border: 1px solid #e1e1e1;
+  border: 1px solid #e1d6b7;
   background-color: #ffffff;
   padding: 5px;
   margin: 20px;
@@ -24,8 +25,8 @@ a {
 .defaultPage .header {
   position: relative;
   height: 30px;
-  border: 1px solid #E1E1E1;
-  background-color: #fafafa;
+  border: 1px solid #e1d6b7;
+  background-color: #F4EBD1;
 }
 .defaultPage .header .banner {
   position: absolute;
@@ -47,8 +48,8 @@ a {
 .homePage .header {
   position: relative;
   height: 30px;
-  border: 1px solid #E1E1E1;
-  background-color: #fafafa;
+  border: 1px solid #e1d6b7;
+  background-color: #F4EBD1;
 }
 .homePage .header .banner {
   position: absolute;
@@ -68,7 +69,7 @@ a {
   top: 0;
 }
 .homePage .addProject {
-  border: 1px solid #e1e1e1;
+  border: 1px solid #e1d6b7;
   background-color: #ffffff;
   padding: 5px;
   margin: 20px;
@@ -86,7 +87,7 @@ a {
   background-color: #fafafa;
 }
 .homePage .registerUser {
-  border: 1px solid #e1e1e1;
+  border: 1px solid #e1d6b7;
   background-color: #ffffff;
   padding: 5px;
   margin: 20px;
@@ -120,8 +121,8 @@ a {
   width: 300px;
   top: 0;
   bottom: 0;
-  border: 1px solid #E1E1E1;
-  background-color: #fafafa;
+  border: 1px solid #e1d6b7;
+  background-color: #F4EBD1;
 }
 .loginPage .verticalBar {
   position: absolute;
@@ -129,8 +130,8 @@ a {
   right: 0px;
   top: 150px;
   height: 200px;
-  border: 1px solid #E1E1E1;
-  background-color: #FDFDFD;
+  border: 1px solid #e1d6b7;
+  background-color: #F4EBD1;
 }
 .loginPage .mainForm {
   position: absolute;
@@ -164,7 +165,7 @@ a {
 }
 .loginPage .formName {
   position: absolute;
-  color: #eee;
+  color: #EBE0BF;
   font-size: 50px;
   text-transform: lowercase;
   left: 470px;
@@ -187,8 +188,8 @@ a {
   width: 300px;
   top: 0;
   bottom: 0;
-  border: 1px solid #E1E1E1;
-  background-color: #fafafa;
+  border: 1px solid #e1d6b7;
+  background-color: #F4EBD1;
 }
 .registerPage .verticalBar {
   position: absolute;
@@ -196,8 +197,8 @@ a {
   right: 0px;
   top: 150px;
   height: 325px;
-  border: 1px solid #E1E1E1;
-  background-color: #FDFDFD;
+  border: 1px solid #e1d6b7;
+  background-color: #F4EBD1;
 }
 .registerPage .mainForm {
   position: absolute;
@@ -231,7 +232,7 @@ a {
 }
 .registerPage .formName {
   position: absolute;
-  color: #eee;
+  color: #EBE0BF;
   font-size: 50px;
   text-transform: lowercase;
   left: 470px;
@@ -240,8 +241,8 @@ a {
 .projectPage .header {
   position: relative;
   height: 30px;
-  border: 1px solid #E1E1E1;
-  background-color: #fafafa;
+  border: 1px solid #e1d6b7;
+  background-color: #F4EBD1;
 }
 .projectPage .header .banner {
   position: absolute;
@@ -261,7 +262,7 @@ a {
   top: 0;
 }
 .projectPage .addRepository {
-  border: 1px solid #e1e1e1;
+  border: 1px solid #e1d6b7;
   background-color: #ffffff;
   padding: 5px;
   margin: 20px;
@@ -281,8 +282,8 @@ a {
 .repositoryPage .header {
   position: relative;
   height: 30px;
-  border: 1px solid #E1E1E1;
-  background-color: #fafafa;
+  border: 1px solid #e1d6b7;
+  background-color: #F4EBD1;
 }
 .repositoryPage .header .banner {
   position: absolute;
@@ -302,36 +303,33 @@ a {
   top: 0;
 }
 .repositoryPage .commit {
-  border: 1px solid #e1e1e1;
+  border: 1px solid #e1d6b7;
   background-color: #ffffff;
   padding: 5px;
   margin: 20px;
   text-decoration: none;
   display: block;
   width: 400px;
-  height: 60px;
+  min-height: 60px;
+  overflow: hidden;
   font-size: 13px;
 }
 .repositoryPage .commit:hover {
   background-color: #fafafa;
 }
-.repositoryPage .commit .author {
-  float: left;
-  display: block;
+.repositoryPage .commit .message {
+  clear: both;
   font-weight: bold;
-  margin-bottom: 4px;
+}
+.repositoryPage .commit .filesCount {
+  white-space: nowrap;
+}
+.repositoryPage .commit .author {
+  margin-top: 7px;
+  display: block;
 }
 .repositoryPage .commit .time {
   display: inline-block;
-  float: right;
-}
-.repositoryPage .commit .message {
-  float: left;
-  clear: both;
-}
-.repositoryPage .commit .filesCount {
-  float: right;
-  clear: both;
 }
 .addRepositoryPage .banner {
   position: absolute;
@@ -350,8 +348,8 @@ a {
   width: 500px;
   top: 0;
   bottom: 0;
-  border: 1px solid #E1E1E1;
-  background-color: #fafafa;
+  border: 1px solid #e1d6b7;
+  background-color: #F4EBD1;
 }
 .addRepositoryPage .verticalBar {
   position: absolute;
@@ -359,8 +357,8 @@ a {
   right: 0px;
   top: 150px;
   height: 195px;
-  border: 1px solid #E1E1E1;
-  background-color: #FDFDFD;
+  border: 1px solid #e1d6b7;
+  background-color: #F4EBD1;
 }
 .addRepositoryPage .mainForm {
   position: absolute;
@@ -394,7 +392,7 @@ a {
 }
 .addRepositoryPage .formName {
   position: absolute;
-  color: #eee;
+  color: #EBE0BF;
   font-size: 50px;
   text-transform: lowercase;
   left: 670px;
@@ -417,8 +415,8 @@ a {
   width: 300px;
   top: 0;
   bottom: 0;
-  border: 1px solid #E1E1E1;
-  background-color: #fafafa;
+  border: 1px solid #e1d6b7;
+  background-color: #F4EBD1;
 }
 .addProjectPage .verticalBar {
   position: absolute;
@@ -426,8 +424,8 @@ a {
   right: 0px;
   top: 100px;
   height: 130px;
-  border: 1px solid #E1E1E1;
-  background-color: #FDFDFD;
+  border: 1px solid #e1d6b7;
+  background-color: #F4EBD1;
 }
 .addProjectPage .mainForm {
   position: absolute;
@@ -461,7 +459,7 @@ a {
 }
 .addProjectPage .formName {
   position: absolute;
-  color: #eee;
+  color: #EBE0BF;
   font-size: 50px;
   text-transform: lowercase;
   left: 720px;
@@ -470,8 +468,8 @@ a {
 .commitPage .header {
   position: relative;
   height: 30px;
-  border: 1px solid #E1E1E1;
-  background-color: #fafafa;
+  border: 1px solid #e1d6b7;
+  background-color: #F4EBD1;
 }
 .commitPage .header .banner {
   position: absolute;
@@ -490,20 +488,36 @@ a {
   right: 0;
   top: 0;
 }
-.commitPage .fileComparator {
+.commitPage .file {
+  background: #F4EBD1;
+  border: 1px solid #e1d6b7;
+  padding: 10px;
+  margin: 10px 20px;
+}
+.commitPage .file .fileName {
+  padding: 0px 5px 5px;
+}
+.commitPage .file .fileComparator {
+  width: 100%;
   overflow: hidden;
+  table-layout: fixed;
+  border-spacing: 5px;
 }
-.commitPage .fileComparator > .before {
-  width: 48%;
-  float: left;
-  overflow: scroll;
+.commitPage .file .fileComparator .before,
+.commitPage .file .fileComparator .after {
+  border: 1px solid #e1d6b7;
+  background-color: white;
+  padding: 5px;
+  margin: 10px;
+  width: 50%;
+  overflow-x: auto;
 }
-.commitPage .fileComparator > .after {
-  width: 48%;
-  float: right;
-  overflow: scroll;
+.commitPage .file .fileComparator .before div,
+.commitPage .file .fileComparator .after div {
+  display: inline-block;
+  min-width: 100%;
 }
-.commitPage .fileComparator pre {
+.commitPage .file .fileComparator pre {
   margin: 0;
   color: #000;
   font-family: "Lucida Console", Monaco, monospace;
@@ -511,28 +525,34 @@ a {
   line-height: 16px;
   height: 16px;
 }
-.commitPage .fileComparator pre.placeholder {
+.commitPage .file .fileComparator pre.placeholder {
   background: url(../graph/empty-background.png);
 }
-.commitPage .fileComparator pre.added {
-  background-color: #c1ffc2;
-}
-.commitPage .fileComparator pre.deleted {
-  background-color: #ffced1;
-  text-decoration: line-through;
-}
-.commitPage .fileComparator pre.modifiedFrom {
-  background-color: #e9f8ff;
-}
-.commitPage .fileComparator pre.modifiedTo {
-  background-color: #e9f8ff;
-}
-.commitPage .fileComparator pre:hover {
+.commitPage .file .fileComparator pre:hover {
   cursor: pointer;
   background-color: #fff591;
 }
+.commitPage .file .fileComparator pre:hover > span {
+  background-color: #fff591 !important;
+}
+.commitPage .file .fileComparator pre > span {
+  display: inline-block;
+}
+.commitPage .file .fileComparator pre > span.added {
+  background-color: #c1ffc2;
+}
+.commitPage .file .fileComparator pre > span.deleted {
+  background-color: #ffced1;
+  text-decoration: line-through;
+}
+.commitPage .file .fileComparator pre > span.modifiedFrom {
+  background-color: #e9f8ff;
+}
+.commitPage .file .fileComparator pre > span.modifiedTo {
+  background-color: #e9f8ff;
+}
 .userProjects .project {
-  border: 1px solid #e1e1e1;
+  border: 1px solid #e1d6b7;
   background-color: #ffffff;
   padding: 5px;
   margin: 20px;
