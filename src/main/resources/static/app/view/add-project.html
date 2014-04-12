@@ -5,21 +5,15 @@
 
     <div class="mainForm">
 
-        <div ng-show="formVisible">
+        <form ng-submit="addProject()">
             <div>
                 Project name:
-                <input type="text" ng-model="form.projectName" />
+                <input type="text" ng-model="form.projectName" auto-focus />
             </div>
             <div>
-                <button ng-click="addProject()">Add project</button>
+                <button type="submit">Add project</button>
             </div>
-        </div>
-
-        <div ng-show="successMessageVisible">
-            Project {{ form.projectName }} has been created successfully.
-            <a ng-href="#/project/{{ projectId }}/{{ form.projectName }}">Go to project</a>
-        </div>
-
+        </form>
     </div>
 
     <div class="formName">Add new project</div>

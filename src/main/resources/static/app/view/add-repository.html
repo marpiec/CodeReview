@@ -9,18 +9,13 @@
     <div class="mainForm">
 
 
-        <div ng-show="formVisible">
+        <form ng-submit="addRepository()">
             <label>Repository name</label>
-            <input type="text" ng-model="form.repoName"/>
+            <input type="text" ng-model="form.repoName" auto-focus />
             <label>Remote repository url</label>
             <input type="text" ng-model="form.cloneUrl"/>
-            <button ng-click="addRepository()">Add repository</button>
-        </div>
-
-        <div ng-show="successMessageVisible">
-            Repository {{ form.repoName }} has been cloned successfully.
-            <a ng-href="#/repository/{{ repositoryId }}/{{ form.repoName }}">Go to repository</a>
-        </div>
+            <button type="submit">Add repository</button>
+        </form>
 
     </div>
     <div class="formName">Add new repository</div>

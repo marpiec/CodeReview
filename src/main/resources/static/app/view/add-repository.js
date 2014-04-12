@@ -1,4 +1,4 @@
-app.controller("AddRepositoryController", function ($scope, $http, $routeParams) {
+app.controller("AddRepositoryController", function ($scope, $http, $routeParams, $location) {
 
     $scope.form = {
         cloneUrl: "",
@@ -6,29 +6,22 @@ app.controller("AddRepositoryController", function ($scope, $http, $routeParams)
         projectId: parseInt($routeParams.projectId)
     };
 
-    $scope.formVisible = true;
-    $scope.successMessageVisible = false;
-    $scope.repositoryId = 0;
-
     $scope.addRepository = function() {
 
         $http.post("/rest/add-repository", "", {params: $scope.form}).
             success(function (data, status, headers, config) {
-                handleAddingRepositoryResponse(data);
+                handleAddingRepositoryResponse(data, $scope.form.repoName);
             }).
             error(function (data, status, headers, config) {
                 alert("Error communication with server!")
             });
     };
 
-    function handleAddingRepositoryResponse(response) {
+    function handleAddingRepositoryResponse(response, repoName) {
         if(response.successful) {
-            $scope.formVisible = false;
-            $scope.successMessageVisible = true;
-            $scope.repositoryId = response.repositoryId[0];
+            $location.path("/repository/"+response.repositoryId[0]+"/"+repoName);
         } else {
-            $scope.formVisible = true;
-            $scope.successMessageVisible = false;
+            alert("Problem"); //TODO handle this gracefully
         }
 
     }
