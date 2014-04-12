@@ -9,11 +9,11 @@ app.factory("secureService", function($http, session, $route, $location) {
                    if(status==401) {
                        session.clearSession();
                        $route.reload();
-                   } if(status==403) {
+                   } else if(status==403) {
                        alert("Forbidden");
                        $location.path("/");
                    } else {
-                       alert("Error communication with server! ("+status+")")
+                       alert("Error communication with server! ("+status+", "+url+")")
                    }
 
                });
