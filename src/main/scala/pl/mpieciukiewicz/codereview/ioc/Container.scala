@@ -31,11 +31,12 @@ class Container {
   val userRoleStorage = new UserRoleStorage(documentDataStorage)
   val repositoryStorage = new RepositoryStorage(documentDataStorage)
   val commitStorage = new CommitStorage(documentDataStorage)
+  val fileContentStorage = new FileContentStorage(documentDataStorage)
 
   val documentsCache = new DocumentsCache()
 
 
-  val repositoryManager = new RepositoryManager(repositoryStorage, commitStorage, randomUtil, configuration, clock)
+  val repositoryManager = new RepositoryManager(repositoryStorage, commitStorage, fileContentStorage, randomUtil, configuration, clock)
   val projectManager = new ProjectManager(projectStorage, repositoryStorage)
 
 }

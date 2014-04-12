@@ -69,11 +69,11 @@ class GitReaderSpec extends FeatureSpec with GivenWhenThen with GitBeforeAndAfte
 
       When("Getting committed files")
 
-      val files: List[FileContent] = gitReader.readFilesContentFromCommit(commitId)
+      val files: List[VcsFileContent] = gitReader.readFilesContentFromCommit(commitId)
 
       Then("Have correct files")
 
-      val homeFile = files(2).asInstanceOf[FileContentModify]
+      val homeFile = files(2).asInstanceOf[VcsFileContentModify]
 
       assertThat(new String(homeFile.fromContent)).isEqualTo(
         "<div>\n"+
@@ -106,7 +106,7 @@ class GitReaderSpec extends FeatureSpec with GivenWhenThen with GitBeforeAndAfte
 
       When("Getting committed files")
 
-      val files: List[FileDiff] = gitReader.readFilesDiffFromCommit(commitId)
+      val files: List[VcsFileDiff] = gitReader.readFilesDiffFromCommit(commitId)
 
       Then("Have correct diffs")
 
@@ -114,10 +114,10 @@ class GitReaderSpec extends FeatureSpec with GivenWhenThen with GitBeforeAndAfte
 
 
       assertThat(homeFileDiff.changedLines.asJava).containsExactly(
-        LineDeleted(3,"        This is home page:"),
-        LineAdded(3,"        This is a home page:"),
-        LineDeleted(6,"        You can go to <a href=\"#/calculator\">Calculator</a>."),
-        LineAdded(6,"        You can go to a <a href=\"#/calculator\">Calculator</a>."))
+        VcsLineDeleted(3,"        This is home page:"),
+        VcsLineAdded(3,"        This is a home page:"),
+        VcsLineDeleted(6,"        You can go to <a href=\"#/calculator\">Calculator</a>."),
+        VcsLineAdded(6,"        You can go to a <a href=\"#/calculator\">Calculator</a>."))
 
 
     }

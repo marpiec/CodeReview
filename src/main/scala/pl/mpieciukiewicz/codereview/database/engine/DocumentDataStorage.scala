@@ -22,11 +22,33 @@ class DocumentDataStorage(val dba: DatabaseAccessor, jsonUtil: JsonUtil) {
     entity
   }
 
+  def saveNewEntityNew[T](entity: T {def id:Int}): T = {
+    update("INSERT INTO entity (id, type, object) VALUES (?, ?, ?)") { preparedStatement =>
+      preparedStatement.setInt(1, entity.id)
+      preparedStatement.setString(2, entity.getClass.getName)
+      preparedStatement.setString(3, jsonUtil.toJson(entity))
+    }
+    entity
+  }
+
   def saveAllNewEntities[T](entities: List[T {def id:Option[Int]}]): List[T] = {
 
     prepareStatement("INSERT INTO entity (id, type, object) VALUES (?, ?, ?)") { preparedStatement =>
       for(entity <- entities) {
         preparedStatement.setInt(1, entity.id.get)
+        preparedStatement.setString(2, entity.getClass.getName)
+        preparedStatement.setString(3, jsonUtil.toJson(entity))
+        preparedStatement.execute()
+      }
+    }
+    entities
+  }
+
+  def saveAllNewEntitiesNew[T](entities: List[T {def id:Int}]): List[T] = {
+
+    prepareStatement("INSERT INTO entity (id, type, object) VALUES (?, ?, ?)") { preparedStatement =>
+      for(entity <- entities) {
+        preparedStatement.setInt(1, entity.id)
         preparedStatement.setString(2, entity.getClass.getName)
         preparedStatement.setString(3, jsonUtil.toJson(entity))
         preparedStatement.execute()

@@ -1,6 +1,6 @@
 package pl.mpieciukiewicz.codereview.vcs.git
 
-import pl.mpieciukiewicz.codereview.vcs.{LineAdded, LineDeleted, LineChange, FileDiff}
+import pl.mpieciukiewicz.codereview.vcs.{VcsLineAdded, VcsLineDeleted, VcsLineChange, VcsFileDiff}
 import scala.annotation.switch
 
 
@@ -8,15 +8,15 @@ class GitDiffParser {
 
   private case class ChangeBlock(removeFrom: Int, removeCount: Int, addFrom: Int, addCount: Int)
 
-  def parse(lines: Iterator[String]):FileDiff = {
+  def parse(lines: Iterator[String]):VcsFileDiff = {
 
-    var changedLines = List[LineChange]()
+    var changedLines = List[VcsLineChange]()
 
     while (lines.hasNext) {
       changedLines :::= parseChangeBlock(lines)
     }
 
-    FileDiff(changedLines.reverse)
+    VcsFileDiff(changedLines.reverse)
   }
 
 
@@ -26,7 +26,7 @@ class GitDiffParser {
     ChangeBlock(found.group(1).toInt, found.group(2).toInt, found.group(3).toInt, found.group(4).toInt)
   }
 
-  private def parseChangeBlock(lines: Iterator[String]): List[LineChange] = {
+  private def parseChangeBlock(lines: Iterator[String]): List[VcsLineChange] = {
     val headerLine = lines.next()
     if(headerLine == "\\ No newline at end of file") {
       List()
@@ -35,7 +35,7 @@ class GitDiffParser {
       var addCounter = 0
       var removeCounter = 0
       var firstChar: Char = 0
-      var changedLines = List[LineChange]()
+      var changedLines = List[VcsLineChange]()
       var line: String = null
 
       do {
@@ -44,10 +44,10 @@ class GitDiffParser {
 
         (firstChar: @switch) match {
           case '+' =>
-            changedLines ::= LineAdded(changeBlock.addFrom + addCounter, line.tail)
+            changedLines ::= VcsLineAdded(changeBlock.addFrom + addCounter, line.tail)
             addCounter += 1
           case '-' =>
-            changedLines ::= LineDeleted(changeBlock.removeFrom + removeCounter, line.tail)
+            changedLines ::= VcsLineDeleted(changeBlock.removeFrom + removeCounter, line.tail)
             removeCounter += 1
           case ' ' =>
             addCounter += 1

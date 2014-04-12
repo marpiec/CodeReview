@@ -1,8 +1,8 @@
 package pl.mpieciukiewicz.codereview.system
 
 import akka.actor.Actor
-import pl.mpieciukiewicz.codereview.model.{CommitWithFiles, Repository}
-import pl.mpieciukiewicz.codereview.vcs.{FileDiff, FileContent}
+import pl.mpieciukiewicz.codereview.model.{FileContent, CommitWithFiles, Repository}
+import pl.mpieciukiewicz.codereview.vcs.{VcsFileDiff, VcsFileContent}
 
 object RepositoryManagerActor {
 
@@ -22,7 +22,7 @@ object RepositoryManagerActor {
   case class LoadFilesContentFromCommitResponse(files: List[FileContent])
 
   case class LoadFilesDiffFromCommit(repositoryId: Int, commitId: Int)
-  case class LoadFilesDiffFromCommitResponse(files: List[FileDiff])
+  case class LoadFilesDiffFromCommitResponse(files: List[VcsFileDiff])
 
 }
 

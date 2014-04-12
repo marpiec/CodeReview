@@ -1,15 +1,49 @@
 package pl.mpieciukiewicz.codereview.system
 
-import pl.mpieciukiewicz.codereview.database.{CommitStorage, RepositoryStorage}
+import pl.mpieciukiewicz.codereview.database.{FileContentStorage, CommitStorage, RepositoryStorage}
 import pl.mpieciukiewicz.codereview.utils.{Configuration, RandomGenerator}
 import pl.mpieciukiewicz.codereview.utils.clock.Clock
 import java.io.File
 import pl.mpieciukiewicz.codereview.vcs.git.{GitReader, GitLocalRepositoryManager}
-import pl.mpieciukiewicz.codereview.model.{CommitWithFiles, Repository}
-import pl.mpieciukiewicz.codereview.vcs.{FileDiff, FileContent}
+import pl.mpieciukiewicz.codereview.model._
+import pl.mpieciukiewicz.codereview.vcs._
+import pl.mpieciukiewicz.codereview.vcs.VcsFileDiff
+import pl.mpieciukiewicz.codereview.vcs.VcsFileContentAdd
+import pl.mpieciukiewicz.codereview.vcs.VcsFileContentDelete
+import pl.mpieciukiewicz.codereview.vcs.VcsFileContentRename
+import pl.mpieciukiewicz.codereview.vcs.VcsFileContentCopy
+import pl.mpieciukiewicz.codereview.vcs.VcsFileContentModify
+import pl.mpieciukiewicz.codereview.vcs.VcsFileDiff
+import pl.mpieciukiewicz.codereview.vcs.VcsFileContentAdd
+import pl.mpieciukiewicz.codereview.vcs.VcsFileContentDelete
+import pl.mpieciukiewicz.codereview.model.constant.{LineChangeType, FileChangeType}
+import pl.mpieciukiewicz.codereview.vcs.VcsFileContentRename
+import pl.mpieciukiewicz.codereview.vcs.VcsFileContentModify
+import pl.mpieciukiewicz.codereview.vcs.VcsLineDeleted
+import pl.mpieciukiewicz.codereview.vcs.VcsFileContentDelete
+import scala.Some
+import pl.mpieciukiewicz.codereview.vcs.VcsLineAdded
+import pl.mpieciukiewicz.codereview.vcs.VcsFileDiff
+import pl.mpieciukiewicz.codereview.vcs.VcsFileContentCopy
+import pl.mpieciukiewicz.codereview.vcs.VcsFileContentAdd
+import pl.mpieciukiewicz.codereview.vcs.VcsFileContentRename
+import pl.mpieciukiewicz.codereview.vcs.VcsFileContentModify
+import pl.mpieciukiewicz.codereview.vcs.VcsLineDeleted
+import pl.mpieciukiewicz.codereview.vcs.VcsFileContentDelete
+import scala.Some
+import pl.mpieciukiewicz.codereview.model.Repository
+import pl.mpieciukiewicz.codereview.vcs.VcsLineAdded
+import pl.mpieciukiewicz.codereview.vcs.VcsFileDiff
+import pl.mpieciukiewicz.codereview.vcs.VcsFileContentCopy
+import pl.mpieciukiewicz.codereview.vcs.VcsFileContentAdd
+import pl.mpieciukiewicz.codereview.model.CommitWithFiles
+import pl.mpieciukiewicz.codereview.model.FileContent
 
 
-class RepositoryManager(repositoryStorage: RepositoryStorage, commitStorage: CommitStorage, randomUtil: RandomGenerator, config: Configuration, clock: Clock) {
+class RepositoryManager(repositoryStorage: RepositoryStorage,
+                        commitStorage: CommitStorage,
+                        fileContentStorage: FileContentStorage,
+                        randomUtil: RandomGenerator, config: Configuration, clock: Clock) {
 
   def addRepository(cloneUrl: String, repositoryName: String, projectId: Int):Int = {
 
@@ -55,12 +89,37 @@ class RepositoryManager(repositoryStorage: RepositoryStorage, commitStorage: Com
   }
 
   def loadFilesContentFromCommit(repositoryId: Int, commitId: Int): List[FileContent] = {
-    val repository = repositoryStorage.findById(repositoryId)
-    val commit = commitStorage.findById(commitId)
-    new GitReader(config.storage.dataDirectory + repository.get.localDir).readFilesContentFromCommit(commit.get.hash)
+
+    val filesContents = fileContentStorage.findByCommit(commitId)
+
+    if(filesContents.isEmpty) {
+      val repository = repositoryStorage.findById(repositoryId)
+      val commit = commitStorage.findById(commitId)
+      val filesContentsFromGit = new GitReader(config.storage.dataDirectory + repository.get.localDir).readFilesContentFromCommit(commit.get.hash)
+
+      val newFilesContents:List[FileContent] = filesContentsFromGit.map {
+        case (VcsFileContentAdd(content, path), diff) => FileContent(0, commitId, None, None, Some(content), Some(path), toLineChanges(diff), FileChangeType.Add)
+        case (VcsFileContentModify(fromContent, path, toContent), diff) => FileContent(0, commitId, Some(fromContent), Some(path), Some(toContent), None, toLineChanges(diff), FileChangeType.Modify)
+        case (VcsFileContentDelete(oldContent, oldPath), diff) => FileContent(0, commitId, Some(oldContent), Some(oldPath), None, None, toLineChanges(diff), FileChangeType.Delete)
+        case (VcsFileContentRename(fromContent, fromPath, toContent, toPath), diff) => FileContent(0, commitId, Some(fromContent), Some(fromPath), Some(toContent), Some(toPath), toLineChanges(diff), FileChangeType.Rename)
+        case (VcsFileContentCopy(fromContent, fromPath, toContent, toPath), diff) => FileContent(0, commitId, Some(fromContent), Some(fromPath), Some(toContent), Some(toPath), toLineChanges(diff), FileChangeType.Copy)
+      }
+
+      fileContentStorage.addAll(newFilesContents)
+    } else {
+      filesContents
+    }
+
   }
 
-  def loadFilesDiffFromCommit(repositoryId: Int, commitId: Int): List[FileDiff] = {
+  private def toLineChanges(fileDiff: VcsFileDiff): List[LineChange] = {
+    fileDiff.changedLines.map {
+      case VcsLineDeleted(number, content) => LineChange(number, content, LineChangeType.Delete)
+      case VcsLineAdded(number, content) => LineChange(number, content, LineChangeType.Add)
+    }
+  }
+
+  def loadFilesDiffFromCommit(repositoryId: Int, commitId: Int): List[VcsFileDiff] = {
     val repository = repositoryStorage.findById(repositoryId)
     val commit = commitStorage.findById(commitId)
     new GitReader(config.storage.dataDirectory + repository.get.localDir).readFilesDiffFromCommit(commit.get.hash)

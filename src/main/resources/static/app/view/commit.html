@@ -25,29 +25,29 @@
         <div class="file">
 
              <div class="fileName">
-                 <span ng-show="file.name.changeType == 'add'">
-                     {{ file.name.newPath }}
+                 <span ng-show="file.changeType == 'Add'">
+                     {{ file.toPath[0] }}
                  </span>
-                 <span ng-show="file.name.changeType == 'modify'">
-                     {{ file.name.path }}
+                 <span ng-show="file.changeType == 'Modify'">
+                     {{ file.fromPath[0] }}
                  </span>
-                 <span ng-show="file.name.changeType == 'delete'">
-                     {{ file.name.oldPath }}
+                 <span ng-show="file.changeType == 'Delete'">
+                     {{ file.fromPath[0] }}
                  </span>
-                 <span ng-show="file.name.changeType == 'rename'">
-                     <div class="fromFileName">{{ file.name.oldPath }}</div>
-                     <div class="toFileName">{{ file.name.newPath }}</div>
+                 <span ng-show="file.changeType == 'Rename'">
+                     <div class="fromFileName">{{ file.fromPath[0] }}</div>
+                     <div class="toFileName">{{ file.toPath[0] }}</div>
                  </span>
-                 <span ng-show="file.file.changeType == 'copy'">
-                     <div class="fromFileName">{{ file.name.oldPath }}</div>
-                     <div class="toFileName">{{ file.name.newPath }}</div>
+                 <span ng-show="file.changeType == 'Copy'">
+                     <div class="fromFileName">{{ file.fromPath[0] }}</div>
+                     <div class="toFileName">{{ file.file.toPath[0] }}</div>
                  </span>
 
              </div>
 
 
 
-            <div ng-show="file.content.changeType == 'add'">
+            <div ng-show="file.changeType == 'Add'">
                 <table class="fileComparator">
                     <tr>
                         <td class="before">
@@ -61,7 +61,7 @@
 
             </div>
 
-            <div ng-show="file.content.changeType == 'modify'">
+            <div ng-show="file.changeType == 'Modify'">
                 <table class="fileComparator">
                     <tr>
                         <td class="before">
@@ -78,7 +78,7 @@
                 </table>
             </div>
 
-            <div ng-show="file.content.changeType == 'delete'">
+            <div ng-show="file.changeType == 'Delete'">
                 <table class="fileComparator">
                     <tr>
                         <td class="before">
@@ -91,7 +91,7 @@
                 </table>
             </div>
 
-            <div ng-show="file.content.changeType == 'rename'">
+            <div ng-show="file.changeType == 'Rename'">
                 <table class="fileComparator">
                     <tr>
                         <td class="before">
@@ -104,7 +104,7 @@
                 </table>
             </div>
 
-            <div ng-show="file.content.changeType == 'copy'">
+            <div ng-show="file.changeType == 'Copy'">
                 <table class="fileComparator">
                     <tr>
                         <td class="before">

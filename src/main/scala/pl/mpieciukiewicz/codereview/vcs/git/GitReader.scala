@@ -14,11 +14,11 @@ import org.eclipse.jgit.treewalk.filter.PathFilter
 import pl.mpieciukiewicz.codereview.vcs.FileRename
 import pl.mpieciukiewicz.codereview.vcs.FileModify
 import pl.mpieciukiewicz.codereview.vcs.FileDelete
-import pl.mpieciukiewicz.codereview.vcs.FileContentAdd
-import pl.mpieciukiewicz.codereview.vcs.FileContentCopy
-import pl.mpieciukiewicz.codereview.vcs.FileContentRename
-import pl.mpieciukiewicz.codereview.vcs.FileContentModify
-import pl.mpieciukiewicz.codereview.vcs.FileContentDelete
+import pl.mpieciukiewicz.codereview.vcs.VcsFileContentAdd
+import pl.mpieciukiewicz.codereview.vcs.VcsFileContentCopy
+import pl.mpieciukiewicz.codereview.vcs.VcsFileContentRename
+import pl.mpieciukiewicz.codereview.vcs.VcsFileContentModify
+import pl.mpieciukiewicz.codereview.vcs.VcsFileContentDelete
 import pl.mpieciukiewicz.codereview.vcs.FileAdd
 import pl.mpieciukiewicz.codereview.vcs.FileCopy
 import org.eclipse.jgit.diff.DiffAlgorithm.SupportedAlgorithm
@@ -53,13 +53,13 @@ class GitReader(val repoDir: String) {
   }
 
 
-  def readFilesFromCommit(commitId: String): List[FileChange] = {
-    val commit = getCommitById(commitId)
+  def readFilesFromCommit(commitHash: String): List[FileChange] = {
+    val commit = getCommitById(commitHash)
     getFilePathsFromCommit(commit)
   }
 
-  private def getCommitById(commitId: String): RevCommit = {
-    new Git(repository).log().add(ObjectId.fromString(commitId)).setMaxCount(1).call().iterator().next()
+  private def getCommitById(commitHash: String): RevCommit = {
+    new Git(repository).log().add(ObjectId.fromString(commitHash)).setMaxCount(1).call().iterator().next()
   }
 
   private def getFilePathsFromCommit(commit: RevCommit): List[FileChange] = {
@@ -89,8 +89,8 @@ class GitReader(val repoDir: String) {
   }
 
 
-  def readFilesContentFromCommit(commitId: String): List[FileContent] = {
-    val commit = getCommitById(commitId)
+  def readFilesContentFromCommit(commitHash: String): List[(VcsFileContent, VcsFileDiff)] = {
+    val commit = getCommitById(commitHash)
 
     val out = new ByteArrayOutputStream()
     val df = new DiffFormatter(out)
@@ -102,18 +102,21 @@ class GitReader(val repoDir: String) {
 
     val fileChanges = diffs.map(convertDiffToFileChange)
 
-    fileChanges.map(readFileContent(commit))
+    val content = fileChanges.map(readFileContent(commit))
 
+    val fileDiffs = content.map(createDiffFromContents)
+
+    content.zip(fileDiffs)
   }
 
-  private def readFileContent(commit: RevCommit)(fileChange: FileChange): FileContent = {
+  private def readFileContent(commit: RevCommit)(fileChange: FileChange): VcsFileContent = {
 
     fileChange match {
-      case change: FileAdd => FileContentAdd(readFileContentAfterCommit(commit, change.newPath))
-      case change: FileModify => FileContentModify(readFileContentAfterCommit(commit.getParent(0), change.path), readFileContentAfterCommit(commit, change.path))
-      case change: FileDelete => FileContentDelete(readFileContentAfterCommit(commit.getParent(0), change.oldPath))
-      case change: FileRename => FileContentRename(readFileContentAfterCommit(commit.getParent(0), change.oldPath), readFileContentAfterCommit(commit, change.newPath))
-      case change: FileCopy => FileContentCopy(readFileContentAfterCommit(commit.getParent(0), change.oldPath), readFileContentAfterCommit(commit, change.newPath))
+      case change: FileAdd => VcsFileContentAdd(readFileContentAfterCommit(commit, change.newPath), change.newPath)
+      case change: FileModify => VcsFileContentModify(readFileContentAfterCommit(commit.getParent(0), change.path), change.path, readFileContentAfterCommit(commit, change.path))
+      case change: FileDelete => VcsFileContentDelete(readFileContentAfterCommit(commit.getParent(0), change.oldPath), change.oldPath)
+      case change: FileRename => VcsFileContentRename(readFileContentAfterCommit(commit.getParent(0), change.oldPath), change.oldPath, readFileContentAfterCommit(commit, change.newPath), change.newPath)
+      case change: FileCopy => VcsFileContentCopy(readFileContentAfterCommit(commit.getParent(0), change.oldPath), change.oldPath, readFileContentAfterCommit(commit, change.newPath), change.newPath)
     }
 
   }
@@ -134,22 +137,22 @@ class GitReader(val repoDir: String) {
     new String(loader.getBytes)
   }
 
-  def readFilesDiffFromCommit(commitId: String): List[FileDiff] = {
-    val fileContents = readFilesContentFromCommit(commitId)
+  def readFilesDiffFromCommit(commitHash: String): List[VcsFileDiff] = {
+    val fileContents = readFilesContentFromCommit(commitHash)
 
-    fileContents.map(createDiffFromContents)
+    fileContents.map(_._2)
   }
 
 
 
-  private def createDiffFromContents(fileContent: FileContent): FileDiff = {
+  private def createDiffFromContents(fileContent: VcsFileContent): VcsFileDiff = {
 
     val diffText = fileContent match {
-      case content: FileContentAdd => readFileDiffFromCommit("", content.content)
-      case content: FileContentModify => readFileDiffFromCommit(content.fromContent, content.toContent)
-      case content: FileContentDelete => readFileDiffFromCommit(content.oldContent, "")
-      case content: FileContentRename => readFileDiffFromCommit(content.fromContent, content.toContent)
-      case content: FileContentCopy => readFileDiffFromCommit(content.fromContent, content.toContent)
+      case content: VcsFileContentAdd => readFileDiffFromCommit("", content.content)
+      case content: VcsFileContentModify => readFileDiffFromCommit(content.fromContent, content.toContent)
+      case content: VcsFileContentDelete => readFileDiffFromCommit(content.oldContent, "")
+      case content: VcsFileContentRename => readFileDiffFromCommit(content.fromContent, content.toContent)
+      case content: VcsFileContentCopy => readFileDiffFromCommit(content.fromContent, content.toContent)
     }
 
     new GitDiffParser().parse(diffText.split("\n").toIterator)
