@@ -21,9 +21,16 @@ class GitDiffParser {
 
 
   private def parseChangeBlockDescription(line: String): ChangeBlock = {
-    val pattern = "@@ -([0-9]+),([0-9]+) \\+([0-9]+),([0-9]+) @@".r
-    val found = pattern.findAllMatchIn(line).next()
-    ChangeBlock(found.group(1).toInt, found.group(2).toInt, found.group(3).toInt, found.group(4).toInt)
+    try {
+      val pattern = "@@ -([0-9]+),([0-9]+) \\+([0-9]+),([0-9]+) @@".r
+      val found = pattern.findAllMatchIn(line).next()
+      ChangeBlock(found.group(1).toInt, found.group(2).toInt, found.group(3).toInt, found.group(4).toInt)
+    } catch {
+      case e: NoSuchElementException =>
+        val pattern = "@@ -([0-9]+) \\+([0-9]+) @@".r
+        val found = pattern.findAllMatchIn(line).next()
+        ChangeBlock(found.group(1).toInt, 1, found.group(2).toInt, 1)
+    }
   }
 
   private def parseChangeBlock(lines: Iterator[String]): List[VcsLineChange] = {
