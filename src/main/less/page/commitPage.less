@@ -39,6 +39,10 @@
         line-height: 16px;
         height: 16px;
 
+        > span {
+          display: inline-block;
+        }
+
         &.placeholder {
           background: url(../graph/empty-background.png);
         }
@@ -52,26 +56,29 @@
           }
         }
 
-        > span {
-          display: inline-block;
-
-          &.added {
+        &.added {
+          > span {
             background-color: rgb(193, 255, 194);
           }
+        }
 
-          &.deleted {
+        &.deleted {
+          > span {
             background-color: #ffced1;
             text-decoration: line-through;
           }
+        }
 
-          &.modifiedFrom {
+        &.modifiedFrom {
+          > span {
             background-color: rgb(233, 248, 255);
           }
+        }
 
-          &.modifiedTo {
+        &.modifiedTo {
+          > span {
             background-color: rgb(233, 248, 255);
           }
-
         }
       }
     }

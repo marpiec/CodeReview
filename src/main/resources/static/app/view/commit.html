@@ -66,12 +66,12 @@
                     <tr>
                         <td class="before">
                             <div>
-                                <pre ng-repeat="line in file.processed.from"><span ng-class="line.change">{{line.content}}</span></pre>
+                                <pre ng-repeat="line in file.processed.from" ng-class="line.change"><span>{{line.content}}</span></pre>
                             </div>
                         </td>
                         <td class="after">
                             <div>
-                                <pre ng-repeat="line in file.processed.to"><span ng-class="line.change">{{line.content}}</span></pre>
+                                <pre ng-repeat="line in file.processed.to" ng-class="line.change"><span>{{line.content}}</span></pre>
                              </div>
                         </td>
                     </tr>

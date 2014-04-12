@@ -33,10 +33,13 @@ class RestServlet(system: ActorSystem) extends ScalatraServlet with FutureSuppor
 
   get("/commits/:repository/:start/:count") {
     async {
-      cache.getOrInsert(request.getRequestURI) {
-        val actor = system.actorSelection("akka://application/user/repositoryManager")
-        val msg = RepositoryManagerActor.LoadCommits(params("repository").toInt, params("start").toInt, params("count").toInt)
-        actor.askForJson(msg)
+      authenticated {
+        userId =>
+          cache.getOrInsert(request.getRequestURI) {
+            val actor = system.actorSelection("akka://application/user/repositoryManager")
+            val msg = RepositoryManagerActor.LoadCommits(params("repository").toInt, params("start").toInt, params("count").toInt)
+            actor.askForJson(msg)
+          }
       }
     }
   }
@@ -67,57 +70,78 @@ class RestServlet(system: ActorSystem) extends ScalatraServlet with FutureSuppor
 
   post("/add-repository") {
     async {
-      val actor = system.actorSelection("akka://application/user/repositoryManager")
-      val msg = RepositoryManagerActor.AddRepository(params("cloneUrl"), params("repoName"), params("projectId").toInt)
-      actor.askForJson(msg)
+      authenticated {
+        userId =>
+          val actor = system.actorSelection("akka://application/user/repositoryManager")
+          val msg = RepositoryManagerActor.AddRepository(params("cloneUrl"), params("repoName"), params("projectId").toInt)
+          actor.askForJson(msg)
+      }
     }
   }
 
   post("/add-project") {
     async {
-      val actor = system.actorSelection("akka://application/user/projectManager")
-      val msg =  ProjectManagerActor.CreateProject(params("projectName"))
-      actor.askForJson(msg)
+      authenticated {
+        userId =>
+          val actor = system.actorSelection("akka://application/user/projectManager")
+          val msg = ProjectManagerActor.CreateProject(params("projectName"))
+          actor.askForJson(msg)
+      }
     }
   }
 
   get("/project/:projectId") {
     async {
-      val actor = system.actorSelection("akka://application/user/projectManager")
-      val msg =  ProjectManagerActor.LoadProject(params("projectId").toInt)
-      actor.askForJson(msg)
+      authenticated {
+        userId =>
+          val actor = system.actorSelection("akka://application/user/projectManager")
+          val msg = ProjectManagerActor.LoadProject(params("projectId").toInt)
+          actor.askForJson(msg)
+      }
     }
   }
 
   get("/project/:projectId/repositories") {
     async {
-      val actor = system.actorSelection("akka://application/user/repositoryManager")
-      val msg =  RepositoryManagerActor.LoadRepositoriesForProject(params("projectId").toInt)
-      actor.askForJson(msg)
+      authenticated {
+        userId =>
+          val actor = system.actorSelection("akka://application/user/repositoryManager")
+          val msg = RepositoryManagerActor.LoadRepositoriesForProject(params("projectId").toInt)
+          actor.askForJson(msg)
+      }
     }
   }
 
   get("/commit/:repositoryId/:commitId") {
     async {
-      val actor = system.actorSelection("akka://application/user/repositoryManager")
-      val msg =  RepositoryManagerActor.LoadCommit(params("repositoryId").toInt, params("commitId").toInt)
-      actor.askForJson(msg)
+      authenticated {
+        userId =>
+          val actor = system.actorSelection("akka://application/user/repositoryManager")
+          val msg = RepositoryManagerActor.LoadCommit(params("repositoryId").toInt, params("commitId").toInt)
+          actor.askForJson(msg)
+      }
     }
   }
 
   get("/commit-files/:repositoryId/:commitId") {
     async {
-      val actor = system.actorSelection("akka://application/user/repositoryManager")
-      val msg =  RepositoryManagerActor.LoadFilesContentFromCommit(params("repositoryId").toInt, params("commitId").toInt)
-      actor.askForJson(msg)
+      authenticated {
+        userId =>
+          val actor = system.actorSelection("akka://application/user/repositoryManager")
+          val msg = RepositoryManagerActor.LoadFilesContentFromCommit(params("repositoryId").toInt, params("commitId").toInt)
+          actor.askForJson(msg)
+      }
     }
   }
 
   get("/commit-files-diffs/:repositoryId/:commitId") {
     async {
-      val actor = system.actorSelection("akka://application/user/repositoryManager")
-      val msg =  RepositoryManagerActor.LoadFilesDiffFromCommit(params("repositoryId").toInt, params("commitId").toInt)
-      actor.askForJson(msg)
+      authenticated {
+        userId =>
+          val actor = system.actorSelection("akka://application/user/repositoryManager")
+          val msg = RepositoryManagerActor.LoadFilesDiffFromCommit(params("repositoryId").toInt, params("commitId").toInt)
+          actor.askForJson(msg)
+      }
     }
   }
 

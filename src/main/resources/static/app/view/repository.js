@@ -1,4 +1,4 @@
-app.controller("RepositoryController", function ($scope, $http, $routeParams) {
+app.controller("RepositoryController", function ($scope, $http, $routeParams, secureService) {
 
     var repositoryId = parseInt($routeParams.repositoryId);
 
@@ -7,13 +7,7 @@ app.controller("RepositoryController", function ($scope, $http, $routeParams) {
     $scope.commits = [];
 
     function init() {
-        $http.get("/rest/commits/"+repositoryId+"/0/20", {cache: true}).
-            success(function (data, status, headers, config) {
-                handleLoadCommitsResponse(data);
-            }).
-            error(function (data, status, headers, config) {
-                alert("Error communication with server!")
-            });
+        secureService.get("/rest/commits/"+repositoryId+"/0/20", true, handleLoadCommitsResponse);
     }
 
     function handleLoadCommitsResponse(response) {

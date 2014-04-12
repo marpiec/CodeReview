@@ -525,6 +525,9 @@ a {
   line-height: 16px;
   height: 16px;
 }
+.commitPage .file .fileComparator pre > span {
+  display: inline-block;
+}
 .commitPage .file .fileComparator pre.placeholder {
   background: url(../graph/empty-background.png);
 }
@@ -535,20 +538,17 @@ a {
 .commitPage .file .fileComparator pre:hover > span {
   background-color: #fff591 !important;
 }
-.commitPage .file .fileComparator pre > span {
-  display: inline-block;
-}
-.commitPage .file .fileComparator pre > span.added {
+.commitPage .file .fileComparator pre.added > span {
   background-color: #c1ffc2;
 }
-.commitPage .file .fileComparator pre > span.deleted {
+.commitPage .file .fileComparator pre.deleted > span {
   background-color: #ffced1;
   text-decoration: line-through;
 }
-.commitPage .file .fileComparator pre > span.modifiedFrom {
+.commitPage .file .fileComparator pre.modifiedFrom > span {
   background-color: #e9f8ff;
 }
-.commitPage .file .fileComparator pre > span.modifiedTo {
+.commitPage .file .fileComparator pre.modifiedTo > span {
   background-color: #e9f8ff;
 }
 .userProjects .projectWithRepositories {
