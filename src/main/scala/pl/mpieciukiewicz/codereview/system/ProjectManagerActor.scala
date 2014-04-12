@@ -5,6 +5,7 @@ import akka.actor.Actor
 import pl.mpieciukiewicz.codereview.model.Project
 import pl.mpieciukiewicz.codereview.system.RepositoryManagerActor.LoadRepositoriesForProject
 import scala.util.{Failure, Success}
+import pl.mpieciukiewicz.codereview.model.client.ProjectWithRepositories
 
 object ProjectManagerActor {
 
@@ -17,6 +18,9 @@ object ProjectManagerActor {
 
   case class LoadProject(projectId: Int)
   case class ProjectResponse(project: Option[Project])
+
+  case class LoadUserProjectsAndRepositories(userId: Int)
+  case class UserProjectsAndRepositories(projects: List[ProjectWithRepositories])
 
 }
 
@@ -36,6 +40,9 @@ class ProjectManagerActor(worker: ProjectManager) extends Actor {
     case msg: LoadProject =>
       val project = worker.loadProject(msg.projectId)
       sender ! ProjectResponse(project)
+    case msg: LoadUserProjectsAndRepositories =>
+      val projects = worker.loadUserProjectsAndRepositories(msg.userId)
+      sender ! UserProjectsAndRepositories(projects)
   }
 
 }

@@ -131,6 +131,16 @@ class RestServlet(system: ActorSystem) extends ScalatraServlet with FutureSuppor
     }
   }
 
+  get("/user-projects-and-repositories") {
+    async {
+      authenticated { userId =>
+        val actor = system.actorSelection("akka://application/user/projectManager")
+        val msg = ProjectManagerActor.LoadUserProjectsAndRepositories(userId)
+        actor.askForJson(msg)
+      }
+    }
+  }
+
   def async(block: => Future[_]):AsyncResult = {
     new AsyncResult {
       val is = block

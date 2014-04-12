@@ -551,7 +551,16 @@ a {
 .commitPage .file .fileComparator pre > span.modifiedTo {
   background-color: #e9f8ff;
 }
-.userProjects .project {
+.userProjects .projectWithRepositories {
+  background: #F4EBD1;
+  border: 1px solid #e1d6b7;
+  padding: 10px;
+  margin: 10px 20px;
+}
+.userProjects .projectWithRepositories .project {
+  display: block;
+}
+.userProjects .projectWithRepositories .repository {
   border: 1px solid #e1d6b7;
   background-color: #ffffff;
   padding: 5px;
@@ -564,6 +573,6 @@ a {
   line-height: 50px;
   text-align: center;
 }
-.userProjects .project:hover {
+.userProjects .projectWithRepositories .repository:hover {
   background-color: #fafafa;
 }

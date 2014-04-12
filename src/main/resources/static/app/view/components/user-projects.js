@@ -5,17 +5,17 @@ app.directive("mpUserProjects", function(secureService, session, secureService) 
         templateUrl: "app/view/components/user-projects.html",
         link: function(scope) {
 
-            scope.projects = {};
+            scope.projectsWithRepositories = {};
 
             function handleUserProjectsResponse(response) {
-                scope.projects = response.projects;
+                scope.projectsWithRepositories = response.projects;
             }
 
             function loadUserProjects() {
                 if(session.isAuthenticated()) {
-                    secureService.get("/rest/user-projects", true, handleUserProjectsResponse);
+                    secureService.get("/rest/user-projects-and-repositories", true, handleUserProjectsResponse);
                 } else {
-                    scope.projects = {};
+                    scope.projectsWithRepositories = {};
                 }
             }
 

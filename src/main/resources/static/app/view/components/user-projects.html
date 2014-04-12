@@ -1,7 +1,16 @@
 <div class="userProjects">
 
-    <a ng-repeat="project in projects" class="project" ng-href="#/project/{{ project.id[0] }}/{{ project.name }}">
-        {{ project.name }}
-    </a>
+
+    <div class="projectWithRepositories" ng-repeat="projectWithRepositories in projectsWithRepositories">
+        <a class="project" ng-href="#/project/{{ projectWithRepositories.project.id[0] }}/{{ projectWithRepositories.project.name }}">
+            {{ projectWithRepositories.project.name }}
+        </a>
+
+        <a class="repository" ng-repeat="repository in projectWithRepositories.repositories" ng-href="#/repository/{{ repository.id[0] }}/{{ repository.name }}">
+         {{ repository.name}}
+        </a>
+
+    </div>
+
 
 </div>
