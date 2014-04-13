@@ -507,10 +507,10 @@ a {
 .commitPage .file .fileComparator .after {
   border: 1px solid #e1d6b7;
   background-color: white;
-  padding: 5px;
   margin: 10px;
   width: 50%;
   overflow-x: auto;
+  padding: 0 0 1px 0;
 }
 .commitPage .file .fileComparator .before div,
 .commitPage .file .fileComparator .after div {
@@ -525,8 +525,17 @@ a {
   line-height: 16px;
   height: 16px;
 }
-.commitPage .file .fileComparator pre > span {
+.commitPage .file .fileComparator pre > .lineNumber {
   display: inline-block;
+  font-size: 10px;
+  color: #bbb;
+  border-right: 1px solid #ccc;
+  text-align: right;
+  padding: 0 4px 0 3px;
+}
+.commitPage .file .fileComparator pre > span.line {
+  display: inline-block;
+  padding-left: 3px;
 }
 .commitPage .file .fileComparator pre.placeholder {
   background: url(../graph/empty-background.png);
@@ -535,20 +544,24 @@ a {
   cursor: pointer;
   background-color: #fff591;
 }
-.commitPage .file .fileComparator pre:hover > span {
+.commitPage .file .fileComparator pre:hover > span.line,
+.commitPage .file .fileComparator pre:hover > span.lineNumber {
   background-color: #fff591 !important;
 }
-.commitPage .file .fileComparator pre.added > span {
+.commitPage .file .fileComparator pre.added > span.line,
+.commitPage .file .fileComparator pre.added > span.lineNumber {
   background-color: #c1ffc2;
 }
-.commitPage .file .fileComparator pre.deleted > span {
+.commitPage .file .fileComparator pre.deleted > span.line,
+.commitPage .file .fileComparator pre.deleted > span.lineNumber {
   background-color: #ffced1;
-  text-decoration: line-through;
 }
-.commitPage .file .fileComparator pre.modifiedFrom > span {
+.commitPage .file .fileComparator pre.modifiedFrom > span.line,
+.commitPage .file .fileComparator pre.modifiedFrom > span.lineNumber {
   background-color: #e9f8ff;
 }
-.commitPage .file .fileComparator pre.modifiedTo > span {
+.commitPage .file .fileComparator pre.modifiedTo > span.line,
+.commitPage .file .fileComparator pre.modifiedTo > span.lineNumber {
   background-color: #e9f8ff;
 }
 .userProjects .projectWithRepositories {

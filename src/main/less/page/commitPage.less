@@ -20,10 +20,10 @@
       .before, .after {
         border: 1px solid @standard-border-color;
         background-color: white;
-        padding: 5px;
         margin: 10px;
         width: 50%;
         overflow-x: auto;
+        padding: 0 0 1px 0;
 
         div {
           display: inline-block;
@@ -39,8 +39,18 @@
         line-height: 16px;
         height: 16px;
 
-        > span {
+        > .lineNumber {
           display: inline-block;
+          font-size: 10px;
+          color: #bbb;
+          border-right: 1px solid #ccc;
+          text-align: right;
+          padding: 0 4px 0 3px;
+        }
+
+        > span.line {
+          display: inline-block;
+          padding-left: 3px;
         }
 
         &.placeholder {
@@ -51,32 +61,31 @@
           cursor: pointer;
           background-color: #fff591;
 
-          > span {
+          > span.line, > span.lineNumber {
             background-color: #fff591 !important;
           }
         }
 
         &.added {
-          > span {
+          > span.line, > span.lineNumber {
             background-color: rgb(193, 255, 194);
           }
         }
 
         &.deleted {
-          > span {
+          > span.line, > span.lineNumber {
             background-color: #ffced1;
-            text-decoration: line-through;
           }
         }
 
         &.modifiedFrom {
-          > span {
+          > span.line, > span.lineNumber {
             background-color: rgb(233, 248, 255);
           }
         }
 
         &.modifiedTo {
-          > span {
+          > span.line, > span.lineNumber {
             background-color: rgb(233, 248, 255);
           }
         }

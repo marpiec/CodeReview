@@ -61,6 +61,14 @@ app.controller("CommitController", function ($scope, secureService, $routeParams
                     }
                 }
 
+                for(var j=0;j<processed.from.length; j++) {
+                    processed.from[j].number = addPrecedingSpaces(processed.from.length, (j + 1));
+                }
+
+                for(var j=0;j<processed.to.length; j++) {
+                    processed.to[j].number = addPrecedingSpaces(processed.to.length, (j + 1));
+                }
+
                 for(var j=0;j<Math.max(processed.to.length, processed.from.length);j++) {
 
 
@@ -68,21 +76,29 @@ app.controller("CommitController", function ($scope, secureService, $routeParams
                     var to = processed.to[j];
 
                     if (from.change == "none" && to.change == "added") {
-                        processed.from.splice(j, 0, {change: "placeholder", content: ""})
+                        processed.from.splice(j, 0, {change: "placeholder", content: "", number: ""})
                     } else if (from.change == "deleted" && to.change == "none") {
-                        processed.to.splice(j, 0, {change: "placeholder", content: ""})
+                        processed.to.splice(j, 0, {change: "placeholder", content: "", number: ""})
                     } else if (from.change == "deleted" && to.change == "added") {
-                        processed.from[j] = {change: "modifiedFrom", content: processed.from[j].content};
-                        processed.to[j] = {change: "modifiedTo", content: processed.to[j].content};
+                        processed.from[j].change="modifiedFrom";
+                        processed.to[j].change="modifiedTo";
                     }
-
-
                 }
-
             }
         }
-
     }
+
+    function addPrecedingSpaces(maximumNumber, currentNumber) {
+        var maxDigits = (maximumNumber+"").length;
+        var currentDigits = (currentNumber+"").length;
+        var result = currentNumber+"";
+        for(var p = currentDigits; p< maxDigits;p++) {
+            result = " "+result;
+        }
+        return result;
+    }
+
+
 
     function lineRemoved(lineChanges, lineNumber) {
         for(var i = 0; i< lineChanges.length; i++) {
