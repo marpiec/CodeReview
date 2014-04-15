@@ -21,7 +21,7 @@ class GitReaderSpec extends FeatureSpec with GivenWhenThen with GitBeforeAndAfte
 
       When("Getting 4 Commits")
 
-      val commits: List[GitCommit] = gitReader.readCommits(4)
+      val commits: List[GitCommit] = gitReader.readCommits(0, 4)
 
 
       Then("Have correct commits")

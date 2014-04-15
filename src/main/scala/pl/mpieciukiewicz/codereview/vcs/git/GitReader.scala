@@ -36,13 +36,18 @@ class GitReader(val repoDir: String) {
     readAllGitCommits.map(convertJGitCommitToCommit).toList
   }
 
-  def readCommits(count: Int):List[GitCommit] = {
-    readAllGitCommits.take(count).map(convertJGitCommitToCommit).toList
+  def readCommits(from: Int, count: Int):List[GitCommit] = {
+    readLastGitCommitsFromTo(from, count).map(convertJGitCommitToCommit).toList
   }
 
   private def readAllGitCommits() = {
     new Git(repository).log().all().call().asScala
   }
+
+  private def readLastGitCommitsFromTo(skip: Int, count: Int) = {
+    new Git(repository).log().setSkip(skip).setMaxCount(count).all().call().asScala
+  }
+
 
   private def convertJGitCommitToCommit(commit: RevCommit):GitCommit = {
     GitCommit(id = commit.getId.name.trim,
