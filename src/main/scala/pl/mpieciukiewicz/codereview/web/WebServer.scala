@@ -65,7 +65,7 @@ class WebServer(config: Configuration) {
     requestLog.setLoggerName("accessLogger")
     requestLog.setLogDateFormat("yyyy-MM-dd hh:mm:ss:SSS")
     requestLog.setExtended(false)
-    requestLog.setIgnorePaths(Array("/lib/*", "/app/*"))
+    requestLog.setIgnorePaths(Array("/lib/*", "/app/*", "/rest/task-progress/*", "/favicon.ico"))
 
     val requestLogHandler = new RequestLogHandler()
     requestLogHandler.setRequestLog(requestLog)
