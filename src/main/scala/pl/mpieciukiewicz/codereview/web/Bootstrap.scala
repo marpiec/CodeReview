@@ -1,9 +1,8 @@
 package pl.mpieciukiewicz.codereview.web
 
 import org.scalatra.LifeCycle
-import akka.actor.ActorSystem
-import pl.mpieciukiewicz.codereview.system.ActorSystemInitializator
 import javax.servlet.ServletContext
+import pl.mpieciukiewicz.codereview.ioc.Container
 
 
 /**
@@ -11,16 +10,13 @@ import javax.servlet.ServletContext
  */
 class Bootstrap extends LifeCycle {
 
-  val system = ActorSystem("application")
-  new ActorSystemInitializator(system).createActors()
-
+  val container = Container.instance
 
   override def init(servletContext: ServletContext) {
-    servletContext.mount(new RestServlet(system), "/rest/*")
-
+    servletContext.mount(new RestServlet(container.actorSystem, container.actorProvider, container.progressMonitor), "/rest/*")
   }
 
   override def destroy(context: ServletContext) {
-    system.shutdown()
+    container.actorSystem.shutdown()
   }
 }

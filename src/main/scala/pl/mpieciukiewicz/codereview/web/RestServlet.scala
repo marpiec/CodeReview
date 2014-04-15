@@ -2,19 +2,19 @@ package pl.mpieciukiewicz.codereview.web
 
 import org.scalatra.{Unauthorized, FutureSupport, AsyncResult, ScalatraServlet}
 import pl.mpieciukiewicz.codereview.system._
-import pl.mpieciukiewicz.codereview.ioc.Container
-import akka.actor.{ActorSelection, Actor, ActorSystem}
+import pl.mpieciukiewicz.codereview.ioc.{ActorProvider, Container}
+import akka.actor.{ActorRef, ActorSystem}
 import akka.pattern.ask
 import scala.concurrent.{Await, ExecutionContext, Future}
 import akka.util.Timeout
 import scala.concurrent.duration._
-import pl.mpieciukiewicz.codereview.system.UserManagerActor.CheckSessionResponse
-import scala.Some
+import pl.mpieciukiewicz.codereview.system.actor.{ProjectManagerActor, UserManagerActor, RepositoryManagerActor}
+import pl.mpieciukiewicz.codereview.system.actor.UserManagerActor.CheckSessionResponse
 
 /**
  *
  */
-class RestServlet(system: ActorSystem) extends ScalatraServlet with FutureSupport {
+class RestServlet(actorSystem: ActorSystem, actorProvider: ActorProvider, progressMonitor: ProgressMonitor) extends ScalatraServlet with FutureSupport {
 
   val cache = Container.instance.documentsCache
 
@@ -36,7 +36,7 @@ class RestServlet(system: ActorSystem) extends ScalatraServlet with FutureSuppor
       authenticated {
         userId =>
           cache.getOrInsert(request.getRequestURI) {
-            val actor = system.actorSelection("akka://application/user/repositoryManager")
+            val actor = actorProvider.repositoryManagerActor
             val msg = RepositoryManagerActor.LoadCommits(params("repository").toInt, params("start").toInt, params("count").toInt)
             actor.askForJson(msg)
           }
@@ -46,7 +46,7 @@ class RestServlet(system: ActorSystem) extends ScalatraServlet with FutureSuppor
 
   post("/register-user") {
     async {
-      val actor = system.actorSelection("akka://application/user/userManager")
+      val actor = actorProvider.userManagerActor
       val msg = UserManagerActor.RegisterUser(params("name"), params("email"), params("password"))
       actor.askForJson(msg)
     }
@@ -54,7 +54,7 @@ class RestServlet(system: ActorSystem) extends ScalatraServlet with FutureSuppor
 
   post("/authenticate-user") {
     async {
-      val actor = system.actorSelection("akka://application/user/userManager")
+      val actor = actorProvider.userManagerActor
       val msg = UserManagerActor.AuthenticateUser(params("user"), params("password"), request.getRemoteAddr)
       actor.askForJson(msg)
     }
@@ -62,7 +62,7 @@ class RestServlet(system: ActorSystem) extends ScalatraServlet with FutureSuppor
 
   get("/logout") {
     async {
-      val actor = system.actorSelection("akka://application/user/userManager")
+      val actor = actorProvider.userManagerActor
       val msg = UserManagerActor.Logout(cookies.get("sessionId").getOrElse(""))
       actor.askForJson(msg)
     }
@@ -72,10 +72,19 @@ class RestServlet(system: ActorSystem) extends ScalatraServlet with FutureSuppor
     async {
       authenticated {
         userId =>
-          val actor = system.actorSelection("akka://application/user/repositoryManager")
-          val msg = RepositoryManagerActor.AddRepository(params("cloneUrl"), params("repoName"), params("projectId").toInt)
+          val taskMonitorWithId = progressMonitor.createTaskProgressMonitor()
+
+          val actor = actorProvider.repositoryManagerActor
+          val msg = RepositoryManagerActor.AddRepository(params("cloneUrl"), params("repoName"), params("projectId").toInt, taskMonitorWithId)
           actor.askForJson(msg)
       }
+    }
+  }
+
+  get("/task-progress/:taskId") {
+    progressMonitor.getTaskMonitor(params("taskId")) match {
+      case Some(monitor) => toJson(monitor)
+      case None => halt(404)
     }
   }
 
@@ -83,7 +92,7 @@ class RestServlet(system: ActorSystem) extends ScalatraServlet with FutureSuppor
     async {
       authenticated {
         userId =>
-          val actor = system.actorSelection("akka://application/user/projectManager")
+          val actor = actorProvider.projectManagerActor
           val msg = ProjectManagerActor.CreateProject(params("projectName"))
           actor.askForJson(msg)
       }
@@ -94,7 +103,7 @@ class RestServlet(system: ActorSystem) extends ScalatraServlet with FutureSuppor
     async {
       authenticated {
         userId =>
-          val actor = system.actorSelection("akka://application/user/projectManager")
+          val actor = actorProvider.projectManagerActor
           val msg = ProjectManagerActor.LoadProject(params("projectId").toInt)
           actor.askForJson(msg)
       }
@@ -105,7 +114,7 @@ class RestServlet(system: ActorSystem) extends ScalatraServlet with FutureSuppor
     async {
       authenticated {
         userId =>
-          val actor = system.actorSelection("akka://application/user/repositoryManager")
+          val actor = actorProvider.repositoryManagerActor
           val msg = RepositoryManagerActor.LoadRepositoriesForProject(params("projectId").toInt)
           actor.askForJson(msg)
       }
@@ -116,7 +125,7 @@ class RestServlet(system: ActorSystem) extends ScalatraServlet with FutureSuppor
     async {
       authenticated {
         userId =>
-          val actor = system.actorSelection("akka://application/user/repositoryManager")
+          val actor = actorProvider.repositoryManagerActor
           val msg = RepositoryManagerActor.LoadCommit(params("repositoryId").toInt, params("commitId").toInt)
           actor.askForJson(msg)
       }
@@ -127,7 +136,7 @@ class RestServlet(system: ActorSystem) extends ScalatraServlet with FutureSuppor
     async {
       authenticated {
         userId =>
-          val actor = system.actorSelection("akka://application/user/repositoryManager")
+          val actor = actorProvider.repositoryManagerActor
           val msg = RepositoryManagerActor.LoadFilesContentFromCommit(params("repositoryId").toInt, params("commitId").toInt)
           actor.askForJson(msg)
       }
@@ -138,7 +147,7 @@ class RestServlet(system: ActorSystem) extends ScalatraServlet with FutureSuppor
     async {
       authenticated {
         userId =>
-          val actor = system.actorSelection("akka://application/user/repositoryManager")
+          val actor = actorProvider.repositoryManagerActor
           val msg = RepositoryManagerActor.LoadFilesDiffFromCommit(params("repositoryId").toInt, params("commitId").toInt)
           actor.askForJson(msg)
       }
@@ -148,7 +157,7 @@ class RestServlet(system: ActorSystem) extends ScalatraServlet with FutureSuppor
   get("/user-projects") {
     async {
       authenticated { userId =>
-        val actor = system.actorSelection("akka://application/user/projectManager")
+        val actor = actorProvider.projectManagerActor
         val msg = ProjectManagerActor.LoadUserProjects(userId)
         actor.askForJson(msg)
       }
@@ -158,7 +167,7 @@ class RestServlet(system: ActorSystem) extends ScalatraServlet with FutureSuppor
   get("/user-projects-and-repositories") {
     async {
       authenticated { userId =>
-        val actor = system.actorSelection("akka://application/user/projectManager")
+        val actor = actorProvider.projectManagerActor
         val msg = ProjectManagerActor.LoadUserProjectsAndRepositories(userId)
         actor.askForJson(msg)
       }
@@ -171,14 +180,14 @@ class RestServlet(system: ActorSystem) extends ScalatraServlet with FutureSuppor
     }
   }
 
-  implicit class MyActor(actor:ActorSelection) {
+  implicit class MyActor(actor:ActorRef) {
     def askForJson(msg: Any):Future[String] = {
       actor.ask(msg).map(toJson)
     }
   }
 
   def authenticated(block: Int => Future[_]) = {
-    val userManager = system.actorSelection("akka://application/user/userManager")
+    val userManager = actorProvider.userManagerActor
     val sessionId = cookies.get("sessionId")
     val userInfo = userManager ? UserManagerActor.CheckSession(sessionId.getOrElse(""), request.getRemoteAddr)
     val userInfoResponse = Await.result(userInfo, 10 seconds).asInstanceOf[CheckSessionResponse]
@@ -188,5 +197,5 @@ class RestServlet(system: ActorSystem) extends ScalatraServlet with FutureSuppor
     }
   }
 
-  override protected implicit def executor: ExecutionContext = system.dispatcher
+  override protected implicit def executor: ExecutionContext = actorSystem.dispatcher
 }

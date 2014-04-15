@@ -1,11 +1,11 @@
-package pl.mpieciukiewicz.codereview.system
+package pl.mpieciukiewicz.codereview.system.actor
 
-import pl.mpieciukiewicz.codereview.database.{RepositoryStorage, ProjectStorage}
+import pl.mpieciukiewicz.codereview.database.ProjectStorage
 import akka.actor.Actor
 import pl.mpieciukiewicz.codereview.model.Project
-import pl.mpieciukiewicz.codereview.system.RepositoryManagerActor.LoadRepositoriesForProject
 import scala.util.{Failure, Success}
 import pl.mpieciukiewicz.codereview.model.client.ProjectWithRepositories
+import pl.mpieciukiewicz.codereview.system.ProjectManager
 
 object ProjectManagerActor {
 

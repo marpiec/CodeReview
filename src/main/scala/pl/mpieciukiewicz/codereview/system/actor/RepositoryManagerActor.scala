@@ -1,13 +1,18 @@
-package pl.mpieciukiewicz.codereview.system
+package pl.mpieciukiewicz.codereview.system.actor
 
 import akka.actor.Actor
 import pl.mpieciukiewicz.codereview.model.{FileContent, CommitWithFiles, Repository}
-import pl.mpieciukiewicz.codereview.vcs.{VcsFileDiff, VcsFileContent}
+import pl.mpieciukiewicz.codereview.vcs.VcsFileDiff
+import pl.mpieciukiewicz.codereview.system.RepositoryManager
+import pl.mpieciukiewicz.codereview.ioc.ActorProvider
+import pl.mpieciukiewicz.codereview.utils.{Configuration, RandomGenerator}
+import pl.mpieciukiewicz.codereview.web.TaskMonitorWithId
+import pl.mpieciukiewicz.codereview.vcs.git.JGitProgressMonitor
 
 object RepositoryManagerActor {
 
-  case class AddRepository(cloneUrl: String, repositoryName: String, projectId: Int)
-  case class AddingRepositoryResponse(successful: Boolean, repositoryId: Option[Int])
+  case class AddRepository(cloneUrl: String, repositoryName: String, projectId: Int, taskMonitor: TaskMonitorWithId)
+  case class AddingRepositoryResponse(successful: Boolean, repositoryId: Option[Int], taskMonitorId: String)
 
   case class LoadCommits(repositoryId: Int, start: Int, count: Int)
   case class LoadCommitsResponse(commits: List[CommitWithFiles])
@@ -24,16 +29,23 @@ object RepositoryManagerActor {
   case class LoadFilesDiffFromCommit(repositoryId: Int, commitId: Int)
   case class LoadFilesDiffFromCommitResponse(files: List[VcsFileDiff])
 
+  case class GetCloningProgress(repositoryId: Int)
+  case class CloningProgressResponse(progress: Option[JGitProgressMonitor])
+
+  case class CloningFinished(repositoryId: Int)
+
 }
 
-class RepositoryManagerActor(worker: RepositoryManager) extends Actor {
+class RepositoryManagerActor(worker: RepositoryManager, actorProvider: ActorProvider, randomGenerator: RandomGenerator, config: Configuration) extends Actor {
 
   import RepositoryManagerActor._
 
+
+
   override def receive = {
     case msg: AddRepository =>
-      val repositoryId = worker.addRepository(msg.cloneUrl, msg.repositoryName, msg.projectId)
-      sender ! AddingRepositoryResponse(true, Some(repositoryId))
+      val repositoryId = worker.addRepository(msg.cloneUrl, msg.repositoryName, msg.projectId, msg.taskMonitor.monitor)
+      sender ! AddingRepositoryResponse(true, Some(repositoryId), msg.taskMonitor.monitorId)
     case msg: LoadCommits =>
       val commits = worker.loadCommits(msg.repositoryId, msg.start, msg.count)
       sender ! LoadCommitsResponse(commits)

@@ -3,19 +3,29 @@ package pl.mpieciukiewicz.codereview.ioc
 import pl.mpieciukiewicz.codereview.database._
 import pl.mpieciukiewicz.codereview.database.engine.{DatabaseAccessor, DocumentDataStorage}
 import pl.mpieciukiewicz.codereview.utils.json.JsonUtil
-import pl.mpieciukiewicz.codereview.system.{ProjectManager, RepositoryManager, DocumentsCache}
+import pl.mpieciukiewicz.codereview.system._
 import pl.mpieciukiewicz.codereview.utils.{PasswordUtil, RandomGenerator, Configuration}
 import com.typesafe.config.ConfigFactory
 import java.io.InputStreamReader
 import pl.mpieciukiewicz.codereview.utils.clock.DefaultTimeZoneClock
+import akka.actor.ActorSystem
+import pl.mpieciukiewicz.codereview.web.ProgressMonitor
 
 /**
  *
  */
 class Container {
 
+
+
   private val MAIN_CONFIG_FILE = "/application.conf"
   val configuration = Configuration.fromClasspath(MAIN_CONFIG_FILE)
+
+  //Akka
+  val actorSystem = ActorSystem("application")
+  val actorProvider = new ActorProvider(actorSystem, this)
+
+  val progressMonitor = new ProgressMonitor
 
   val passwordUtil = new PasswordUtil(configuration.security.systemSalt)
   val clock = new DefaultTimeZoneClock
@@ -38,6 +48,7 @@ class Container {
 
   val repositoryManager = new RepositoryManager(repositoryStorage, commitStorage, fileContentStorage, randomUtil, configuration, clock)
   val projectManager = new ProjectManager(projectStorage, repositoryStorage)
+  val userManager = new UserManager(userStorage, randomUtil, clock, passwordUtil)
 
 }
 

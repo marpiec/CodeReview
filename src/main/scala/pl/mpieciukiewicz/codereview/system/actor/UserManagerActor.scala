@@ -1,8 +1,9 @@
-package pl.mpieciukiewicz.codereview.system
+package pl.mpieciukiewicz.codereview.system.actor
 
 import akka.actor.Actor
 import pl.mpieciukiewicz.codereview.model.authorization.SessionInfoClientSide
 import scala.util.{Failure, Success}
+import pl.mpieciukiewicz.codereview.system.UserManager
 
 
 object UserManagerActor {
@@ -35,7 +36,9 @@ class UserManagerActor(worker: UserManager) extends Actor {
       case true => sender ! RegistrationResult(true)
       case false => sender ! RegistrationResult(false)
     }
-    case msg: AuthenticateUser => worker.authenticateUser(msg.user, msg.password, msg.ip) match {
+    case msg: AuthenticateUser =>
+      println(worker)
+      worker.authenticateUser(msg.user, msg.password, msg.ip) match {
       case Success(sessionInfo) => sender ! AuthenticationResult(true, Some(sessionInfo))
       case Failure(_) => sender ! AuthenticationResult(false)
     }

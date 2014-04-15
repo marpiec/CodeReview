@@ -1,6 +1,42 @@
 <div class="addRepositoryPage">
 
 
+    <style>
+
+        .progress {
+            text-align: center;
+            margin-top: 30px;
+        }
+        .progressMonitor {
+            margin-top: 30px;
+            display: inline-block;
+            position: relative;
+            width: 400px;
+            height: 20px;
+            background-color: white;
+            border: 1px solid black;
+            text-align: center;
+        }
+
+        .progressMonitor .progressBar {
+            position: absolute;
+            top: 0px;
+            left: 0px;
+            bottom: 0px;
+            background-color: #479;
+        }
+
+        .progressMonitor .progressPercentage {
+            position: absolute;
+            top: 0px;
+            left: 0px;
+            bottom: 0px;
+            right: 0px;
+            z-index: 2;
+        }
+
+    </style>
+
 
 
     <div class="horizontalBar"></div>
@@ -9,13 +45,23 @@
     <div class="mainForm">
 
 
-        <form ng-submit="addRepository()">
+        <form ng-hide="taskProgress.visible" ng-submit="addRepository()">
             <label>Repository name</label>
             <input type="text" ng-model="form.repoName" auto-focus />
             <label>Remote repository url</label>
             <input type="text" ng-model="form.cloneUrl"/>
             <button type="submit">Add repository</button>
         </form>
+
+        <div ng-show="taskProgress.visible" class="progress">
+            <div ng-hide="taskProgress.taskName == ''">{{taskProgress.taskName}} ({{taskProgress.completed}}/{{taskProgress.totalWork}})</div>
+            <div ng-show="taskProgress.taskName == ''">&nbsp;</div>
+
+            <div class="progressMonitor">
+                <div class="progressBar" ng-style="progressBar"></div>
+                <div class="progressPercentage">{{taskProgress.percentDone}}%</div>
+            </div>
+        </div>
 
     </div>
     <div class="formName">Add new repository</div>
