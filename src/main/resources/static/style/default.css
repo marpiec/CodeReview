@@ -511,6 +511,7 @@ a {
   width: 50%;
   overflow-x: auto;
   padding: 0 0 1px 0;
+  vertical-align: top;
 }
 .commitPage .file .fileComparator .before div,
 .commitPage .file .fileComparator .after div {
@@ -533,9 +534,19 @@ a {
   text-align: right;
   padding: 0 4px 0 3px;
 }
-.commitPage .file .fileComparator pre > span.line {
+.commitPage .file .fileComparator pre > .line {
   display: inline-block;
   padding-left: 3px;
+}
+.commitPage .file .fileComparator pre > .separator-top {
+  background: url(../graph/filebreaker-top.png);
+  height: 16px;
+  display: block;
+}
+.commitPage .file .fileComparator pre > .separator-bottom {
+  background: url(../graph/filebreaker-bottom.png);
+  height: 16px;
+  display: block;
 }
 .commitPage .file .fileComparator pre.placeholder {
   background: url(../graph/empty-background.png);

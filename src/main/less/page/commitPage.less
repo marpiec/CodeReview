@@ -24,6 +24,7 @@
         width: 50%;
         overflow-x: auto;
         padding: 0 0 1px 0;
+        vertical-align: top;
 
         div {
           display: inline-block;
@@ -39,6 +40,7 @@
         line-height: 16px;
         height: 16px;
 
+
         > .lineNumber {
           display: inline-block;
           font-size: 10px;
@@ -48,9 +50,22 @@
           padding: 0 4px 0 3px;
         }
 
-        > span.line {
+        > .line {
           display: inline-block;
           padding-left: 3px;
+
+        }
+
+        > .separator-top {
+          background: url(../graph/filebreaker-top.png);
+          height: 16px;
+          display: block;
+        }
+
+        > .separator-bottom {
+          background: url(../graph/filebreaker-bottom.png);
+          height: 16px;
+          display: block;
         }
 
         &.placeholder {

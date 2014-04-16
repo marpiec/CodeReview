@@ -9,7 +9,6 @@ app.controller("CommitController", function ($scope, secureService, $routeParams
     $scope.info = {};
     $scope.files = [];
 
-    $scope.processedFiles = [];
 
     function handleCommitResponse(response) {
         if (response.commit.length == 1) {
@@ -23,6 +22,8 @@ app.controller("CommitController", function ($scope, secureService, $routeParams
         $scope.files = response.files;
 
         prepareFilesLines(response.files);
+
+        showOnlyModifiedLines(5)
     }
 
     function prepareFilesLines(files) {
@@ -85,6 +86,59 @@ app.controller("CommitController", function ($scope, secureService, $routeParams
                     }
                 }
             }
+        }
+    }
+
+
+    function showOnlyModifiedLines(neibour) {
+
+        for(var i=0;i<$scope.files.length;i++) {
+            var file = $scope.files[i];
+
+            var distanceFromModified = 100000;
+            for(var j=0; j<file.processed.from.length; j++) {
+                if(file.processed.from[j].change != "none" || file.processed.to[j].change != "none") {
+                    distanceFromModified = 0;
+                }
+                if(distanceFromModified < 5) {
+                    file.processed.from[j].visible = "visible";
+                    file.processed.to[j].visible = "visible";
+                } else if (distanceFromModified == 5) {
+                    file.processed.from[j].visible = "separator-bottom";
+                    file.processed.to[j].visible = "separator-bottom";
+                } else {
+                    file.processed.from[j].visible = "hidden";
+                    file.processed.to[j].visible = "hidden";
+                }
+                distanceFromModified++;
+            }
+
+            var distanceFromModified = 100000;
+            //var first = true;
+            for(var j=file.processed.from.length - 1; j>=0; j--) {
+                if(file.processed.from[j].change != "none" || file.processed.to[j].change != "none") {
+                    distanceFromModified = 0;
+                }
+//                if(file.processed.from[j].visible == "separator" && first) {
+//                    file.processed.from[j].visible = "hidden";
+//                    file.processed.to[j].visible = "hidden";
+//                    first = false;
+//                }
+
+                if(distanceFromModified < 5) {
+                    file.processed.from[j].visible = "visible";
+                    file.processed.to[j].visible = "visible";
+                } else if (distanceFromModified == 5) {
+                    file.processed.from[j].visible = "separator-top";
+                    file.processed.to[j].visible = "separator-top";
+                } else if (distanceFromModified == 5 && file.processed.from[j].visible == "separator") {
+                    file.processed.from[j].visible = "visible";
+                    file.processed.to[j].visible = "visible";
+                }
+
+                distanceFromModified++;
+            }
+
         }
     }
 
