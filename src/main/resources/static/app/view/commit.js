@@ -119,21 +119,16 @@ app.controller("CommitController", function ($scope, secureService, $routeParams
                 if(file.processed.from[j].change != "none" || file.processed.to[j].change != "none") {
                     distanceFromModified = 0;
                 }
-//                if(file.processed.from[j].visible == "separator" && first) {
-//                    file.processed.from[j].visible = "hidden";
-//                    file.processed.to[j].visible = "hidden";
-//                    first = false;
-//                }
 
                 if(distanceFromModified < 5) {
                     file.processed.from[j].visible = "visible";
                     file.processed.to[j].visible = "visible";
-                } else if (distanceFromModified == 5) {
-                    file.processed.from[j].visible = "separator-top";
-                    file.processed.to[j].visible = "separator-top";
-                } else if (distanceFromModified == 5 && file.processed.from[j].visible == "separator") {
+                } else if (distanceFromModified == 5 && file.processed.from[j].visible == "separator-bottom") {
                     file.processed.from[j].visible = "visible";
                     file.processed.to[j].visible = "visible";
+                } else if (distanceFromModified == 5 && file.processed.from[j].visible == "hidden") {
+                    file.processed.from[j].visible = "separator-top";
+                    file.processed.to[j].visible = "separator-top";
                 }
 
                 distanceFromModified++;
