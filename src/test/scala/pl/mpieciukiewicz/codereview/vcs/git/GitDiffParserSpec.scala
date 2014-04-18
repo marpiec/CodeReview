@@ -13,6 +13,35 @@ class GitDiffParserSpec extends FeatureSpec with GivenWhenThen {
 
   feature("Parsing of git diff file") {
 
+    scenario("can parse diff file header") {
+      Given("Some file headers")
+      val parser = new GitDiffParser
+      val header1 = "@@ -23,8 +23,8 @@"
+      val header2 = "@@ -23,8 @@"
+      val header3 = "@@ -23,8 +23,8 -21,3 +24,2 @@"
+      val header4 = "@@ -23,8 +23 @@"
+
+      When("Parsing header")
+      val changeBlock1 = parser.parseChangeBlockDescription(header1)
+      val changeBlock2 = parser.parseChangeBlockDescription(header2)
+      val changeBlock3 = parser.parseChangeBlockDescription(header3)
+      val changeBlock4 = parser.parseChangeBlockDescription(header4)
+
+      Then("Parsed information is correct")
+      assertThat(changeBlock1.removed.asJava).containsExactly(ChangeDescription(23, 8))
+      assertThat(changeBlock1.added.asJava).containsExactly(ChangeDescription(23, 8))
+
+      assertThat(changeBlock2.removed.asJava).containsExactly(ChangeDescription(23, 8))
+      assertThat(changeBlock2.added.asJava).isEmpty()
+
+      assertThat(changeBlock3.removed.asJava).containsExactly(ChangeDescription(23, 8), ChangeDescription(21, 3))
+      assertThat(changeBlock3.added.asJava).containsExactly(ChangeDescription(23, 8), ChangeDescription(24, 2))
+
+      assertThat(changeBlock4.removed.asJava).containsExactly(ChangeDescription(23, 8))
+      assertThat(changeBlock4.added.asJava).containsExactly(ChangeDescription(0, 23))
+
+    }
+
     scenario("can parse simple diff file") {
       
       Given("Simple diff file")

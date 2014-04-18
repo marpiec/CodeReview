@@ -10,8 +10,8 @@ import pl.mpieciukiewicz.codereview.database.UserStorage
 import pl.mpieciukiewicz.codereview.utils.{PasswordUtil, RandomGenerator}
 import pl.mpieciukiewicz.codereview.utils.clock.SettableStagnantClock
 import pl.mpieciukiewicz.codereview.TestsUtil._
-import pl.mpieciukiewicz.codereview.system.UserManagerActor.AuthenticationResult
-import pl.mpieciukiewicz.codereview.system.UserManagerActor.CheckSessionResponse
+import pl.mpieciukiewicz.codereview.system.actor.UserManagerActor
+import pl.mpieciukiewicz.codereview.system.actor.UserManagerActor.{CheckSessionResponse, AuthenticationResult}
 
 /**
  *

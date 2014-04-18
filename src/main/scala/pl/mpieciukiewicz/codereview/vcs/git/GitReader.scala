@@ -5,8 +5,8 @@ import org.eclipse.jgit.api.Git
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder
 import java.io.{ByteArrayOutputStream, File}
 import collection.JavaConverters._
-import org.eclipse.jgit.revwalk.RevCommit
-import org.eclipse.jgit.lib.{ConfigConstants, ObjectId}
+import org.eclipse.jgit.revwalk.{RevWalk, RevCommit}
+import org.eclipse.jgit.lib.{Constants, Ref, ConfigConstants, ObjectId}
 import org.eclipse.jgit.treewalk.TreeWalk
 import org.eclipse.jgit.diff._
 import pl.mpieciukiewicz.codereview.vcs._
@@ -23,6 +23,7 @@ import pl.mpieciukiewicz.codereview.vcs.FileAdd
 import pl.mpieciukiewicz.codereview.vcs.FileCopy
 import org.eclipse.jgit.diff.DiffAlgorithm.SupportedAlgorithm
 import org.joda.time.DateTime
+import java.util.Date
 
 /**
  *
@@ -31,6 +32,7 @@ class GitReader(val repoDir: String) {
 
   val builder = new FileRepositoryBuilder()
   val repository = builder.findGitDir(new File(repoDir)).build()
+  val git = new Git(repository)
 
   def readAllCommits():List[GitCommit] = {
     readAllGitCommits.map(convertJGitCommitToCommit).toList
@@ -45,16 +47,64 @@ class GitReader(val repoDir: String) {
   }
 
   private def readLastGitCommitsFromTo(skip: Int, count: Int) = {
-    new Git(repository).log().setSkip(skip).setMaxCount(count).all().call().asScala
+    git.log().setSkip(skip).setMaxCount(count).all().call().asScala
   }
 
 
   private def convertJGitCommitToCommit(commit: RevCommit):GitCommit = {
+    //commit.getAuthorIdent (name and email)
+    //commit.getCommiterIdent (name and email)
+    //commit shortMessage
+
+    val brach = findBranch(commit)
     GitCommit(id = commit.getId.name.trim,
            author = commit.getAuthorIdent.getName.trim,
            commiter = commit.getCommitterIdent.getName.trim,
            message = commit.getFullMessage.trim,
-           time = new DateTime(commit.getCommitTime.toLong * 1000))
+           time = new DateTime(commit.getCommitTime.toLong * 1000),
+           branchName = brach)
+  }
+
+
+  private def findBranch(commit: RevCommit):String = {
+    val walk = new RevWalk(repository)
+
+    val branches = git.branchList().call().asScala
+    branches.foreach { branch =>
+
+      val branchName = branch.getName
+
+      System.out.println("Commits of branch: " + branch.getName)
+      System.out.println("-------------------------------------")
+
+      val commits = git.log().all().call().asScala
+
+      for (commit <- commits) {
+        var foundInThisBranch = false
+
+        val targetCommit = walk.parseCommit(repository.resolve(commit.getName))
+        for ((key, value) <- repository.getAllRefs.asScala) {
+          if (key.startsWith(Constants.R_HEADS)) {
+            if (walk.isMergedInto(targetCommit, walk.parseCommit(
+              value.getObjectId))) {
+              val foundInBranch = value.getName
+              if (branchName.equals(foundInBranch)) {
+                foundInThisBranch = true
+              }
+            }
+          }
+        }
+
+        if (foundInThisBranch) {
+          println(commit.getName());
+          println(commit.getAuthorIdent().getName());
+          println(new Date(commit.getCommitTime()));
+          println(commit.getFullMessage());
+          return branchName
+        }
+      }
+    }
+    "not found"
   }
 
 
@@ -64,7 +114,7 @@ class GitReader(val repoDir: String) {
   }
 
   private def getCommitById(commitHash: String): RevCommit = {
-    new Git(repository).log().add(ObjectId.fromString(commitHash)).setMaxCount(1).call().iterator().next()
+    git.log().add(ObjectId.fromString(commitHash)).setMaxCount(1).call().iterator().next()
   }
 
   private def getFilePathsFromCommit(commit: RevCommit): List[FileChange] = {
@@ -138,8 +188,14 @@ class GitReader(val repoDir: String) {
 
     val objectId = treeWalk.getObjectId(0)
     val loader = repository.open(objectId)
+    val bytes = loader.getBytes
 
-    new String(loader.getBytes)
+    if(bytes.take(8000).exists(_ == 0)) { //http://stackoverflow.com/a/6134127
+      "Binary"
+    } else {
+      new String(loader.getBytes)
+    }
+
   }
 
   def readFilesDiffFromCommit(commitHash: String): List[VcsFileDiff] = {
@@ -160,7 +216,13 @@ class GitReader(val repoDir: String) {
       case content: VcsFileContentCopy => readFileDiffFromCommit(content.fromContent, content.toContent)
     }
 
-    new GitDiffParser().parse(diffText.split("\n").toIterator)
+    try {
+      new GitDiffParser().parse(diffText.split("\n").toIterator)
+    } catch {
+      case e: Exception =>
+      println("Error parsing -----------------------\n"+diffText+"\n---------------------------")
+      throw(e)
+    }
 
   }
 

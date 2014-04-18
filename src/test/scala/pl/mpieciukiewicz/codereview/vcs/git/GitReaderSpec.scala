@@ -27,10 +27,10 @@ class GitReaderSpec extends FeatureSpec with GivenWhenThen with GitBeforeAndAfte
       Then("Have correct commits")
 
       assertThat(commits.asJava).containsExactly(
-        GitCommit("a6d5e7f8e2e3e9162563bb215bb04bf3a629424a", "Marcin Pieciukiewicz", "Marcin Pieciukiewicz", "Some clean up", new DateTime(1376576166000L)),
-        GitCommit("e20b7e4df6d4b7df4816a75981331201317e90e8", "Marcin Pieciukiewicz", "Marcin Pieciukiewicz", "Some clean up", new DateTime(1376554727000L)),
-        GitCommit("98fc0f9e817708f0a4f38f630b134251cf076afc", "Marcin Pieciukiewicz", "Marcin Pieciukiewicz", "Sources", new DateTime(1376478826000L)),
-        GitCommit("9333a8309c0ec2f6c35d5746861b2b53f8c04955", "Marcin Pieciukiewicz", "Marcin Pieciukiewicz", "Sources", new DateTime(1376478781000L)))
+        GitCommit("a6d5e7f8e2e3e9162563bb215bb04bf3a629424a", "Marcin Pieciukiewicz", "Marcin Pieciukiewicz", "Some clean up", new DateTime(1376576166000L), "master"),
+        GitCommit("e20b7e4df6d4b7df4816a75981331201317e90e8", "Marcin Pieciukiewicz", "Marcin Pieciukiewicz", "Some clean up", new DateTime(1376554727000L), "master"),
+        GitCommit("98fc0f9e817708f0a4f38f630b134251cf076afc", "Marcin Pieciukiewicz", "Marcin Pieciukiewicz", "Sources", new DateTime(1376478826000L), "master"),
+        GitCommit("9333a8309c0ec2f6c35d5746861b2b53f8c04955", "Marcin Pieciukiewicz", "Marcin Pieciukiewicz", "Sources", new DateTime(1376478781000L), "master"))
 
       When("Getting All Commits")
 
@@ -69,13 +69,13 @@ class GitReaderSpec extends FeatureSpec with GivenWhenThen with GitBeforeAndAfte
 
       When("Getting committed files")
 
-      val files: List[VcsFileContent] = gitReader.readFilesContentFromCommit(commitId)
+      val files: List[(VcsFileContent, VcsFileDiff)] = gitReader.readFilesContentFromCommit(commitId)
 
       Then("Have correct files")
 
-      val homeFile = files(2).asInstanceOf[VcsFileContentModify]
+      val homeFile = files(2).asInstanceOf[(VcsFileContentModify, VcsFileDiff)]
 
-      assertThat(new String(homeFile.fromContent)).isEqualTo(
+      assertThat(new String(homeFile._1.fromContent)).isEqualTo(
         "<div>\n"+
           "    <div>\n"+
           "        This is home page:\n"+
@@ -85,7 +85,7 @@ class GitReaderSpec extends FeatureSpec with GivenWhenThen with GitBeforeAndAfte
           "    </div>\n"+
           "</div>")
 
-      assertThat(new String(homeFile.toContent)).isEqualTo(
+      assertThat(new String(homeFile._1.toContent)).isEqualTo(
         "<div>\n" +
         "    <div>\n" +
         "        This is a home page:\n" +

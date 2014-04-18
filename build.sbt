@@ -20,6 +20,7 @@ libraryDependencies ++= Seq("org.eclipse.jetty" % "jetty-server" % "9.0.6.v20130
   "pl.mpieciukiewicz.mpjsons" % "mpjsons" % "0.5", //clone from: https://github.com/marpiec/mpjsons and then mvn install
   "org.eclipse.jgit" % "org.eclipse.jgit" % "3.3.0.201403021825-r",
   "javax.mail" % "mail" % "1.4.7",
+  "org.mockito" % "mockito-all" % "1.9.5",
   "ch.qos.logback" % "logback-classic" % "1.1.1",
   "org.easytesting" % "fest-assert-core" % "2.0M10" % "test",
   "org.scalatest" % "scalatest_2.10" % "2.1.0" % "test",

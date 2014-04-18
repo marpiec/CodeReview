@@ -14,7 +14,8 @@
         <span class="message">{{ commit.info.message }}</span>
         <span class="filesCount">({{ commit.files.length }} <span ng-show="commit.files.length == 1">file</span><span ng-show="commit.files.length != 1">files</span>)</span>
         <span class="author">{{ commit.info.author }}</span>
-        <span class="time">{{commit.info.time}}</span>
+        <span class="time">{{commit.info.time}}{{commit.info.branchName}}</span>
+
 
 
         <!--author: {{ commit.info.author }} <br />-->

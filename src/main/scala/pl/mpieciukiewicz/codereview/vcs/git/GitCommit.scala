@@ -6,10 +6,10 @@ import pl.mpieciukiewicz.codereview.model.Commit
 /**
  *
  */
-case class GitCommit(id: String, author:String, commiter:String, message: String, time: DateTime) {
+case class GitCommit(id: String, author:String, commiter:String, message: String, time: DateTime, branchName: String) {
 
   def convertToCommit(repositoryId: Int):Commit = {
-    Commit(None, repositoryId, time, id, commiter, author, message)
+    Commit(None, repositoryId, time, id, commiter, author, message, branchName)
   }
 
 }
