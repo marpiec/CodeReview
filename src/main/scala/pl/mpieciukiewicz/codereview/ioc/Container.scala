@@ -32,11 +32,13 @@ class Container {
   val jsonUtil = new JsonUtil
   val randomUtil = new RandomGenerator
 
+
   val databaseAccessor = new DatabaseAccessor("jdbc:h2:"+configuration.storage.dataDirectory+"/codeReview", "sa", "sa")
   val documentDataStorage = new DocumentDataStorage(databaseAccessor, jsonUtil)
   documentDataStorage.initDatabaseStructure()
 
-  val userStorage = new UserStorage(documentDataStorage)
+  val sequenceManager = new DatabaseSequenceManager(databaseAccessor)
+  val userStorage = new UserStorage(databaseAccessor, sequenceManager)
   val projectStorage = new ProjectStorage(documentDataStorage)
   val userRoleStorage = new UserRoleStorage(documentDataStorage)
   val repositoryStorage = new RepositoryStorage(documentDataStorage)

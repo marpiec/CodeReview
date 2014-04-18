@@ -15,3 +15,4 @@ case class User(@(FirstSubType @field)(classOf[Int]) id: Option[Int],
                 systemRole: SystemRole)
 
 
+

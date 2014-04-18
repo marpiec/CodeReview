@@ -19,12 +19,12 @@ class UserManagerSpec extends FeatureSpecLike with GivenWhenThen with BeforeAndA
 
   before {
     clock = new SettableStagnantClock
-    userStorage = new UserStorage(createTemporaryDataStorage)
+    userStorage = new UserStorage(createTemporaryDataAccessor, new MemorySequenceManager)
     userManager = new UserManager(userStorage, new RandomGenerator, clock, new PasswordUtil("systemSalt"))
   }
 
   after {
-    userStorage.dds.close()
+    userStorage.dba.close()
   }
 
 
@@ -43,7 +43,7 @@ class UserManagerSpec extends FeatureSpecLike with GivenWhenThen with BeforeAndA
 
       assertThat(registrationResult).isTrue
       assertThat(userStorage.loadAll().asJava).hasSize(1)
-      assertThat(userStorage.findByName("Marcin").isDefined)
+      assertThat(userStorage.findByNameOrEmail("Marcin", "").isDefined)
 
       When("Second user is registered")
       registrationResult = userManager.registerUser("John", "j.s@g.p", "MyPass")
@@ -52,7 +52,7 @@ class UserManagerSpec extends FeatureSpecLike with GivenWhenThen with BeforeAndA
 
       assertThat(registrationResult).isTrue
       assertThat(userStorage.loadAll().asJava).hasSize(2)
-      assertThat(userStorage.findByName("John").isDefined)
+      assertThat(userStorage.findByNameOrEmail("John", "").isDefined)
 
       When("User with the same name as first one is registered")
       registrationResult = userManager.registerUser("Marcin", "fake.m.p@g.p", "MyOtherSecret")

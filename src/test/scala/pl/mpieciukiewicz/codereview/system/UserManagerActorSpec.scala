@@ -24,12 +24,12 @@ class UserManagerActorSpec extends TestKit(ActorSystem("test")) with FeatureSpec
 
   before {
     clock = new SettableStagnantClock
-    userStorage = new UserStorage(createTemporaryDataStorage)
+    userStorage = new UserStorage(createTemporaryDataAccessor, new MemorySequenceManager)
     userManager = TestActorRef(new UserManagerActor(new UserManager(userStorage, new RandomGenerator, clock, new PasswordUtil("systemSalt"))))
   }
 
   after {
-    userStorage.dds.close()
+    userStorage.dba.close()
     userManager ! PoisonPill
   }
 
@@ -49,7 +49,7 @@ class UserManagerActorSpec extends TestKit(ActorSystem("test")) with FeatureSpec
 
       assertThat(response.value.get.get).isEqualTo(UserManagerActor.RegistrationResult(true))
       assertThat(userStorage.loadAll().asJava).hasSize(1)
-      assertThat(userStorage.findByName("Marcin").isDefined)
+      assertThat(userStorage.findByNameOrEmail("Marcin", "").isDefined)
 
       When("Second user is registered")
       response = userManager ? UserManagerActor.RegisterUser("John", "j.s@g.p", "MyPass")
@@ -58,7 +58,7 @@ class UserManagerActorSpec extends TestKit(ActorSystem("test")) with FeatureSpec
 
       assertThat(response.value.get.get).isEqualTo(UserManagerActor.RegistrationResult(true))
       assertThat(userStorage.loadAll().asJava).hasSize(2)
-      assertThat(userStorage.findByName("John").isDefined)
+      assertThat(userStorage.findByNameOrEmail("John", "").isDefined)
 
       When("User with the same name as first one is registered")
       response = userManager ? UserManagerActor.RegisterUser("Marcin", "fake.m.p@g.p", "MyOtherSecret")

@@ -17,7 +17,7 @@ class UserManager(userStorage: UserStorage, randomUtil: RandomGenerator, clock: 
 
   def registerUser(name: String, email: String, password: String): Boolean = {
 
-    if (userStorage.findByName(name).isEmpty && userStorage.findByEmail(email).isEmpty) {
+    if (userStorage.findByNameOrEmail(name, email).isEmpty) {
       val salt = passwordUtil.generateRandomSalt
       val passwordHash = passwordUtil.hashPassword(password, salt)
       userStorage.add(User(None, name, email, passwordHash, salt, SystemRole.User))
@@ -30,7 +30,7 @@ class UserManager(userStorage: UserStorage, randomUtil: RandomGenerator, clock: 
 
   def authenticateUser(user: String, password: String, ip: String): Try[SessionInfoClientSide] = {
 
-    val userOption = userStorage.findByName(user) orElse userStorage.findByEmail(user)
+    val userOption = userStorage.findByNameOrEmail(user, user)
 
     if (userOption.isDefined) {
       val user = userOption.get

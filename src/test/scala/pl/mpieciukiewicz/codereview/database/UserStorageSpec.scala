@@ -19,11 +19,11 @@ class UserStorageSpec extends FeatureSpec with GivenWhenThen with BeforeAndAfter
   var storage:UserStorage = _
 
   before {
-    storage = new UserStorage(createTemporaryDataStorage)
+    storage = new UserStorage(createTemporaryDataAccessor, new MemorySequenceManager)
   }
 
   after {
-    storage.dds.close()
+    storage.dba.close()
   }
 
   feature("Properly storing user data") {
@@ -52,13 +52,13 @@ class UserStorageSpec extends FeatureSpec with GivenWhenThen with BeforeAndAfter
       val entityB = storage.add(prototypeB)
 
       Then("Users can be found by name")
-      assertThat(storage.findByName("Marcin").get).isEqualTo(entityA)
-      assertThat(storage.findByName("John").get).isEqualTo(entityB)
-      assertThat(storage.findByName("Jesse").isEmpty).isTrue
+      assertThat(storage.findByNameOrEmail("Marcin", "").get).isEqualTo(entityA)
+      assertThat(storage.findByNameOrEmail("John", "").get).isEqualTo(entityB)
+      assertThat(storage.findByNameOrEmail("Jesse", "").isEmpty).isTrue
 
-      assertThat(storage.findByEmail("m.p@mp.pl").get).isEqualTo(entityA)
-      assertThat(storage.findByEmail("j.s@mp.pl").get).isEqualTo(entityB)
-      assertThat(storage.findByEmail("w.w@mp.pl").isEmpty).isTrue
+      assertThat(storage.findByNameOrEmail("", "m.p@mp.pl").get).isEqualTo(entityA)
+      assertThat(storage.findByNameOrEmail("", "j.s@mp.pl").get).isEqualTo(entityB)
+      assertThat(storage.findByNameOrEmail("", "w.w@mp.pl").isEmpty).isTrue
     }
   }
 }
