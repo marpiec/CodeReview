@@ -2,9 +2,12 @@ package pl.mpieciukiewicz.codereview.database.engine
 
 import java.sql._
 import org.h2.jdbcx.JdbcConnectionPool
+import org.slf4j.LoggerFactory
 
 
 class DatabaseAccessor(url: String, user: String, password: String) {
+
+  private final val log = LoggerFactory.getLogger(classOf[DatabaseAccessor])
 
   val connectionPool = JdbcConnectionPool.create(url, user, password)
 
@@ -27,6 +30,7 @@ class DatabaseAccessor(url: String, user: String, password: String) {
       tryWith(connection.prepareStatement(query)) {
         preparedStatement =>
           codeBlock(preparedStatement)
+          log.info("SQL statement executed: ["+preparedStatement+"]")
           preparedStatement.execute()
       }
     }
@@ -41,6 +45,7 @@ class DatabaseAccessor(url: String, user: String, password: String) {
       tryWith(connection.prepareStatement(query)) {
         preparedStatement =>
           paramsBlock(preparedStatement)
+          log.info("SQL statement executed query: ["+preparedStatement+"]")
           tryWith(preparedStatement.executeQuery()) {
             resultSet =>
               codeBlock(resultSet)

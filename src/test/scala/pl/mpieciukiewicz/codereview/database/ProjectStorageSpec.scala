@@ -18,11 +18,11 @@ class ProjectStorageSpec extends FeatureSpec with GivenWhenThen with BeforeAndAf
   var storage:ProjectStorage = _
 
   before {
-    storage = new ProjectStorage(createTemporaryDataStorage)
+    storage = new ProjectStorage(createTemporaryDataAccessor, new UniqueMemorySequenceManager)
   }
 
   after {
-    storage.dds.close()
+    storage.dba.close()
   }
 
   feature("Properly storing project data") {

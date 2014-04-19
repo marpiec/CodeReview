@@ -1,5 +1,5 @@
 package pl.mpieciukiewicz.codereview.database
 
 trait SequenceManager {
-  def nextUserId():Int
+  def nextId(sequenceName: String):Int
 }

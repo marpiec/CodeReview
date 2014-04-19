@@ -1,19 +1,22 @@
 package pl.mpieciukiewicz.codereview.database
 
 import pl.mpieciukiewicz.codereview.database.engine.DatabaseAccessor
+import java.util.concurrent.atomic.AtomicInteger
 
 class DatabaseSequenceManager(val dba: DatabaseAccessor) extends SequenceManager {
 
   final val BUFFER_SIZE = 20
 
-  private var userId = 0
+  private var ids: Map[String, AtomicInteger] = Map()
 
-  def nextUserId():Int = synchronized {
-    if (userId % BUFFER_SIZE == 0) {
-      userId= loadNext("user_seq")
+  def nextId(sequenceName: String):Int = synchronized {
+    if(!ids.contains(sequenceName)) {
+      ids += sequenceName -> new AtomicInteger(0)
     }
-    userId += 1
-    userId
+    if (ids(sequenceName).get() % BUFFER_SIZE == 0) {
+      ids(sequenceName).set(loadNext(sequenceName))
+    }
+    ids(sequenceName).incrementAndGet()
   }
 
   private def loadNext(sequenceName: String): Int = {

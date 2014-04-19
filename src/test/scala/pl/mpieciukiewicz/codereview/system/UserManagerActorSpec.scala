@@ -24,7 +24,7 @@ class UserManagerActorSpec extends TestKit(ActorSystem("test")) with FeatureSpec
 
   before {
     clock = new SettableStagnantClock
-    userStorage = new UserStorage(createTemporaryDataAccessor, new MemorySequenceManager)
+    userStorage = new UserStorage(createTemporaryDataAccessor, new UniqueMemorySequenceManager)
     userManager = TestActorRef(new UserManagerActor(new UserManager(userStorage, new RandomGenerator, clock, new PasswordUtil("systemSalt"))))
   }
 

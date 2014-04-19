@@ -19,7 +19,7 @@ class UserStorageSpec extends FeatureSpec with GivenWhenThen with BeforeAndAfter
   var storage:UserStorage = _
 
   before {
-    storage = new UserStorage(createTemporaryDataAccessor, new MemorySequenceManager)
+    storage = new UserStorage(createTemporaryDataAccessor, new UniqueMemorySequenceManager)
   }
 
   after {

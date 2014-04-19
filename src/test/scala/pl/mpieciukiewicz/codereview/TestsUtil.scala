@@ -25,9 +25,9 @@ object TestsUtil {
   }
 
 
-  class MemorySequenceManager extends SequenceManager {
-    private val userId = new AtomicInteger(0)
-    override def nextUserId(): Int = userId.incrementAndGet()
+  class UniqueMemorySequenceManager extends SequenceManager {
+    private val id = new AtomicInteger(0)
+    override def nextId(sequenceName: String): Int = id.incrementAndGet()
   }
 
 }

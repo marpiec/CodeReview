@@ -5,8 +5,6 @@ import pl.mpieciukiewicz.codereview.database.engine.{DatabaseAccessor, DocumentD
 import pl.mpieciukiewicz.codereview.utils.json.JsonUtil
 import pl.mpieciukiewicz.codereview.system._
 import pl.mpieciukiewicz.codereview.utils.{PasswordUtil, RandomGenerator, Configuration}
-import com.typesafe.config.ConfigFactory
-import java.io.InputStreamReader
 import pl.mpieciukiewicz.codereview.utils.clock.DefaultTimeZoneClock
 import akka.actor.ActorSystem
 import pl.mpieciukiewicz.codereview.web.ProgressMonitor
@@ -39,7 +37,7 @@ class Container {
 
   val sequenceManager = new DatabaseSequenceManager(databaseAccessor)
   val userStorage = new UserStorage(databaseAccessor, sequenceManager)
-  val projectStorage = new ProjectStorage(documentDataStorage)
+  val projectStorage = new ProjectStorage(databaseAccessor, sequenceManager)
   val userRoleStorage = new UserRoleStorage(documentDataStorage)
   val repositoryStorage = new RepositoryStorage(documentDataStorage)
   val commitStorage = new CommitStorage(documentDataStorage)

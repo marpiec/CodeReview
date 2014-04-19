@@ -19,7 +19,7 @@ class UserManagerSpec extends FeatureSpecLike with GivenWhenThen with BeforeAndA
 
   before {
     clock = new SettableStagnantClock
-    userStorage = new UserStorage(createTemporaryDataAccessor, new MemorySequenceManager)
+    userStorage = new UserStorage(createTemporaryDataAccessor, new UniqueMemorySequenceManager)
     userManager = new UserManager(userStorage, new RandomGenerator, clock, new PasswordUtil("systemSalt"))
   }
 
