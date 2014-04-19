@@ -17,7 +17,7 @@ libraryDependencies ++= Seq("org.eclipse.jetty" % "jetty-server" % "9.0.6.v20130
   "com.github.nscala-time" %% "nscala-time" % "0.8.0",
   "com.h2database" % "h2" % "1.3.175",
   "com.typesafe" % "config" % "1.2.0",
-  "pl.mpieciukiewicz.mpjsons" % "mpjsons" % "0.5", //clone from: https://github.com/marpiec/mpjsons and then mvn install
+  "pl.mpieciukiewicz.mpjsons" % "mpjsons" % "0.5.1", //clone from: https://github.com/marpiec/mpjsons and then mvn install
   "org.eclipse.jgit" % "org.eclipse.jgit" % "3.3.0.201403021825-r",
   "javax.mail" % "mail" % "1.4.7",
   "org.mockito" % "mockito-all" % "1.9.5",

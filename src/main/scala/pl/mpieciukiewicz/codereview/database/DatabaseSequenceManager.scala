@@ -14,9 +14,12 @@ class DatabaseSequenceManager(val dba: DatabaseAccessor) extends SequenceManager
       ids += sequenceName -> new AtomicInteger(0)
     }
     if (ids(sequenceName).get() % BUFFER_SIZE == 0) {
-      ids(sequenceName).set(loadNext(sequenceName))
+      val id = loadNext(sequenceName)
+      ids(sequenceName).set(id)
+      id
+    } else {
+      ids(sequenceName).incrementAndGet()
     }
-    ids(sequenceName).incrementAndGet()
   }
 
   private def loadNext(sequenceName: String): Int = {
