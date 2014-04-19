@@ -2,6 +2,7 @@ package pl.mpieciukiewicz.codereview.database
 
 import java.sql.{PreparedStatement, ResultSet}
 import pl.mpieciukiewicz.codereview.database.engine.DatabaseAccessor
+import pl.mpieciukiewicz.codereview.model.Commit
 
 abstract class SimpleStorage[T](private val da: DatabaseAccessor, private val sm: SequenceManager, tableName:String, columns:List[(String, String)]) {
 
@@ -30,6 +31,10 @@ abstract class SimpleStorage[T](private val da: DatabaseAccessor, private val sm
     newEntity
   }
 
+  def addAll(entities: List[T]): List[T] = {
+    entities.map(add)
+  }
+
   protected def loadAll(): List[T] = {
     selectNoParams(s"SELECT $columnsNames FROM $tableName") { resultSet =>
       mapResultSetToEntities(resultSet)
@@ -54,6 +59,13 @@ abstract class SimpleStorage[T](private val da: DatabaseAccessor, private val sm
         } else {
           None
         }
+    }
+  }
+
+
+  def findById(id: Int): Option[T] = {
+    findSingleBy("id = ?") {
+      preparedStatement => preparedStatement.setInt(1, id)
     }
   }
 

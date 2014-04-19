@@ -16,11 +16,11 @@ class RepositoryStorageSpec extends FeatureSpec with GivenWhenThen with BeforeAn
   var storage: RepositoryStorage = _
 
   before {
-    storage = new RepositoryStorage(createTemporaryDataStorage)
+    storage = new RepositoryStorage(createTemporaryDataAccessor, new UniqueMemorySequenceManager)
   }
 
   after {
-    storage.dds.close()
+    storage.dba.close()
   }
 
   feature("Properly storing repository data") {

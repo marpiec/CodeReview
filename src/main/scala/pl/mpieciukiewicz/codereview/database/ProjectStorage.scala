@@ -30,12 +30,6 @@ class ProjectStorage(val dba: DatabaseAccessor, sequenceManager: SequenceManager
     super.loadAll()
   }
 
-  def findById(id: Int): Option[Project] = {
-    findSingleBy("id = ?") {
-      preparedStatement => preparedStatement.setInt(1, id)
-    }
-  }
-
   def findByName(name: String): Option[Project] = {
     findSingleBy("name = ?") {
       preparedStatement => preparedStatement.setString(1, name)

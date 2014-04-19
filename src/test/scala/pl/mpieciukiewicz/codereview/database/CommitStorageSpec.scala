@@ -18,11 +18,11 @@ class CommitStorageSpec extends FeatureSpec with GivenWhenThen with BeforeAndAft
   var storage:CommitStorage = _
 
   before {
-    storage = new CommitStorage(createTemporaryDataStorage)
+    storage = new CommitStorage(createTemporaryDataAccessor, new UniqueMemorySequenceManager)
   }
 
   after {
-    storage.dds.close()
+    storage.dba.close()
   }
 
   feature("Properly storing commits data") {

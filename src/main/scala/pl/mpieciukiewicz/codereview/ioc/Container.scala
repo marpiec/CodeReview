@@ -39,8 +39,8 @@ class Container {
   val userStorage = new UserStorage(databaseAccessor, sequenceManager)
   val projectStorage = new ProjectStorage(databaseAccessor, sequenceManager)
   val userRoleStorage = new UserRoleStorage(documentDataStorage)
-  val repositoryStorage = new RepositoryStorage(documentDataStorage)
-  val commitStorage = new CommitStorage(documentDataStorage)
+  val repositoryStorage = new RepositoryStorage(databaseAccessor, sequenceManager)
+  val commitStorage = new CommitStorage(databaseAccessor, sequenceManager)
   val fileContentStorage = new FileContentStorage(documentDataStorage)
 
   val documentsCache = new DocumentsCache()
