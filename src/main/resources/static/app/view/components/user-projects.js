@@ -13,7 +13,7 @@ app.directive("mpUserProjects", function(secureService, session, secureService) 
 
             function loadUserProjects() {
                 if(session.isAuthenticated()) {
-                    secureService.get("/rest/user-projects-and-repositories", true, handleUserProjectsResponse);
+                    secureService.get("/rest/user-projects-and-repositories", false, handleUserProjectsResponse);
                 } else {
                     scope.projectsWithRepositories = {};
                 }

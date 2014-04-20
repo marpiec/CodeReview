@@ -13,9 +13,10 @@ class CommitStorage(val dba: DatabaseAccessor, sequenceManager: SequenceManager)
     "time" -> "TIMESTAMP NOT NULL",
     "hash" -> "VARCHAR(255) NOT NULL",
     "commiter" -> "VARCHAR(255) NOT NULL",
+    "commiter_email" -> "VARCHAR(255) NOT NULL",
     "author" -> "VARCHAR(255) NOT NULL",
-    "message" -> "VARCHAR(255) NOT NULL",
-    "branchName" -> "VARCHAR(255) NOT NULL")) {
+    "author_email" -> "VARCHAR(255) NOT NULL",
+    "message" -> "VARCHAR(255) NOT NULL")) {
 
 
   override protected def mapEntityToPrepareStatement(entity: Commit, preparedStatement: PreparedStatement) {
@@ -24,9 +25,10 @@ class CommitStorage(val dba: DatabaseAccessor, sequenceManager: SequenceManager)
     preparedStatement.setTimestamp(3, new Timestamp(entity.time.getMillis))
     preparedStatement.setString(4, entity.hash)
     preparedStatement.setString(5, entity.commiter)
-    preparedStatement.setString(6, entity.author)
-    preparedStatement.setString(7, entity.message)
-    preparedStatement.setString(8, entity.branchName)
+    preparedStatement.setString(6, entity.commiterEmail)
+    preparedStatement.setString(7, entity.author)
+    preparedStatement.setString(8, entity.authorEmail)
+    preparedStatement.setString(9, entity.message)
   }
 
   override protected def mapResultToEntity(resultSet: ResultSet): Commit = {
@@ -37,7 +39,8 @@ class CommitStorage(val dba: DatabaseAccessor, sequenceManager: SequenceManager)
       resultSet.getString(5),
       resultSet.getString(6),
       resultSet.getString(7),
-      resultSet.getString(8))
+      resultSet.getString(8),
+      resultSet.getString(9))
   }
 
   override protected def injectId(entity: Commit, id: Int): Commit = entity.copy(id = Some(id))

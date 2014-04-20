@@ -11,7 +11,8 @@ case class Commit(@(FirstSubType @field)(classOf[Int]) id: Option[Int],
                   repositoryId: Int,
                   time: DateTime,
                   hash: String,
-                  commiter: String, //TODO check if this is unique
-                  author: String, //TODO check if this is unique)
-                  message: String,
-                  branchName: String)
+                  commiter: String,
+                  commiterEmail: String,
+                  author: String,
+                  authorEmail: String,
+                  message: String)

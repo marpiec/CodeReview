@@ -27,10 +27,10 @@ class GitReaderSpec extends FeatureSpec with GivenWhenThen with GitBeforeAndAfte
       Then("Have correct commits")
 
       assertThat(commits.asJava).containsExactly(
-        GitCommit("a6d5e7f8e2e3e9162563bb215bb04bf3a629424a", "Marcin Pieciukiewicz", "Marcin Pieciukiewicz", "Some clean up", new DateTime(1376576166000L), "refs/heads/master"),
-        GitCommit("e20b7e4df6d4b7df4816a75981331201317e90e8", "Marcin Pieciukiewicz", "Marcin Pieciukiewicz", "Some clean up", new DateTime(1376554727000L), "refs/heads/master"),
-        GitCommit("98fc0f9e817708f0a4f38f630b134251cf076afc", "Marcin Pieciukiewicz", "Marcin Pieciukiewicz", "Sources", new DateTime(1376478826000L), "refs/heads/master"),
-        GitCommit("9333a8309c0ec2f6c35d5746861b2b53f8c04955", "Marcin Pieciukiewicz", "Marcin Pieciukiewicz", "Sources", new DateTime(1376478781000L), "refs/heads/master"))
+        GitCommit("a6d5e7f8e2e3e9162563bb215bb04bf3a629424a", "Marcin Pieciukiewicz", "m.pieciukiewicz@gmail.com", "Marcin Pieciukiewicz", "m.pieciukiewicz@gmail.com", "Some clean up", new DateTime(1376576166000L)),
+        GitCommit("e20b7e4df6d4b7df4816a75981331201317e90e8", "Marcin Pieciukiewicz", "m.pieciukiewicz@gmail.com", "Marcin Pieciukiewicz", "m.pieciukiewicz@gmail.com", "Some clean up", new DateTime(1376554727000L)),
+        GitCommit("98fc0f9e817708f0a4f38f630b134251cf076afc", "Marcin Pieciukiewicz", "m.pieciukiewicz@gmail.com", "Marcin Pieciukiewicz", "m.pieciukiewicz@gmail.com", "Sources", new DateTime(1376478826000L)),
+        GitCommit("9333a8309c0ec2f6c35d5746861b2b53f8c04955", "Marcin Pieciukiewicz", "m.pieciukiewicz@gmail.com", "Marcin Pieciukiewicz", "m.pieciukiewicz@gmail.com", "Sources", new DateTime(1376478781000L)))
 
       When("Getting All Commits")
 

@@ -52,17 +52,15 @@ class GitReader(val repoDir: String) {
 
 
   private def convertJGitCommitToCommit(commit: RevCommit):GitCommit = {
-    //commit.getAuthorIdent (name and email)
-    //commit.getCommiterIdent (name and email)
     //commit shortMessage
 
-    val brach = findBranch(commit)
     GitCommit(id = commit.getId.name.trim,
            author = commit.getAuthorIdent.getName.trim,
+           authorEmail = commit.getAuthorIdent.getEmailAddress.trim,
            commiter = commit.getCommitterIdent.getName.trim,
+           commiterEmail = commit.getCommitterIdent.getEmailAddress.trim,
            message = commit.getFullMessage.trim,
-           time = new DateTime(commit.getCommitTime.toLong * 1000),
-           branchName = brach)
+           time = new DateTime(commit.getCommitTime.toLong * 1000))
   }
 
 

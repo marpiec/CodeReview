@@ -1,7 +1,7 @@
 package pl.mpieciukiewicz.codereview.database
 
-import pl.mpieciukiewicz.codereview.database.engine.{DatabaseAccessor, DocumentDataStorage}
-import pl.mpieciukiewicz.codereview.model.{LineChange, Commit, Repository, FileContent}
+import pl.mpieciukiewicz.codereview.database.engine.DatabaseAccessor
+import pl.mpieciukiewicz.codereview.model.{LineChange, FileContent}
 import pl.mpieciukiewicz.codereview.model.constant.FileChangeType
 import java.sql.{ResultSet, Timestamp, PreparedStatement}
 import org.joda.time.DateTime
