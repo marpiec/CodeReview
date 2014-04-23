@@ -15,9 +15,10 @@ class UserManager(userStorage: UserStorage, randomUtil: RandomGenerator, clock: 
   var sessions = Map[String, SessionInfo]()
   var timeout = Duration.standardMinutes(15)
 
-  def registerUser(name: String, email: String, password: String): Boolean = {
+  def registerUser(name: String, email: String): Boolean = {
 
     if (userStorage.findByNameOrEmail(name, email).isEmpty) {
+      val password = passwordUtil.generateRandomPassword
       val salt = passwordUtil.generateRandomSalt
       val passwordHash = passwordUtil.hashPassword(password, salt)
       userStorage.add(User(None, name, email, passwordHash, salt, SystemRole.User))
@@ -28,14 +29,32 @@ class UserManager(userStorage: UserStorage, randomUtil: RandomGenerator, clock: 
 
   }
 
+  def changeUserPassword(userId: Int, oldPassword: String, newPassword: String): Try[Boolean] = {
+    val userOption = userStorage.findById(userId)
+
+    if (userOption.isDefined) {
+      val user = userOption.get
+      if (checkUserPassword(user, oldPassword)) {
+        val salt = passwordUtil.generateRandomSalt
+        val passwordHash = passwordUtil.hashPassword(newPassword, salt)
+        userStorage.update(user.copy(salt = salt, passwordHash = passwordHash))
+        Success(true)
+      } else {
+        Failure(new IncorrectPasswordException)
+      }
+    } else {
+      Failure(new NoSuchUserException)
+    }
+  }
+
+
   def authenticateUser(user: String, password: String, ip: String): Try[SessionInfoClientSide] = {
 
     val userOption = userStorage.findByNameOrEmail(user, user)
 
     if (userOption.isDefined) {
       val user = userOption.get
-      val passwordHash = passwordUtil.hashPassword(password, user.salt)
-      if (user.passwordHash == passwordHash) {
+      if (checkUserPassword(user, password)) {
         var sessionId = ""
         do {
           sessionId = randomUtil.generateSessionIdentifier
@@ -51,6 +70,11 @@ class UserManager(userStorage: UserStorage, randomUtil: RandomGenerator, clock: 
     } else {
       Failure(new NoSuchUserException)
     }
+  }
+
+  private def checkUserPassword(user: User, password: String): Boolean = {
+    val passwordHash = passwordUtil.hashPassword(password, user.salt)
+    user.passwordHash == passwordHash
   }
 
 

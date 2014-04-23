@@ -49,8 +49,19 @@ class RestServlet(actorSystem: ActorSystem, actorProvider: ActorProvider, progre
   post("/register-user") {
     async {
       val actor = actorProvider.userManagerActor
-      val msg = UserManagerActor.RegisterUser(params("name"), params("email"), params("password"))
+      val msg = UserManagerActor.RegisterUser(params("name"), params("email"))
       actor.askForJson(msg)
+    }
+  }
+
+  post("/change-user-password") {
+    async {
+      authenticated {
+        userId =>
+          val actor = actorProvider.userManagerActor
+          val msg = UserManagerActor.ChangeUserPassword(userId, params("oldPassword"), params("newPassword"))
+          actor.askForJson(msg)
+      }
     }
   }
 

@@ -5,10 +5,13 @@ import org.apache.commons.lang3.{StringUtils, RandomStringUtils}
 
 class PasswordUtil(systemSalt: String) {
 
+  final val randomPasswordLength = 12
   final val saltLength = 24
   val HASH_COMPUTATION_TIMES = 4000 //As recommended by OWASP
 
   def generateRandomSalt = RandomStringUtils.randomAlphanumeric(saltLength)
+
+  def generateRandomPassword = RandomStringUtils.randomAlphanumeric(randomPasswordLength)
 
   def hashPassword(password: String, salt: String): String = {
 

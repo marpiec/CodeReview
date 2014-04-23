@@ -1,6 +1,6 @@
 package pl.mpieciukiewicz.codereview.database
 
-import pl.mpieciukiewicz.codereview.model.{Project, User}
+import pl.mpieciukiewicz.codereview.model.{UserRole, Project, User}
 import pl.mpieciukiewicz.codereview.database.engine.{DatabaseAccessor, DocumentDataStorage}
 import pl.mpieciukiewicz.codereview.model.constant.SystemRole
 import java.sql.{PreparedStatement, ResultSet}
@@ -47,6 +47,10 @@ class UserStorage(val dba: DatabaseAccessor, sequenceManager: SequenceManager)
         preparedStatement.setString(1, name)
         preparedStatement.setString(2, email)
     }
+  }
+
+  def update(entity: User) {
+    updateEntityOption(entity)
   }
 
 }

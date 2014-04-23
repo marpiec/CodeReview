@@ -8,20 +8,18 @@ import pl.mpieciukiewicz.codereview.system.UserManager
 
 object UserManagerActor {
 
-  case class RegisterUser(name: String, email: String, password: String)
-
+  case class RegisterUser(name: String, email: String)
   case class RegistrationResult(userRegistered: Boolean)
 
+  case class ChangeUserPassword(userId: Int, oldPassword: String, newPassword: String)
+  case class ChangePasswordResult(passwordChanged: Boolean)
 
   case class AuthenticateUser(user: String, password: String, ip: String)
+  case class AuthenticationResult(userAuthenticated: Boolean, sessionInfo: Option[SessionInfoClientSide] = None)
 
   case class Logout(sessionId: String)
 
-  case class AuthenticationResult(userAuthenticated: Boolean, sessionInfo: Option[SessionInfoClientSide] = None)
-
-
   case class CheckSession(sessionId: String, ip: String)
-
   case class CheckSessionResponse(userId: Option[Int])
 
 }
@@ -32,9 +30,13 @@ class UserManagerActor(worker: UserManager) extends Actor {
   import UserManagerActor._
 
   override def receive = {
-    case msg: RegisterUser => worker.registerUser(msg.name, msg.email, msg.password) match {
+    case msg: RegisterUser => worker.registerUser(msg.name, msg.email) match {
       case true => sender ! RegistrationResult(true)
       case false => sender ! RegistrationResult(false)
+    }
+    case msg: ChangeUserPassword => worker.changeUserPassword(msg.userId, msg.oldPassword, msg.newPassword) match {
+      case Success(_) => sender ! ChangePasswordResult(true)
+      case Failure(_) => sender ! ChangePasswordResult(false)
     }
     case msg: AuthenticateUser =>
       println(worker)

@@ -40,6 +40,14 @@ abstract class SimpleStorage[T](private val da: DatabaseAccessor, private val sm
 
   }
 
+  protected def updateEntityOption(entity: T {def id:Option[Int]}) {
+    update(s"UPDATE $tableName SET $columnsToUpdate WHERE id = ?") {
+      preparedStatement => mapEntityToPrepareStatement(entity, preparedStatement)
+        preparedStatement.setInt(columnsNames.size + 1, entity.id.get)
+    }
+
+  }
+
   protected def removeById(id: Int) = {
     update(s"DELETE $tableName WHERE id = ?") {
       preparedStatement =>
