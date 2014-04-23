@@ -9,7 +9,7 @@ import pl.mpieciukiewicz.codereview.system.ProjectManager
 
 object ProjectManagerActor {
 
-  case class CreateProject(projectName: String)
+  case class CreateProject(projectName: String, ownerUserId: Int)
 
   case class ProjectCreated(successful: Boolean, projectId: Option[Int] = None)
 
@@ -30,7 +30,7 @@ class ProjectManagerActor(worker: ProjectManager) extends Actor {
   import ProjectManagerActor._
 
   override def receive: Receive = {
-    case msg: CreateProject => worker.createProject(msg.projectName) match {
+    case msg: CreateProject => worker.createProject(msg.projectName, msg.ownerUserId) match {
       case Success(projectId) => sender ! ProjectCreated(true, Some(projectId))
       case Failure(reason) => ProjectCreated(false)
     }

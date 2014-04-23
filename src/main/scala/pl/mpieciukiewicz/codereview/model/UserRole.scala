@@ -7,7 +7,7 @@ import scala.annotation.meta.field
 /**
  *
  */
-case class UserRole(@(FirstSubType @field)(classOf[Int]) id: Option[Int],
+case class UserRole(id: Int,
                     userId: Int,
                     projectId: Int,
                     role: ProjectRole)

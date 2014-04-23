@@ -19,11 +19,11 @@ class UserRoleStorageSpec extends FeatureSpec with GivenWhenThen with BeforeAndA
   var storage: UserRoleStorage = _
 
   before {
-    storage = new UserRoleStorage(createTemporaryDataStorage)
+    storage = new UserRoleStorage(createTemporaryDataAccessor, new UniqueMemorySequenceManager)
   }
 
   after {
-    storage.dds.close()
+    storage.dba.close()
   }
 
   feature("Properly storing user data") {
@@ -32,8 +32,8 @@ class UserRoleStorageSpec extends FeatureSpec with GivenWhenThen with BeforeAndA
       Given("Initialized data storage")
 
       When("Users roles are stored")
-      val prototypeA = UserRole(None, 1, 2, ProjectRole.Admin)
-      val prototypeB = UserRole(None, 2, 3, ProjectRole.Developer)
+      val prototypeA = UserRole(0, 1, 2, ProjectRole.Admin)
+      val prototypeB = UserRole(0, 2, 3, ProjectRole.Developer)
       val entityA = storage.add(prototypeA)
       val entityB = storage.add(prototypeB)
 
@@ -44,9 +44,9 @@ class UserRoleStorageSpec extends FeatureSpec with GivenWhenThen with BeforeAndA
 
     scenario("Getting back users for different perspectives") {
       Given("Initialized data storage with roles")
-      val prototypeA = UserRole(None, 1, 2, ProjectRole.Admin)
-      val prototypeB = UserRole(None, 1, 3, ProjectRole.Admin)
-      val prototypeC = UserRole(None, 2, 3, ProjectRole.Developer)
+      val prototypeA = UserRole(0, 1, 2, ProjectRole.Admin)
+      val prototypeB = UserRole(0, 1, 3, ProjectRole.Admin)
+      val prototypeC = UserRole(0, 2, 3, ProjectRole.Developer)
       val entityA = storage.add(prototypeA)
       val entityB = storage.add(prototypeB)
       val entityC = storage.add(prototypeC)

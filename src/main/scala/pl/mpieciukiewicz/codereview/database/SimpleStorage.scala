@@ -2,7 +2,7 @@ package pl.mpieciukiewicz.codereview.database
 
 import java.sql.{PreparedStatement, ResultSet}
 import pl.mpieciukiewicz.codereview.database.engine.DatabaseAccessor
-import pl.mpieciukiewicz.codereview.model.Commit
+import pl.mpieciukiewicz.codereview.model.{Project, Commit}
 
 abstract class SimpleStorage[T](private val da: DatabaseAccessor, private val sm: SequenceManager, tableName:String, columns:List[(String, String)]) {
 
@@ -66,6 +66,13 @@ abstract class SimpleStorage[T](private val da: DatabaseAccessor, private val sm
   def findById(id: Int): Option[T] = {
     findSingleBy("id = ?") {
       preparedStatement => preparedStatement.setInt(1, id)
+    }
+  }
+
+
+  def loadManyByIds(ids: Iterable[Int]): List[T] = {
+    selectNoParams(s"SELECT $columnsNames FROM $tableName WHERE id IN (" + ids.mkString(",") + ")") { resultSet =>
+      mapResultSetToEntities(resultSet)
     }
   }
 

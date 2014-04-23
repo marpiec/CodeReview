@@ -38,7 +38,7 @@ class Container {
   val sequenceManager = new DatabaseSequenceManager(databaseAccessor)
   val userStorage = new UserStorage(databaseAccessor, sequenceManager)
   val projectStorage = new ProjectStorage(databaseAccessor, sequenceManager)
-  val userRoleStorage = new UserRoleStorage(documentDataStorage)
+  val userRoleStorage = new UserRoleStorage(databaseAccessor, sequenceManager)
   val repositoryStorage = new RepositoryStorage(databaseAccessor, sequenceManager)
   val commitStorage = new CommitStorage(databaseAccessor, sequenceManager)
   val fileContentStorage = new FileContentStorage(databaseAccessor, sequenceManager, jsonUtil)
@@ -47,7 +47,7 @@ class Container {
 
 
   val repositoryManager = new RepositoryManager(repositoryStorage, commitStorage, fileContentStorage, randomUtil, configuration, clock)
-  val projectManager = new ProjectManager(projectStorage, repositoryStorage)
+  val projectManager = new ProjectManager(projectStorage, userRoleStorage, repositoryStorage)
   val userManager = new UserManager(userStorage, randomUtil, clock, passwordUtil)
 
 }

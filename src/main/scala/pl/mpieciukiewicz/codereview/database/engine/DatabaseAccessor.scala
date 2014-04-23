@@ -37,8 +37,14 @@ class DatabaseAccessor(url: String, user: String, password: String) {
   }
 
   def selectNoParams[T](query: String)(codeBlock: ResultSet => T):T = {
-    select(query)({ps => ()})(codeBlock)
-  }
+    db { connection =>
+      tryWith(connection.createStatement().executeQuery(query)) {
+        log.info("SQL statement executed query: ["+query+"]")
+          resultSet =>
+            codeBlock(resultSet)
+        }
+      }
+    }
 
   def select[T](query: String)(paramsBlock: PreparedStatement => Unit)(codeBlock: ResultSet => T):T = {
     db { connection =>

@@ -93,7 +93,7 @@ class RestServlet(actorSystem: ActorSystem, actorProvider: ActorProvider, progre
       authenticated {
         userId =>
           val actor = actorProvider.projectManagerActor
-          val msg = ProjectManagerActor.CreateProject(params("projectName"))
+          val msg = ProjectManagerActor.CreateProject(params("projectName"), userId)
           actor.askForJson(msg)
       }
     }

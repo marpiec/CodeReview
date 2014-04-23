@@ -36,4 +36,9 @@ class ProjectStorage(val dba: DatabaseAccessor, sequenceManager: SequenceManager
     }
   }
 
+  def loadByProjectsIds(ids: Iterable[Int]): List[Project] = {
+    loadManyByIds(ids)
+  }
+
+
 }
