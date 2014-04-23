@@ -10,6 +10,8 @@ import akka.util.Timeout
 import scala.concurrent.duration._
 import pl.mpieciukiewicz.codereview.system.actor.{ProjectManagerActor, UserManagerActor, RepositoryManagerActor}
 import pl.mpieciukiewicz.codereview.system.actor.UserManagerActor.CheckSessionResponse
+import pl.mpieciukiewicz.codereview.model.UserRole
+import pl.mpieciukiewicz.codereview.model.constant.ProjectRole
 
 /**
  *
@@ -128,6 +130,30 @@ class RestServlet(actorSystem: ActorSystem, actorProvider: ActorProvider, progre
           val actor = actorProvider.repositoryManagerActor
           val msg = RepositoryManagerActor.LoadCommit(params("repositoryId").toInt, params("commitId").toInt)
           actor.askForJson(msg)
+      }
+    }
+  }
+
+  get("/change-user-role/:projectId/:userId/:roleName") {
+    async {
+      authenticated {
+        userId =>
+          val actor = actorProvider.projectManagerActor
+          val msg = ProjectManagerActor.ChangeUserRole(params("projectId").toInt, params("userId").toInt, ProjectRole.getByName(params("roleName")))
+          actor ! msg
+          Future.successful("ok")
+      }
+    }
+  }
+
+  get("/remove-user-from-project/:projectId/:userId") {
+    async {
+      authenticated {
+        userId =>
+          val actor = actorProvider.projectManagerActor
+          val msg = ProjectManagerActor.RemoveUserFromProject(params("projectId").toInt, params("userId").toInt)
+          actor ! msg
+          Future.successful("ok")
       }
     }
   }

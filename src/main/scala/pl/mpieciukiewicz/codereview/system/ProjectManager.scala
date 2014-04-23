@@ -37,4 +37,15 @@ class ProjectManager(projectStorage: ProjectStorage, userRoleStorage: UserRoleSt
     projectsWithRepositories
   }
 
+  def removeUserFromProject(projectId: Int, userId: Int) {
+    userRoleStorage.removeByProjectAndUser(userId, projectId)
+  }
+
+  def changeUserRole(projectId: Int, userId: Int, role: ProjectRole) {
+    userRoleStorage.findByUserAndProject(userId, projectId) match {
+      case Some(userRole) => userRoleStorage.update(userRole.copy(role = role))
+      case None => userRoleStorage.add(UserRole(0, userId, projectId, role))
+    }
+  }
+
 }

@@ -55,4 +55,17 @@ class UserRoleStorage(val dba: DatabaseAccessor, sequenceManager: SequenceManage
     }
   }
 
+  def removeByProjectAndUser(userId: Int, projectId: Int) {
+    removeBy("user_id = ? AND project_id = ?") {
+      preparedStatement =>
+        preparedStatement.setInt(1, userId)
+        preparedStatement.setInt(2, projectId)
+    }
+  }
+
+
+  def update(entity: UserRole) {
+    updateEntity(entity)
+  }
+
 }

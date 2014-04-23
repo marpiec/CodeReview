@@ -13,6 +13,7 @@ abstract class SimpleStorage[T](private val da: DatabaseAccessor, private val sm
   private lazy val columnsPlaceholders = columns.map(_ => "?").mkString(", ")
 
   def columnsWithParams = columns.map{case (name, info) => name + " " + info}.mkString(", ")
+  def columnsToUpdate = columns.map{case (name, info) => name + " = ?"}.mkString(", ")
 
   import da._
 
@@ -30,6 +31,28 @@ abstract class SimpleStorage[T](private val da: DatabaseAccessor, private val sm
     }
     newEntity
   }
+
+  protected def updateEntity(entity: T {def id:Int}) {
+    update(s"UPDATE $tableName SET $columnsToUpdate WHERE id = ?") {
+      preparedStatement => mapEntityToPrepareStatement(entity, preparedStatement)
+      preparedStatement.setInt(columnsNames.size + 1, entity.id)
+    }
+
+  }
+
+  protected def removeById(id: Int) = {
+    update(s"DELETE $tableName WHERE id = ?") {
+      preparedStatement =>
+        preparedStatement.setInt(1, id)
+    }
+  }
+
+  protected def removeBy(where: String)(paramsBlock: PreparedStatement => Unit) = {
+    update(s"DELETE $tableName WHERE $where") { preparedStatement =>
+      paramsBlock(preparedStatement)
+    }
+  }
+
 
   def addAll(entities: List[T]): List[T] = {
     entities.map(add)

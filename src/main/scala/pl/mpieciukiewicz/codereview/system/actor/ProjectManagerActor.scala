@@ -6,6 +6,7 @@ import pl.mpieciukiewicz.codereview.model.Project
 import scala.util.{Failure, Success}
 import pl.mpieciukiewicz.codereview.model.client.ProjectWithRepositories
 import pl.mpieciukiewicz.codereview.system.ProjectManager
+import pl.mpieciukiewicz.codereview.model.constant.ProjectRole
 
 object ProjectManagerActor {
 
@@ -21,6 +22,11 @@ object ProjectManagerActor {
 
   case class LoadUserProjectsAndRepositories(userId: Int)
   case class UserProjectsAndRepositories(projects: List[ProjectWithRepositories])
+
+
+  case class ChangeUserRole(projectId: Int, userId: Int, role: ProjectRole)
+
+  case class RemoveUserFromProject(projectId: Int, userId: Int)
 
 }
 
@@ -43,6 +49,8 @@ class ProjectManagerActor(worker: ProjectManager) extends Actor {
     case msg: LoadUserProjectsAndRepositories =>
       val projects = worker.loadUserProjectsAndRepositories(msg.userId)
       sender ! UserProjectsAndRepositories(projects)
+    case msg: ChangeUserRole => worker.changeUserRole(msg.projectId, msg.userId, msg.role)
+    case msg: RemoveUserFromProject => worker.removeUserFromProject(msg.projectId, msg.userId)
   }
 
 }
