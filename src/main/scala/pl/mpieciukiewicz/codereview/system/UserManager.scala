@@ -8,9 +8,10 @@ import org.joda.time.Duration
 import pl.mpieciukiewicz.codereview.utils.clock.Clock
 import scala.util.{Failure, Success, Try}
 import pl.mpieciukiewicz.codereview.model.constant.SystemRole
+import pl.mpieciukiewicz.codereview.utils.email.MailSender
 
 
-class UserManager(userStorage: UserStorage, randomUtil: RandomGenerator, clock: Clock, passwordUtil: PasswordUtil) {
+class UserManager(userStorage: UserStorage, randomUtil: RandomGenerator, clock: Clock, passwordUtil: PasswordUtil, mailSender: MailSender) {
 
   var sessions = Map[String, SessionInfo]()
   var timeout = Duration.standardMinutes(15)
@@ -22,11 +23,13 @@ class UserManager(userStorage: UserStorage, randomUtil: RandomGenerator, clock: 
       val salt = passwordUtil.generateRandomSalt
       val passwordHash = passwordUtil.hashPassword(password, salt)
       userStorage.add(User(None, name, email, passwordHash, salt, SystemRole.User))
+
+      mailSender.sendMail("User registered", "User registered, temporary password: "+password, email, Map())
+
       true
     } else {
       false
     }
-
   }
 
   def changeUserPassword(userId: Int, oldPassword: String, newPassword: String): Try[Boolean] = {

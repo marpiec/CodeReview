@@ -8,6 +8,7 @@ import pl.mpieciukiewicz.codereview.utils.{PasswordUtil, RandomGenerator, Config
 import pl.mpieciukiewicz.codereview.utils.clock.DefaultTimeZoneClock
 import akka.actor.ActorSystem
 import pl.mpieciukiewicz.codereview.web.ProgressMonitor
+import pl.mpieciukiewicz.codereview.utils.email.TLSMailSender
 
 /**
  *
@@ -30,6 +31,8 @@ class Container {
   val jsonUtil = new JsonUtil
   val randomUtil = new RandomGenerator
 
+  val mailSender = new TLSMailSender(configuration.smtp.host, configuration.smtp.port, configuration.smtp.mailFrom)
+
 
   val databaseAccessor = new DatabaseAccessor("jdbc:h2:"+configuration.storage.dataDirectory+"/codeReview", "sa", "sa")
   val documentDataStorage = new DocumentDataStorage(databaseAccessor, jsonUtil)
@@ -48,7 +51,7 @@ class Container {
 
   val repositoryManager = new RepositoryManager(repositoryStorage, commitStorage, fileContentStorage, randomUtil, configuration, clock)
   val projectManager = new ProjectManager(projectStorage, userRoleStorage, repositoryStorage)
-  val userManager = new UserManager(userStorage, randomUtil, clock, passwordUtil)
+  val userManager = new UserManager(userStorage, randomUtil, clock, passwordUtil, mailSender)
 
 }
 

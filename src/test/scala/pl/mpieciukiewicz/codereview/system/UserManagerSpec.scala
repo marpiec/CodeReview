@@ -7,6 +7,7 @@ import pl.mpieciukiewicz.codereview.database.UserStorage
 import pl.mpieciukiewicz.codereview.utils.{RandomGenerator, PasswordUtil}
 import pl.mpieciukiewicz.codereview.utils.clock.SettableStagnantClock
 import pl.mpieciukiewicz.codereview.TestsUtil._
+import pl.mpieciukiewicz.codereview.utils.email.NoOpMailSender
 
 /**
  *
@@ -20,7 +21,7 @@ class UserManagerSpec extends FeatureSpecLike with GivenWhenThen with BeforeAndA
   before {
     clock = new SettableStagnantClock
     userStorage = new UserStorage(createTemporaryDataAccessor, new UniqueMemorySequenceManager)
-    userManager = new UserManager(userStorage, new RandomGenerator, clock, new PasswordUtil("systemSalt"))
+    userManager = new UserManager(userStorage, new RandomGenerator, clock, new PasswordUtil("systemSalt"), new NoOpMailSender)
   }
 
   after {

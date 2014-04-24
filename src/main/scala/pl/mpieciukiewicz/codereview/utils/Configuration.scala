@@ -19,8 +19,8 @@ class Configuration(c: Config) {
 
   val proxy = new Settings("proxy") {
     val enabled = config.getBoolean("enabled")
-    def host = config.getString("host")
-    def port = config.getInt("port")
+    val host = config.getString("host")
+    val port = config.getInt("port")
   }
 
   val storage = new Settings("storage") {
@@ -29,6 +29,12 @@ class Configuration(c: Config) {
 
   val security = new Settings("security") {
     val systemSalt = config.getString("systemSalt")
+  }
+
+  val smtp = new Settings("smtp") {
+    val host = config.getString("host")
+    val port = config.getInt("port")
+    val mailFrom = config.getString("mailFrom")
   }
 
   override def toString = {
