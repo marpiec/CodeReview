@@ -10,6 +10,11 @@ var app = angular.module("application", ["ngRoute", "ngCookies"]).config(functio
         controller: "RegisterController"
     });
 
+    $routeProvider.when("/user-account", {
+        templateUrl: "app/view/account/user-account.html",
+        controller: "UserAccountController"
+    });
+
     $routeProvider.when("/login", {
         templateUrl: "app/view/login.html",
         controller: "LoginController"

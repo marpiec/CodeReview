@@ -196,7 +196,7 @@ a {
   left: 0px;
   right: 0px;
   top: 150px;
-  height: 325px;
+  height: 200px;
   border: 1px solid #e1d6b7;
   background-color: #F4EBD1;
 }
@@ -205,7 +205,7 @@ a {
   left: 150px;
   top: 150px;
   width: 258px;
-  height: 283px;
+  height: 158px;
   background-color: #fff;
   border: 2px solid #435786;
   padding: 20px;
@@ -236,7 +236,30 @@ a {
   font-size: 50px;
   text-transform: lowercase;
   left: 470px;
-  top: 495px;
+  top: 370px;
+}
+.userAccountPage .header {
+  position: relative;
+  height: 30px;
+  border: 1px solid #e1d6b7;
+  background-color: #F4EBD1;
+}
+.userAccountPage .header .banner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  font-size: 16px;
+  font-weight: bold;
+  margin: 6px;
+}
+.userAccountPage .header .banner a {
+  text-decoration: none;
+}
+.userAccountPage .header .userInfo {
+  padding: 6px;
+  position: absolute;
+  right: 0;
+  top: 0;
 }
 .projectPage .header {
   position: relative;
