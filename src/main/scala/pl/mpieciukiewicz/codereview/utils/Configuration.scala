@@ -35,6 +35,9 @@ class Configuration(c: Config) {
     val host = config.getString("host")
     val port = config.getInt("port")
     val mailFrom = config.getString("mailFrom")
+    val ssl = config.getBoolean("ssl")
+    val user = config.getString("user")
+    val password = config.getString("password")
   }
 
   override def toString = {
