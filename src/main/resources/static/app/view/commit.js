@@ -23,7 +23,7 @@ app.controller("CommitController", function ($scope, secureService, $routeParams
 
         prepareFilesLines(response.files);
 
-        showOnlyModifiedLines(5)
+
     }
 
     function prepareFilesLines(files) {
@@ -35,7 +35,7 @@ app.controller("CommitController", function ($scope, secureService, $routeParams
             var processed = {from: [], to: []};
             $scope.files[i].processed = processed;
 
-            if (file.changeType == "Modify") {
+            if (file.changeType == "Modify" || file.changeType == "Rename" || file.changeType == "Copy") {
 
                 var fromLines = file.fromContent[0].split("\n");
 
@@ -76,7 +76,11 @@ app.controller("CommitController", function ($scope, secureService, $routeParams
                     var from = processed.from[j];
                     var to = processed.to[j];
 
-                    if (from.change == "none" && to.change == "added") {
+                    if(from == undefined) {
+                        processed.from.splice(j, 0, {change: "placeholder", content: "", number: ""})
+                    } else if (to == undefined) {
+                        processed.to.splice(j, 0, {change: "placeholder", content: "", number: ""})
+                    } else if (from.change == "none" && to.change == "added") {
                         processed.from.splice(j, 0, {change: "placeholder", content: "", number: ""})
                     } else if (from.change == "deleted" && to.change == "none") {
                         processed.to.splice(j, 0, {change: "placeholder", content: "", number: ""})
@@ -85,56 +89,73 @@ app.controller("CommitController", function ($scope, secureService, $routeParams
                         processed.to[j].change="modifiedTo";
                     }
                 }
+
+                showOnlyModifiedLines(5, file)
+
+            } else if (file.changeType == "Add") {
+                var toLines = file.toContent[0].split("\n");
+                for(var j=0; j< toLines.length; j++) {
+                    var line = toLines[j];
+                    processed.to[j] = {change: "added", content: line, visible: "visible", number: addPrecedingSpaces(toLines.length, j + 1)};
+                    processed.from[j] = {change: "placeholder", content: "", number: "", visible: "visible"};
+                }
+            } else if (file.changeType == "Delete") {
+                var fromLines = file.fromContent[0].split("\n");
+                for(var j=0; j< fromLines.length; j++) {
+                    var line = fromLines[j];
+                    processed.from[j] = {change: "deleted", content: line, visible: "visible", number: addPrecedingSpaces(fromLines.length, j + 1)};
+                    processed.to[j] = {change: "placeholder", content: "", number: "", visible: "visible"};
+                }
+            } else {
+                alert("Unsupported change type = [" + file.changeType+ "]")
             }
+
+
         }
     }
 
 
-    function showOnlyModifiedLines(neibour) {
+    function showOnlyModifiedLines(neibour, file) {
 
-        for(var i=0;i<$scope.files.length;i++) {
-            var file = $scope.files[i];
-
-            var distanceFromModified = 100000;
-            for(var j=0; j<file.processed.from.length; j++) {
-                if(file.processed.from[j].change != "none" || file.processed.to[j].change != "none") {
-                    distanceFromModified = 0;
-                }
-                if(distanceFromModified < 5) {
-                    file.processed.from[j].visible = "visible";
-                    file.processed.to[j].visible = "visible";
-                } else if (distanceFromModified == 5) {
-                    file.processed.from[j].visible = "separator-bottom";
-                    file.processed.to[j].visible = "separator-bottom";
-                } else {
-                    file.processed.from[j].visible = "hidden";
-                    file.processed.to[j].visible = "hidden";
-                }
-                distanceFromModified++;
+        var distanceFromModified = 100000;
+        for(var j=0; j<file.processed.from.length; j++) {
+            if(file.processed.from[j].change != "none" || file.processed.to[j].change != "none") {
+                distanceFromModified = 0;
             }
-
-            var distanceFromModified = 100000;
-            //var first = true;
-            for(var j=file.processed.from.length - 1; j>=0; j--) {
-                if(file.processed.from[j].change != "none" || file.processed.to[j].change != "none") {
-                    distanceFromModified = 0;
-                }
-
-                if(distanceFromModified < 5) {
-                    file.processed.from[j].visible = "visible";
-                    file.processed.to[j].visible = "visible";
-                } else if (distanceFromModified == 5 && file.processed.from[j].visible == "separator-bottom") {
-                    file.processed.from[j].visible = "visible";
-                    file.processed.to[j].visible = "visible";
-                } else if (distanceFromModified == 5 && file.processed.from[j].visible == "hidden") {
-                    file.processed.from[j].visible = "separator-top";
-                    file.processed.to[j].visible = "separator-top";
-                }
-
-                distanceFromModified++;
+            if(distanceFromModified < 5) {
+                file.processed.from[j].visible = "visible";
+                file.processed.to[j].visible = "visible";
+            } else if (distanceFromModified == 5) {
+                file.processed.from[j].visible = "separator-bottom";
+                file.processed.to[j].visible = "separator-bottom";
+            } else {
+                file.processed.from[j].visible = "hidden";
+                file.processed.to[j].visible = "hidden";
             }
-
+            distanceFromModified++;
         }
+
+        var distanceFromModified = 100000;
+        //var first = true;
+        for(var j=file.processed.from.length - 1; j>=0; j--) {
+            if(file.processed.from[j].change != "none" || file.processed.to[j].change != "none") {
+                distanceFromModified = 0;
+            }
+
+            if(distanceFromModified < 5) {
+                file.processed.from[j].visible = "visible";
+                file.processed.to[j].visible = "visible";
+            } else if (distanceFromModified == 5 && file.processed.from[j].visible == "separator-bottom") {
+                file.processed.from[j].visible = "visible";
+                file.processed.to[j].visible = "visible";
+            } else if (distanceFromModified == 5 && file.processed.from[j].visible == "hidden") {
+                file.processed.from[j].visible = "separator-top";
+                file.processed.to[j].visible = "separator-top";
+            }
+
+            distanceFromModified++;
+        }
+
     }
 
     function addPrecedingSpaces(maximumNumber, currentNumber) {

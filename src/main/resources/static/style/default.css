@@ -560,7 +560,7 @@ a {
   margin: 10px;
   width: 50%;
   overflow-x: auto;
-  padding: 0 0 1px 0;
+  padding: 0;
   vertical-align: top;
 }
 .commitPage .file .fileComparator .before div,
@@ -578,8 +578,8 @@ a {
 }
 .commitPage .file .fileComparator pre > .lineNumber {
   display: inline-block;
-  font-size: 10px;
-  color: #bbb;
+  font-size: 11px;
+  color: #ccc;
   border-right: 1px solid #ccc;
   text-align: right;
   padding: 0 4px 0 3px;
