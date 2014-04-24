@@ -261,6 +261,33 @@ a {
   right: 0;
   top: 0;
 }
+.userAccountPage .changePassword {
+  background: #F4EBD1;
+  border: 1px solid #e1d6b7;
+  padding: 10px;
+  margin: 10px 20px;
+}
+.userAccountPage .changePassword .title {
+  margin-bottom: 20px;
+}
+.userAccountPage .changePassword .mainForm {
+  width: 400px;
+  overflow: hidden;
+}
+.userAccountPage .changePassword .mainForm input {
+  margin-top: 5px;
+  margin-bottom: 15px;
+  display: block;
+  width: 200px;
+  padding: 4px;
+}
+.userAccountPage .changePassword .mainForm label {
+  display: block;
+}
+.userAccountPage .changePassword .mainForm button {
+  padding: 4px 20px;
+  float: right;
+}
 .projectPage .header {
   position: relative;
   height: 30px;
