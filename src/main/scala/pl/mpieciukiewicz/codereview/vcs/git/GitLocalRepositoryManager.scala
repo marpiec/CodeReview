@@ -18,6 +18,7 @@ class GitLocalRepositoryManager(repoDirPath: String) {
       setURI(remoteUrl).
       setDirectory(localDirectoryFile).
       setProgressMonitor(new JGitProgressMonitor(taskMonitor)).
+      setNoCheckout(true).
       call().
       close()
   }
