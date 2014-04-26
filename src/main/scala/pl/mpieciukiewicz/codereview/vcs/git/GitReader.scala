@@ -6,24 +6,26 @@ import org.eclipse.jgit.storage.file.FileRepositoryBuilder
 import java.io.{ByteArrayOutputStream, File}
 import collection.JavaConverters._
 import org.eclipse.jgit.revwalk.{RevWalk, RevCommit}
-import org.eclipse.jgit.lib.{Constants, Ref, ConfigConstants, ObjectId}
+import org.eclipse.jgit.lib._
 import org.eclipse.jgit.treewalk.TreeWalk
 import org.eclipse.jgit.diff._
-import pl.mpieciukiewicz.codereview.vcs._
 import org.eclipse.jgit.treewalk.filter.PathFilter
-import pl.mpieciukiewicz.codereview.vcs.FileRename
-import pl.mpieciukiewicz.codereview.vcs.FileModify
-import pl.mpieciukiewicz.codereview.vcs.FileDelete
-import pl.mpieciukiewicz.codereview.vcs.VcsFileContentAdd
-import pl.mpieciukiewicz.codereview.vcs.VcsFileContentCopy
-import pl.mpieciukiewicz.codereview.vcs.VcsFileContentRename
-import pl.mpieciukiewicz.codereview.vcs.VcsFileContentModify
-import pl.mpieciukiewicz.codereview.vcs.VcsFileContentDelete
-import pl.mpieciukiewicz.codereview.vcs.FileAdd
-import pl.mpieciukiewicz.codereview.vcs.FileCopy
 import org.eclipse.jgit.diff.DiffAlgorithm.SupportedAlgorithm
 import org.joda.time.DateTime
 import java.util.Date
+import pl.mpieciukiewicz.codereview.vcs.git.GitCommit
+import pl.mpieciukiewicz.codereview.vcs.VcsFileContentCopy
+import pl.mpieciukiewicz.codereview.vcs.VcsFileContentAdd
+import pl.mpieciukiewicz.codereview.vcs.FileAdd
+import pl.mpieciukiewicz.codereview.vcs.FileRename
+import pl.mpieciukiewicz.codereview.vcs.VcsFileContentRename
+import pl.mpieciukiewicz.codereview.vcs.FileModify
+import pl.mpieciukiewicz.codereview.vcs.FileDelete
+import pl.mpieciukiewicz.codereview.vcs.VcsFileContentModify
+import pl.mpieciukiewicz.codereview.vcs.VcsFileContentDelete
+import pl.mpieciukiewicz.codereview.vcs.git.GitCommit
+import pl.mpieciukiewicz.codereview.vcs.VcsFileDiff
+import pl.mpieciukiewicz.codereview.vcs.FileCopy
 
 /**
  *
@@ -94,10 +96,10 @@ class GitReader(val repoDir: String) {
         }
 
         if (foundInThisBranch) {
-          println(commit.getName());
-          println(commit.getAuthorIdent().getName());
-          println(new Date(commit.getCommitTime()));
-          println(commit.getFullMessage());
+          println(commit.getName)
+          println(commit.getAuthorIdent.getName)
+          println(new Date(commit.getCommitTime))
+          println(commit.getFullMessage)
           return branchName
         }
       }
@@ -127,7 +129,19 @@ class GitReader(val repoDir: String) {
 
       diffs.map(convertDiffToFileChange)
     } else {
-      List() // TODO what if commit doesn't have parent?
+
+      //val revWalk = new RevWalk(repository)
+      val tree = commit.getTree
+
+      val treeWalk = new TreeWalk(repository)
+      treeWalk.addTree(tree)
+      treeWalk.setRecursive(true)
+
+      var diffs = List[FileChange]()
+      while (treeWalk.next()) {
+        diffs ::=  FileAdd(treeWalk.getPathString)
+      }
+      diffs.reverse
     }
   }
 
@@ -145,21 +159,34 @@ class GitReader(val repoDir: String) {
   def readFilesContentFromCommit(commitHash: String): List[(VcsFileContent, VcsFileDiff)] = {
     val commit = getCommitById(commitHash)
 
-    val out = new ByteArrayOutputStream()
-    val df = new DiffFormatter(out)
-    df.setRepository(repository)
-    df.setDiffComparator(RawTextComparator.DEFAULT)
-    df.setDetectRenames(true)
+    val fileChanges = if(commit.getParentCount > 0) {
+      val out = new ByteArrayOutputStream()
+      val df = new DiffFormatter(out)
+      df.setRepository(repository)
+      df.setDiffComparator(RawTextComparator.DEFAULT)
+      df.setDetectRenames(true)
 
-    val diffs = df.scan(commit.getParent(0).getId, commit.getTree).asScala.toList
+      val diffs = df.scan(commit.getParent(0).getId, commit.getTree).asScala.toList
+      diffs.map(convertDiffToFileChange)
 
-    val fileChanges = diffs.map(convertDiffToFileChange)
+    } else {
+      val tree = commit.getTree
+
+      val treeWalk = new TreeWalk(repository)
+      treeWalk.addTree(tree)
+      treeWalk.setRecursive(true)
+
+      var fileChanges = List[FileChange]()
+      while (treeWalk.next()) {
+        fileChanges ::=  FileAdd(treeWalk.getPathString)
+      }
+      fileChanges.reverse
+    }
 
     val content = fileChanges.map(readFileContent(commit))
-
     val fileDiffs = content.map(createDiffFromContents)
-
     content.zip(fileDiffs)
+
   }
 
   private def readFileContent(commit: RevCommit)(fileChange: FileChange): VcsFileContent = {
