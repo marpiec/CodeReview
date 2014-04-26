@@ -30,6 +30,11 @@ var app = angular.module("application", ["ngRoute", "ngCookies"]).config(functio
         controller: "AddRepositoryController"
     });
 
+    $routeProvider.when("/project/:projectId/:projectName/roles", {
+        templateUrl: "app/view/project-roles.html",
+        controller: "ProjectRolesController"
+    });
+
     $routeProvider.when("/repository/:repositoryId/:repositoryName", {
         templateUrl: "app/view/repository.html",
         controller: "RepositoryController"
