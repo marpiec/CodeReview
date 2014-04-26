@@ -7,7 +7,7 @@ app.controller("RepositoryController", function ($scope, $http, $routeParams, se
     $scope.commits = [];
 
     function init() {
-        secureService.get("/rest/commits/"+repositoryId+"/0/20", true, handleLoadCommitsResponse);
+        secureService.get("/rest/commits/"+repositoryId+"/0/20", false, handleLoadCommitsResponse);
     }
 
     function handleLoadCommitsResponse(response) {

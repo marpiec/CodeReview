@@ -9,8 +9,8 @@ app.controller("ProjectController", function ($scope, secureService, $routeParam
 
     $scope.repositories = {};
 
-    secureService.get("/rest/project/"+projectId, true, handleProjectResponse);
-    secureService.get("/rest/project/"+projectId+"/repositories", true, handleRepositoriesResponse);
+    secureService.get("/rest/project/"+projectId, false, handleProjectResponse);
+    secureService.get("/rest/project/"+projectId+"/repositories", false, handleRepositoriesResponse);
 
     function handleProjectResponse(response) {
         if(response.project.length == 1) {

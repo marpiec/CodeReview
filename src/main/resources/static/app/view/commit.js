@@ -3,8 +3,8 @@ app.controller("CommitController", function ($scope, secureService, $routeParams
     var repositoryId = parseInt($routeParams.repositoryId);
     var commitId = parseInt($routeParams.commitId);
 
-    secureService.get("/rest/commit/" + repositoryId + "/" + commitId, true, handleCommitResponse);
-    secureService.get("/rest/commit-files/" + repositoryId + "/" + commitId, true, handleCommitFilesResponse);
+    secureService.get("/rest/commit/" + repositoryId + "/" + commitId, false, handleCommitResponse);
+    secureService.get("/rest/commit-files/" + repositoryId + "/" + commitId, false, handleCommitFilesResponse);
 
     $scope.info = {};
     $scope.files = [];
