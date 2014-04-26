@@ -1,6 +1,6 @@
 package pl.mpieciukiewicz.codereview.system
 
-import pl.mpieciukiewicz.codereview.database.UserStorage
+import pl.mpieciukiewicz.codereview.database.{UserRoleStorage, UserStorage}
 import pl.mpieciukiewicz.codereview.model.User
 import pl.mpieciukiewicz.codereview.model.authorization.{SessionInfoClientSide, SessionInfo}
 import pl.mpieciukiewicz.codereview.utils.{PasswordUtil, RandomGenerator}
@@ -9,9 +9,12 @@ import pl.mpieciukiewicz.codereview.utils.clock.Clock
 import scala.util.{Failure, Success, Try}
 import pl.mpieciukiewicz.codereview.model.constant.SystemRole
 import pl.mpieciukiewicz.codereview.utils.email.MailSender
+import pl.mpieciukiewicz.codereview.model.client.UserWithRole
+import pl.mpieciukiewicz.codereview.utils.protectedid.ProtectedId
 
 
-class UserManager(userStorage: UserStorage, randomUtil: RandomGenerator, clock: Clock, passwordUtil: PasswordUtil, mailSender: MailSender) {
+class UserManager(userStorage: UserStorage, randomUtil: RandomGenerator, clock: Clock, passwordUtil: PasswordUtil, mailSender: MailSender,
+                   userRoleStorage: UserRoleStorage) {
 
   var sessions = Map[String, SessionInfo]()
   var timeout = Duration.standardMinutes(15)
@@ -112,5 +115,13 @@ class UserManager(userStorage: UserStorage, randomUtil: RandomGenerator, clock: 
       }
       case None => None
     }
+  }
+
+  def loadUsersForProject(projectId: Int):List[UserWithRole] = {
+    val userRoles = userRoleStorage.findByProject(projectId)
+    val users = userStorage.loadUsersByIds(userRoles.map(_.userId))
+    val userIdToRole = userRoles.map(role => (role.userId, role.role)).toMap
+
+    users.map(user => UserWithRole(ProtectedId.encrypt(user.id.get), user.name, userIdToRole(user.id.get)))
   }
 }

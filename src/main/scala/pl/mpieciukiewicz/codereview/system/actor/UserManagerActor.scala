@@ -4,6 +4,8 @@ import akka.actor.Actor
 import pl.mpieciukiewicz.codereview.model.authorization.SessionInfoClientSide
 import scala.util.{Failure, Success}
 import pl.mpieciukiewicz.codereview.system.UserManager
+import pl.mpieciukiewicz.codereview.model.User
+import pl.mpieciukiewicz.codereview.model.client.UserWithRole
 
 
 object UserManagerActor {
@@ -24,6 +26,8 @@ object UserManagerActor {
   case class CheckSession(sessionId: String, ip: String)
   case class CheckSessionResponse(userId: Option[Int])
 
+  case class LoadUsersForProject(projectId: Int)
+  case class UsersForProject(users: List[UserWithRole])
 }
 
 
@@ -43,7 +47,6 @@ class UserManagerActor(worker: UserManager) extends Actor {
     case msg: ForgotPassword =>
       worker.forgotPassword(msg.user)
     case msg: AuthenticateUser =>
-      println(worker)
       worker.authenticateUser(msg.user, msg.password, msg.ip) match {
       case Success(sessionInfo) => sender ! AuthenticationResult(true, Some(sessionInfo))
       case Failure(_) => sender ! AuthenticationResult(false)
@@ -54,5 +57,8 @@ class UserManagerActor(worker: UserManager) extends Actor {
     case msg: CheckSession =>
       val userIdOption = worker.checkSession(msg.sessionId, msg.ip)
       sender ! CheckSessionResponse(userIdOption)
+    case msg: LoadUsersForProject =>
+      val users = worker.loadUsersForProject(msg.projectId)
+      sender ! UsersForProject(users)
   }
 }

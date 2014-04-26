@@ -13,5 +13,9 @@
         Project roles
     </div>
 
+    <div ng-repeat="user in users">
+        <select ng-model="user.role" ng-options="role for role in availableRoles" ng-change="roleChanged(user)" ng-disabled="user.disabled"></select>
+        {{ user.userName }}
+    </div>
 
 </div>

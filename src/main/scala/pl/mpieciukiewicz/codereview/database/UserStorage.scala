@@ -49,6 +49,11 @@ class UserStorage(val dba: DatabaseAccessor, sequenceManager: SequenceManager)
     }
   }
 
+  def loadUsersByIds(ids: List[Int]): List[User] = {
+    loadManyByIds(ids)
+  }
+
+
   def update(entity: User) {
     updateEntityOption(entity)
   }

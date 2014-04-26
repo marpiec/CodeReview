@@ -35,7 +35,7 @@ abstract class SimpleStorage[T](private val da: DatabaseAccessor, private val sm
   protected def updateEntity(entity: T {def id:Int}) {
     update(s"UPDATE $tableName SET $columnsToUpdate WHERE id = ?") {
       preparedStatement => mapEntityToPrepareStatement(entity, preparedStatement)
-      preparedStatement.setInt(columnsNames.size + 1, entity.id)
+      preparedStatement.setInt(columns.size + 1, entity.id)
     }
 
   }

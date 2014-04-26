@@ -12,6 +12,7 @@ import pl.mpieciukiewicz.codereview.system.actor.{ProjectManagerActor, UserManag
 import pl.mpieciukiewicz.codereview.system.actor.UserManagerActor.CheckSessionResponse
 import pl.mpieciukiewicz.codereview.model.UserRole
 import pl.mpieciukiewicz.codereview.model.constant.ProjectRole
+import pl.mpieciukiewicz.codereview.utils.protectedid.IdProtectionUtil
 
 /**
  *
@@ -143,6 +144,17 @@ class RestServlet(actorSystem: ActorSystem, actorProvider: ActorProvider, progre
     }
   }
 
+  get("/project/:projectId/users") {
+    async {
+      authenticated {
+        userId =>
+          val actor = actorProvider.userManagerActor
+          val msg = UserManagerActor.LoadUsersForProject(params("projectId").toInt)
+          actor.askForJson(msg)
+      }
+    }
+  }
+
   get("/commit/:repositoryId/:commitId") {
     async {
       authenticated {
@@ -154,12 +166,12 @@ class RestServlet(actorSystem: ActorSystem, actorProvider: ActorProvider, progre
     }
   }
 
-  get("/change-user-role/:projectId/:userId/:roleName") {
+  post("/change-user-role") {
     async {
       authenticated {
         userId =>
           val actor = actorProvider.projectManagerActor
-          val msg = ProjectManagerActor.ChangeUserRole(params("projectId").toInt, params("userId").toInt, ProjectRole.getByName(params("roleName")))
+          val msg = ProjectManagerActor.ChangeUserRole(params("projectId").toInt, decryptId(params("userId")), ProjectRole.getByName(params("newRole")))
           actor ! msg
           Future.successful("ok")
       }
@@ -218,6 +230,10 @@ class RestServlet(actorSystem: ActorSystem, actorProvider: ActorProvider, progre
         actor.askForJson(msg)
       }
     }
+  }
+
+  def decryptId(protectedId: String):Int = {
+    IdProtectionUtil.decrypt(protectedId).toInt
   }
 
   def async(block: => Future[_]):AsyncResult = {

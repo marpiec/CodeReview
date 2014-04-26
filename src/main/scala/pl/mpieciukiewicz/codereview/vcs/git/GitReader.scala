@@ -13,7 +13,6 @@ import org.eclipse.jgit.treewalk.filter.PathFilter
 import org.eclipse.jgit.diff.DiffAlgorithm.SupportedAlgorithm
 import org.joda.time.DateTime
 import java.util.Date
-import pl.mpieciukiewicz.codereview.vcs.git.GitCommit
 import pl.mpieciukiewicz.codereview.vcs.VcsFileContentCopy
 import pl.mpieciukiewicz.codereview.vcs.VcsFileContentAdd
 import pl.mpieciukiewicz.codereview.vcs.FileAdd
@@ -23,7 +22,6 @@ import pl.mpieciukiewicz.codereview.vcs.FileModify
 import pl.mpieciukiewicz.codereview.vcs.FileDelete
 import pl.mpieciukiewicz.codereview.vcs.VcsFileContentModify
 import pl.mpieciukiewicz.codereview.vcs.VcsFileContentDelete
-import pl.mpieciukiewicz.codereview.vcs.git.GitCommit
 import pl.mpieciukiewicz.codereview.vcs.VcsFileDiff
 import pl.mpieciukiewicz.codereview.vcs.FileCopy
 

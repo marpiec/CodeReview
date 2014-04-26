@@ -55,7 +55,7 @@ class Container {
 
   val repositoryManager = new RepositoryManager(repositoryStorage, commitStorage, fileContentStorage, randomUtil, configuration, clock)
   val projectManager = new ProjectManager(projectStorage, userRoleStorage, repositoryStorage)
-  val userManager = new UserManager(userStorage, randomUtil, clock, passwordUtil, mailSender)
+  val userManager = new UserManager(userStorage, randomUtil, clock, passwordUtil, mailSender, userRoleStorage)
 
 }
 

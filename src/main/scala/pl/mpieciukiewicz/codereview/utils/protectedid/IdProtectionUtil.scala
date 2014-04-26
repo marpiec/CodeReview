@@ -1,4 +1,5 @@
-package pl.mpieciukiewicz.codereview.utils
+package pl.mpieciukiewicz.codereview.utils.protectedid
+
 
 /**
  * http://www.numberempire.com/primenumbers.php.
@@ -24,25 +25,25 @@ object IdProtectionUtil {
   val SALT = BigInt("347")
 
 
-  def encrypt(id:UID):String = {
+  def encrypt(id:Long):String = {
     // Dodajemy zaklocenie
-    val messageBI  = BigInt(id.uid) + SALT
+    val messageBI  = BigInt(id) + SALT
     // Mnozymy modulo
     val cypherBI = messageBI * MULTIPLIER mod MODULO
     // Zamieniamy w liczbe w systemie 36
     return cypherBI.toString(RADIX)
   }
 
-  def decrypt(cypher: String):UID = {
+  def decrypt(cypher: String):Long = {
     try {
       // Zczytujemy liczbe w systemie 36
       val cypherBI = BigInt(cypher, RADIX)
       // Mnozymy przez odwrotnosc R
       val messageBI = cypherBI * INVERSED_MULTIPLIER mod MODULO
       // Odejmujemy zakłócenie
-      new UID((messageBI - SALT).longValue)
+      (messageBI - SALT).longValue
     } catch {
-      case e:NumberFormatException => return new UID(0)
+      case e:NumberFormatException => 0
     }
   }
 

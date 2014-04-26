@@ -2,6 +2,7 @@ package pl.mpieciukiewicz.codereview.utils
 
 import org.scalatest.{GivenWhenThen, FeatureSpec}
 import org.fest.assertions.api.Assertions._
+import pl.mpieciukiewicz.codereview.utils.protectedid.IdProtectionUtil
 
 class IdProtectionUtilSpec extends FeatureSpec with GivenWhenThen {
 
