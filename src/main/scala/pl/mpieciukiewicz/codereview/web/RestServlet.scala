@@ -65,6 +65,15 @@ class RestServlet(actorSystem: ActorSystem, actorProvider: ActorProvider, progre
     }
   }
 
+  post("/forgot-password") {
+    async {
+        val actor = actorProvider.userManagerActor
+        val msg = UserManagerActor.ForgotPassword(params("user"))
+        actor ! msg
+        Future.successful("ok")
+    }
+  }
+
   post("/authenticate-user") {
     async {
       val actor = actorProvider.userManagerActor

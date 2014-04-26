@@ -20,6 +20,11 @@ var app = angular.module("application", ["ngRoute", "ngCookies"]).config(functio
         controller: "LoginController"
     });
 
+    $routeProvider.when("/forgot-password", {
+        templateUrl: "app/view/forgot-password.html",
+        controller: "ForgotPasswordController"
+    });
+
     $routeProvider.when("/project/:projectId/:projectName/add-repository", {
         templateUrl: "app/view/add-repository.html",
         controller: "AddRepositoryController"
@@ -58,7 +63,7 @@ app.run(function($rootScope, $location, session) {
     $rootScope.$on('$routeChangeStart', function (event, next, current) {
         var url = $location.url();
 
-        var whitelist = ["/login", "/register"];
+        var whitelist = ["/login", "/register", "/forgot-password"];
 
         if (!session.isAuthenticated() && !_.contains(whitelist, url)) {
             $location.path('/login');

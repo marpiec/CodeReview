@@ -13,17 +13,17 @@ import scala.concurrent.ExecutionContext.Implicits.global
  */
 
 abstract class MailSender {
-  def sendMail(subject: String, template: String, address: String, params: Map[String, String])
+  def sendMailAsync(subject: String, template: String, address: String, params: Map[String, String])
 }
 
 class NoOpMailSender extends MailSender {
-  override def sendMail(subject: String, template: String, address: String, params: Map[String, String]) {
+  override def sendMailAsync(subject: String, template: String, address: String, params: Map[String, String]) {
     // do nothing
   }
 }
 
 class TLSMailSender(smtpHost:String, smtpPort: Int, emailFrom: String) extends MailSender {
-  override def sendMail(subject: String, template: String, address: String, params: Map[String, String]):Unit = Future {
+  override def sendMailAsync(subject: String, template: String, address: String, params: Map[String, String]):Unit = Future {
     try {
       val props = new Properties
 
@@ -56,7 +56,7 @@ class TLSMailSender(smtpHost:String, smtpPort: Int, emailFrom: String) extends M
 
 class SslMailSender(smtpUser: String,smtpPassword:String,smtpHost:String, smtpPort: Int, emailFrom: String) extends MailSender {
 
-  def sendMail(subject: String, template: String, address: String, params: Map[String, String]):Unit = Future {
+  def sendMailAsync(subject: String, template: String, address: String, params: Map[String, String]):Unit = Future {
       val props = new Properties
 
      // props.put("mail.smtp.user", smtpUser)

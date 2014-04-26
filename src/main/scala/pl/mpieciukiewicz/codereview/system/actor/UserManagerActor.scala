@@ -14,6 +14,8 @@ object UserManagerActor {
   case class ChangeUserPassword(userId: Int, oldPassword: String, newPassword: String)
   case class ChangePasswordResult(passwordChanged: Boolean)
 
+  case class ForgotPassword(user: String)
+
   case class AuthenticateUser(user: String, password: String, ip: String)
   case class AuthenticationResult(userAuthenticated: Boolean, sessionInfo: Option[SessionInfoClientSide] = None)
 
@@ -38,6 +40,8 @@ class UserManagerActor(worker: UserManager) extends Actor {
       case Success(_) => sender ! ChangePasswordResult(true)
       case Failure(_) => sender ! ChangePasswordResult(false)
     }
+    case msg: ForgotPassword =>
+      worker.forgotPassword(msg.user)
     case msg: AuthenticateUser =>
       println(worker)
       worker.authenticateUser(msg.user, msg.password, msg.ip) match {

@@ -1,6 +1,6 @@
 app.controller("LoginController", function ($rootScope, $scope, $http, session, $location, $cookies) {
 
-    $scope.user = "";
+    $scope.userName = "";
     $scope.password = "";
 
     $scope.loginIncorrectVisible = false;

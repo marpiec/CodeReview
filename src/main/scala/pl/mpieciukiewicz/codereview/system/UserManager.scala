@@ -24,11 +24,21 @@ class UserManager(userStorage: UserStorage, randomUtil: RandomGenerator, clock: 
       val passwordHash = passwordUtil.hashPassword(password, salt)
       userStorage.add(User(None, name, email, passwordHash, salt, SystemRole.User))
 
-      mailSender.sendMail("User registered", "User registered, temporary password: "+password, email, Map())
+      mailSender.sendMailAsync("User registered", "User registered, temporary password: "+password, email, Map())
 
       true
     } else {
       false
+    }
+  }
+
+  def forgotPassword(user: String) {
+    userStorage.findByNameOrEmail(user, user) match {
+      case Some(userEntity) =>
+        val newPassword = passwordUtil.generateRandomPassword
+        updateUserPassword(userEntity, newPassword)
+        mailSender.sendMailAsync("User registered", "Password has been changed: "+newPassword, userEntity.email, Map())
+      case None => ()
     }
   }
 
@@ -38,9 +48,7 @@ class UserManager(userStorage: UserStorage, randomUtil: RandomGenerator, clock: 
     if (userOption.isDefined) {
       val user = userOption.get
       if (checkUserPassword(user, oldPassword)) {
-        val salt = passwordUtil.generateRandomSalt
-        val passwordHash = passwordUtil.hashPassword(newPassword, salt)
-        userStorage.update(user.copy(salt = salt, passwordHash = passwordHash))
+        updateUserPassword(user, newPassword)
         Success(true)
       } else {
         Failure(new IncorrectPasswordException)
@@ -51,19 +59,25 @@ class UserManager(userStorage: UserStorage, randomUtil: RandomGenerator, clock: 
   }
 
 
+  private def updateUserPassword(user: User, newPassword: String) {
+    val salt = passwordUtil.generateRandomSalt
+    val passwordHash = passwordUtil.hashPassword(newPassword, salt)
+    userStorage.update(user.copy(salt = salt, passwordHash = passwordHash))
+  }
+
   def authenticateUser(user: String, password: String, ip: String): Try[SessionInfoClientSide] = {
 
     val userOption = userStorage.findByNameOrEmail(user, user)
 
     if (userOption.isDefined) {
-      val user = userOption.get
-      if (checkUserPassword(user, password)) {
+      val userEntity = userOption.get
+      if (checkUserPassword(userEntity, password)) {
         var sessionId = ""
         do {
           sessionId = randomUtil.generateSessionIdentifier
         } while (sessions.contains(sessionId))
         val now = clock.now
-        val sessionInfo = SessionInfo(user.id.get, user.name, "whoKnows", ip, now, now)
+        val sessionInfo = SessionInfo(userEntity.id.get, userEntity.name, "whoKnows", ip, now, now)
         sessions += sessionId -> sessionInfo
 
         Success(SessionInfoClientSide(sessionId, sessionInfo.userName))
