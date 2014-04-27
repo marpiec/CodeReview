@@ -11,11 +11,20 @@
 
     <div>
         Project roles
+        <a href="#" onclick="return false;" ng-click="showAddUserForm()">Add user</a>
     </div>
 
     <div ng-repeat="user in users">
         <select ng-model="user.role" ng-options="role for role in availableRoles" ng-change="roleChanged(user)" ng-disabled="user.disabled"></select>
         {{ user.userName }}
+    </div>
+
+    <div ng-show="addUserFormVisible">
+        <input ng-model="usersQuery" ng-change="findUsers()">
+        <div ng-repeat="user in foundUsers">
+           {{user.name}}
+        </div>
+
     </div>
 
 </div>

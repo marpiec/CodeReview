@@ -6,6 +6,10 @@ app.controller("ProjectRolesController", function ($scope, secureService, $route
 
     $scope.users = {};
 
+    $scope.addUserFormVisible = false;
+    $scope.foundUsers = [];
+    $scope.usersQuery = "";
+
     secureService.get("/rest/project/"+projectId+"/users", false, handleUsersResponse);
 
     function handleUsersResponse(response) {
@@ -22,6 +26,19 @@ app.controller("ProjectRolesController", function ($scope, secureService, $route
             error(function (data, status, headers, config) {
                 alert("Error communication with server!")
             });
-    }
+    };
 
+    $scope.showAddUserForm = function() {
+        $scope.addUserFormVisible = true;
+
+        secureService.get("/rest/find-users/0/20/", false, handleFoundUsersResponse)
+    };
+
+    $scope.findUsers = function() {
+        secureService.get("/rest/find-users/0/20/"+encodeURIComponent($scope.usersQuery), false, handleFoundUsersResponse)
+    };
+
+    function handleFoundUsersResponse(response) {
+        $scope.foundUsers = response.users;
+    }
 });

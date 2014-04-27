@@ -190,6 +190,25 @@ class RestServlet(actorSystem: ActorSystem, actorProvider: ActorProvider, progre
     }
   }
 
+  get("/find-users/:from/:count/") {
+    handleFindUsers(params("from").toInt, params("count").toInt, "")
+  }
+
+  get("/find-users/:from/:count/:query") {
+    handleFindUsers(params("from").toInt, params("count").toInt, params("query"))
+  }
+
+  def handleFindUsers(from: Int, count: Int, query: String) = {
+    async {
+      authenticated {
+        userId =>
+          val actor = actorProvider.userManagerActor
+          val msg = UserManagerActor.FindUsers(from, count, query)
+          actor.askForJson(msg)
+      }
+    }
+  }
+
   get("/commit-files/:repositoryId/:commitId") {
     async {
       authenticated {

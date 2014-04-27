@@ -5,7 +5,7 @@ import pl.mpieciukiewicz.codereview.model.authorization.SessionInfoClientSide
 import scala.util.{Failure, Success}
 import pl.mpieciukiewicz.codereview.system.UserManager
 import pl.mpieciukiewicz.codereview.model.User
-import pl.mpieciukiewicz.codereview.model.client.UserWithRole
+import pl.mpieciukiewicz.codereview.model.client.{SimpleUser, UserWithRole}
 
 
 object UserManagerActor {
@@ -28,6 +28,9 @@ object UserManagerActor {
 
   case class LoadUsersForProject(projectId: Int)
   case class UsersForProject(users: List[UserWithRole])
+
+  case class FindUsers(from: Int, count: Int, query: String)
+  case class FoundUsers(users: List[SimpleUser])
 }
 
 
@@ -60,5 +63,8 @@ class UserManagerActor(worker: UserManager) extends Actor {
     case msg: LoadUsersForProject =>
       val users = worker.loadUsersForProject(msg.projectId)
       sender ! UsersForProject(users)
+    case msg: FindUsers =>
+      val users = worker.findUsers(msg.from, msg.count, msg.query)
+      sender ! FoundUsers(users)
   }
 }

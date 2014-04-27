@@ -10,11 +10,12 @@ import java.sql.{PreparedStatement, ResultSet}
  */
 class UserStorage(val dba: DatabaseAccessor, sequenceManager: SequenceManager)
   extends SimpleStorage[User] (dba, sequenceManager,  "user", List("id" -> "INT NOT NULL PRIMARY KEY",
-    "name" -> "VARCHAR(255) NOT NULL",
+    "name" -> "VARCHAR_IGNORECASE(255) NOT NULL",
     "email" -> "VARCHAR(255) NOT NULL",
     "password_hash" -> "VARCHAR(255) NOT NULL",
     "salt" -> "VARCHAR(255) NOT NULL",
     "system_role" -> "VARCHAR(255) NOT NULL")) {
+
 
 
   override protected def injectId(entity: User, id: Int): User = entity.copy(id = Some(id))
@@ -56,6 +57,13 @@ class UserStorage(val dba: DatabaseAccessor, sequenceManager: SequenceManager)
 
   def update(entity: User) {
     updateEntityOption(entity)
+  }
+
+  def findUsersByNamesQuery(query: String):List[User] = {
+    findMultipleBy("name LIKE ?") {
+      preparedStatement =>
+        preparedStatement.setString(1, "%" + query.toLowerCase + "%")
+    }
   }
 
 }

@@ -9,7 +9,7 @@ import pl.mpieciukiewicz.codereview.utils.clock.Clock
 import scala.util.{Failure, Success, Try}
 import pl.mpieciukiewicz.codereview.model.constant.SystemRole
 import pl.mpieciukiewicz.codereview.utils.email.MailSender
-import pl.mpieciukiewicz.codereview.model.client.UserWithRole
+import pl.mpieciukiewicz.codereview.model.client.{SimpleUser, UserWithRole}
 import pl.mpieciukiewicz.codereview.utils.protectedid.ProtectedId
 
 
@@ -124,4 +124,12 @@ class UserManager(userStorage: UserStorage, randomUtil: RandomGenerator, clock: 
 
     users.map(user => UserWithRole(ProtectedId.encrypt(user.id.get), user.name, userIdToRole(user.id.get)))
   }
+
+
+  def findUsers(from: Int, count: Int, query: String): List[SimpleUser] = {
+    userStorage.findUsersByNamesQuery(query).map {user =>
+        SimpleUser(ProtectedId.encrypt(user.id.get), user.name, user.email)
+    }
+  }
+
 }
