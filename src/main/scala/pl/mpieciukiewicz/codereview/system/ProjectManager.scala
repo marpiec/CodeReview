@@ -5,11 +5,16 @@ import pl.mpieciukiewicz.codereview.database.{UserStorage, UserRoleStorage, Repo
 import scala.util.{Success, Failure, Try}
 import pl.mpieciukiewicz.codereview.model.client.ProjectWithRepositories
 import pl.mpieciukiewicz.codereview.model.constant.ProjectRole
+import org.slf4j.LoggerFactory
 
 class ProjectManager(projectStorage: ProjectStorage,
                      userRoleStorage: UserRoleStorage,
                      repositoryStorage: RepositoryStorage,
-                     userStorage: UserStorage) {
+                     userStorage: UserStorage) extends Authorizator {
+
+  private final val log = LoggerFactory.getLogger(classOf[ProjectManager])
+
+  implicit val implicitUserRoleStorage = userRoleStorage
 
   def createProject(projectName: String, ownerUserId: Int):Try[Int] = {
     projectStorage.findByName(projectName) match {
@@ -44,11 +49,15 @@ class ProjectManager(projectStorage: ProjectStorage,
     userRoleStorage.removeByProjectAndUser(userId, projectId)
   }
 
-  def changeUserRole(projectId: Int, userId: Int, role: ProjectRole) {
-    userRoleStorage.findByUserAndProject(userId, projectId) match {
-      case Some(userRole) => userRoleStorage.update(userRole.copy(role = role))
-      case None => ()
-    }
+  def changeUserRole(requestorUserId: Int, projectId: Int, userId: Int, role: ProjectRole) {
+    requireAdmin(projectId, requestorUserId, authorized = {
+      userRoleStorage.findByUserAndProject(userId, projectId) match {
+        case Some(userRole) => userRoleStorage.update(userRole.copy(role = role))
+        case None => ()
+      }
+    }, unauthorized = {
+      log.warn(s"Unauthorized try to changeUserRole requestor=$requestorUserId, projectId=$projectId, userId=$userId, role=$role")
+    })
   }
 
   def addUserToProject(projectId: Int, userId: Int, role: ProjectRole) {

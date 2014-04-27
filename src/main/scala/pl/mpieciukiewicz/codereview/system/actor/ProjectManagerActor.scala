@@ -26,7 +26,7 @@ object ProjectManagerActor {
   case class UserProjectsAndRepositories(projects: List[ProjectWithRepositories])
 
   case class AddUserToProject(projectId: Int, userId: Int, role: ProjectRole)
-  case class ChangeUserRole(projectId: Int, userId: Int, role: ProjectRole)
+  case class ChangeUserRole(requestorUserId: Int, projectId: Int, userId: Int, role: ProjectRole)
   case class RemoveUserFromProject(projectId: Int, userId: Int)
 
   case class FindUserRole(projectId: Int, userId: Int)
@@ -54,7 +54,7 @@ class ProjectManagerActor(worker: ProjectManager) extends Actor {
       val projects = worker.loadUserProjectsAndRepositories(msg.userId)
       sender ! UserProjectsAndRepositories(projects)
     case msg: AddUserToProject => worker.addUserToProject(msg.projectId, msg.userId, msg.role)
-    case msg: ChangeUserRole => worker.changeUserRole(msg.projectId, msg.userId, msg.role)
+    case msg: ChangeUserRole => worker.changeUserRole(msg.requestorUserId, msg.projectId, msg.userId, msg.role)
     case msg: RemoveUserFromProject => worker.removeUserFromProject(msg.projectId, msg.userId)
     case msg: FindUserRole =>
       val role = worker.findUserRole(msg.projectId, msg.userId)

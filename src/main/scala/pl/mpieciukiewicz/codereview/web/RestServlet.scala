@@ -182,7 +182,7 @@ class RestServlet(actorSystem: ActorSystem, actorProvider: ActorProvider, progre
       authenticated {
         userId =>
           val actor = actorProvider.projectManagerActor
-          val msg = ProjectManagerActor.ChangeUserRole(params("projectId").toInt, decryptId(params("userId")), ProjectRole.getByName(params("newRole")))
+          val msg = ProjectManagerActor.ChangeUserRole(userId, params("projectId").toInt, decryptId(params("userId")), ProjectRole.getByName(params("newRole")))
           actor ! msg
           Future.successful("ok")
       }

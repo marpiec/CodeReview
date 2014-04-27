@@ -11,17 +11,26 @@
 
     <div>
         Project roles
-        <a href="#" onclick="return false;" ng-click="showAddUserForm()">Add user</a>
+        <a href="#" onclick="return false;" ng-show="canEditUsers" ng-click="showAddUserForm()">Add user</a>
     </div>
 
     <div ng-repeat="user in users">
-        <select ng-model="user.role" ng-options="role for role in availableRoles"
-                ng-focus="previousValueOfCurrentActiveControl = user.role"
-                ng-change="roleChanged(user, previousValueOfCurrentActiveControl)"
-                ng-disabled="user.disabled"></select>
+        <span class="userName">
         {{ user.userName }}
-        <a href="#" onclick="return false;" ng-click="removeUser(user)" ng-hide="user.cancelRemoveVisible">Remove</a>
-        <a href="#" onclick="return false;" ng-click="cancelRemoveUser(user)" ng-show="user.cancelRemoveVisible">Cancel</a>
+        </span>
+
+        <span class="userRole">
+            <select ng-model="user.role" ng-options="role for role in availableRoles"
+                    ng-focus="previousValueOfCurrentActiveControl = user.role"
+                    ng-change="roleChanged(user, previousValueOfCurrentActiveControl)"
+                    ng-disabled="user.disabled" ng-show="canEditUsers"></select>
+            <span ng-hide="canEditUsers">{{user.role}}</span>
+        </span>
+        <span class="removeUser">
+            <a href="#" onclick="return false;" ng-click="removeUser(user)" ng-hide="user.cancelRemoveVisible || !canEditUsers">Remove</a>
+            <a href="#" onclick="return false;" ng-click="cancelRemoveUser(user)" ng-show="user.cancelRemoveVisible">Cancel remove</a>
+        </span>
+
     </div>
 
     <div ng-show="addUserFormVisible">

@@ -1,6 +1,8 @@
 app.controller("ProjectRolesController", function ($scope, secureService, $routeParams, $http) {
 
     var projectId = parseInt($routeParams.projectId);
+    $scope.userRole = undefined;
+    $scope.canEditUsers = false;
 
     $scope.availableRoles = ["Owner", "Admin", "Developer"];
 
@@ -15,7 +17,18 @@ app.controller("ProjectRolesController", function ($scope, secureService, $route
 
     $scope.previousValueOfCurrentActiveControl = undefined;
 
+    secureService.get("/rest/current-user-project-role/"+projectId, false, handleUserRoleResponse);
     secureService.get("/rest/project/"+projectId+"/users", false, handleUsersResponse);
+
+    function handleUserRoleResponse(response) {
+        if(response.role.length == 1) {
+            $scope.userRole = response.role[0];
+        } else {
+            $scope.userRole = undefined;
+        }
+        $scope.canEditUsers = $scope.userRole == "Admin" || $scope.userRole == "Owner";
+
+    }
 
     function handleUsersResponse(response) {
         $scope.users = response.users;
