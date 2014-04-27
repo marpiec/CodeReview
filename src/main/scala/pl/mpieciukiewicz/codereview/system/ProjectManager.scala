@@ -58,4 +58,8 @@ class ProjectManager(projectStorage: ProjectStorage,
     }
   }
 
+  def findUserRole(projectId: Int, userId: Int): Option[ProjectRole] = {
+    userRoleStorage.findByUserAndProject(userId, projectId).map(_.role)
+  }
+
 }

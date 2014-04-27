@@ -122,6 +122,17 @@ class RestServlet(actorSystem: ActorSystem, actorProvider: ActorProvider, progre
     }
   }
 
+  get("/current-user-project-role/:projectId") {
+    async {
+      authenticated {
+        userId =>
+          val actor = actorProvider.projectManagerActor
+          val msg = ProjectManagerActor.FindUserRole(params("projectId").toInt, userId)
+          actor.askForJson(msg)
+      }
+    }
+  }
+
   get("/project/:projectId") {
     async {
       authenticated {
