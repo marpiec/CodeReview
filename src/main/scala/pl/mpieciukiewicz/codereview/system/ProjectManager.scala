@@ -1,12 +1,15 @@
 package pl.mpieciukiewicz.codereview.system
 
 import pl.mpieciukiewicz.codereview.model.{UserRole, Project}
-import pl.mpieciukiewicz.codereview.database.{UserRoleStorage, RepositoryStorage, ProjectStorage}
+import pl.mpieciukiewicz.codereview.database.{UserStorage, UserRoleStorage, RepositoryStorage, ProjectStorage}
 import scala.util.{Success, Failure, Try}
 import pl.mpieciukiewicz.codereview.model.client.ProjectWithRepositories
 import pl.mpieciukiewicz.codereview.model.constant.ProjectRole
 
-class ProjectManager(projectStorage: ProjectStorage, userRoleStorage: UserRoleStorage, repositoryStorage: RepositoryStorage) {
+class ProjectManager(projectStorage: ProjectStorage,
+                     userRoleStorage: UserRoleStorage,
+                     repositoryStorage: RepositoryStorage,
+                     userStorage: UserStorage) {
 
   def createProject(projectName: String, ownerUserId: Int):Try[Int] = {
     projectStorage.findByName(projectName) match {
@@ -44,7 +47,14 @@ class ProjectManager(projectStorage: ProjectStorage, userRoleStorage: UserRoleSt
   def changeUserRole(projectId: Int, userId: Int, role: ProjectRole) {
     userRoleStorage.findByUserAndProject(userId, projectId) match {
       case Some(userRole) => userRoleStorage.update(userRole.copy(role = role))
-      case None => userRoleStorage.add(UserRole(0, userId, projectId, role))
+      case None => ()
+    }
+  }
+
+  def addUserToProject(projectId: Int, userId: Int, role: ProjectRole) {
+    userStorage.findById(userId) match {
+      case Some(userRole) => userRoleStorage.add(UserRole(0, userId, projectId, role))
+      case None => ()
     }
   }
 

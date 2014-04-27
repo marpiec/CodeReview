@@ -15,14 +15,26 @@
     </div>
 
     <div ng-repeat="user in users">
-        <select ng-model="user.role" ng-options="role for role in availableRoles" ng-change="roleChanged(user)" ng-disabled="user.disabled"></select>
+        <select ng-model="user.role" ng-options="role for role in availableRoles"
+                ng-focus="previousValueOfCurrentActiveControl = user.role"
+                ng-change="roleChanged(user, previousValueOfCurrentActiveControl)"
+                ng-disabled="user.disabled"></select>
         {{ user.userName }}
+        <a href="#" onclick="return false;" ng-click="removeUser(user)" ng-hide="user.cancelRemoveVisible">Remove</a>
+        <a href="#" onclick="return false;" ng-click="cancelRemoveUser(user)" ng-show="user.cancelRemoveVisible">Cancel</a>
     </div>
 
     <div ng-show="addUserFormVisible">
         <input ng-model="usersQuery" ng-change="findUsers()">
         <div ng-repeat="user in foundUsers">
            {{user.name}}
+
+           <select ng-model="user.newUserRole" ng-options="role for role in availableRoles"
+                   ng-focus="previousValueOfCurrentActiveControl = user.role"
+                   ng-change="addUser(user, user.newUserRole)"
+                   ng-disabled="user.disabled">
+               <option value="">Add user...</option>
+           </select>
         </div>
 
     </div>

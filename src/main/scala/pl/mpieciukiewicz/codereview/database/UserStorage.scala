@@ -38,9 +38,9 @@ class UserStorage(val dba: DatabaseAccessor, sequenceManager: SequenceManager)
       SystemRole.apply(result.getString(6)))
   }
 
-  override def loadAll(): List[User] = {
-    super.loadAll()
-  }
+  override def loadAll(): List[User] = super.loadAll()
+
+  override def findById(id: Int): Option[User] = super.findById(id)
 
   def findByNameOrEmail(name: String, email: String): Option[User] = {
     findSingleBy("name = ? OR email = ?") {
@@ -59,10 +59,12 @@ class UserStorage(val dba: DatabaseAccessor, sequenceManager: SequenceManager)
     updateEntityOption(entity)
   }
 
-  def findUsersByNamesQuery(query: String):List[User] = {
-    findMultipleBy("name LIKE ?") {
+  def findUsersByNamesQuery(from: Int, count: Int, query: String):List[User] = {
+    findMultipleBy("name LIKE ? LIMIT ? OFFSET ?") {
       preparedStatement =>
         preparedStatement.setString(1, "%" + query.toLowerCase + "%")
+        preparedStatement.setInt(2, count)
+        preparedStatement.setInt(3, from)
     }
   }
 

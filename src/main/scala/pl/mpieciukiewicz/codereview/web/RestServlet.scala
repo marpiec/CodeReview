@@ -178,12 +178,24 @@ class RestServlet(actorSystem: ActorSystem, actorProvider: ActorProvider, progre
     }
   }
 
-  get("/remove-user-from-project/:projectId/:userId") {
+  post("/add-user-to-project") {
     async {
       authenticated {
         userId =>
           val actor = actorProvider.projectManagerActor
-          val msg = ProjectManagerActor.RemoveUserFromProject(params("projectId").toInt, params("userId").toInt)
+          val msg = ProjectManagerActor.AddUserToProject(params("projectId").toInt, decryptId(params("userId")), ProjectRole.getByName(params("role")))
+          actor ! msg
+          Future.successful("ok")
+      }
+    }
+  }
+
+  post("/remove-user-from-project") {
+    async {
+      authenticated {
+        userId =>
+          val actor = actorProvider.projectManagerActor
+          val msg = ProjectManagerActor.RemoveUserFromProject(params("projectId").toInt, decryptId(params("userId")))
           actor ! msg
           Future.successful("ok")
       }

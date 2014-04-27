@@ -127,7 +127,7 @@ class UserManager(userStorage: UserStorage, randomUtil: RandomGenerator, clock: 
 
 
   def findUsers(from: Int, count: Int, query: String): List[SimpleUser] = {
-    userStorage.findUsersByNamesQuery(query).map {user =>
+    userStorage.findUsersByNamesQuery(from, count, query).map {user =>
         SimpleUser(ProtectedId.encrypt(user.id.get), user.name, user.email)
     }
   }

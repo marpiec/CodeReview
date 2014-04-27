@@ -10,6 +10,8 @@ import pl.mpieciukiewicz.codereview.model.constant.ProjectRole
 
 object ProjectManagerActor {
 
+
+
   case class CreateProject(projectName: String, ownerUserId: Int)
 
   case class ProjectCreated(successful: Boolean, projectId: Option[Int] = None)
@@ -23,7 +25,7 @@ object ProjectManagerActor {
   case class LoadUserProjectsAndRepositories(userId: Int)
   case class UserProjectsAndRepositories(projects: List[ProjectWithRepositories])
 
-
+  case class AddUserToProject(projectId: Int, userId: Int, role: ProjectRole)
   case class ChangeUserRole(projectId: Int, userId: Int, role: ProjectRole)
 
   case class RemoveUserFromProject(projectId: Int, userId: Int)
@@ -49,6 +51,7 @@ class ProjectManagerActor(worker: ProjectManager) extends Actor {
     case msg: LoadUserProjectsAndRepositories =>
       val projects = worker.loadUserProjectsAndRepositories(msg.userId)
       sender ! UserProjectsAndRepositories(projects)
+    case msg: AddUserToProject => worker.addUserToProject(msg.projectId, msg.userId, msg.role)
     case msg: ChangeUserRole => worker.changeUserRole(msg.projectId, msg.userId, msg.role)
     case msg: RemoveUserFromProject => worker.removeUserFromProject(msg.projectId, msg.userId)
   }
