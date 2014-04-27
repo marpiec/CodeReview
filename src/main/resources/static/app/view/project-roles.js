@@ -4,7 +4,9 @@ app.controller("ProjectRolesController", function ($scope, secureService, $route
 
     $scope.availableRoles = ["Owner", "Admin", "Developer"];
 
-    $scope.users = {};
+    $scope.users = [];
+    $scope.usersIds = {};
+
 
     $scope.addUserFormVisible = false;
     $scope.foundUsers = [];
@@ -14,6 +16,11 @@ app.controller("ProjectRolesController", function ($scope, secureService, $route
 
     function handleUsersResponse(response) {
         $scope.users = response.users;
+        $scope.usersIds = {};
+        for(var i=0; i< $scope.users.length;i++) {
+            $scope.usersIds[$scope.users[i].userId] = true;
+        }
+
     }
 
     $scope.roleChanged = function(user) {
@@ -39,6 +46,8 @@ app.controller("ProjectRolesController", function ($scope, secureService, $route
     };
 
     function handleFoundUsersResponse(response) {
-        $scope.foundUsers = response.users;
+        $scope.foundUsers = _.filter(response.users, function(user) {
+            return !(user.userId in $scope.usersIds);
+        });
     }
 });
