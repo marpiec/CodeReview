@@ -22,8 +22,27 @@ app.controller("CommitController", function ($scope, secureService, $routeParams
         $scope.files = response.files;
 
         prepareFilesLines(response.files);
+    }
 
+    $scope.addCommentInFromFile = function(file, line) {
+        if(line.change == "deleted" || line.change == "modifiedFrom") {
+            alert(line.number +" "+getOrElse(file.fromPath, file.toPath));
+        }
 
+    };
+
+    $scope.addCommentInToFile = function(file, line) {
+        if(line.change == "added" || line.change == "modifiedTo") {
+            alert(line.number +" "+getOrElse(file.toPath, file.fromPath));
+        }
+    };
+
+    function getOrElse(first, second) {
+        if(first == undefined || first == "") {
+            return second;
+        } else {
+            return first;
+        }
     }
 
     function prepareFilesLines(files) {

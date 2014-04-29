@@ -51,12 +51,12 @@
                     <tr>
                         <td class="before">
                             <div>
-                                <pre ng-repeat="line in file.processed.from" ng-class="line.change" ng-show="line.visible != 'hidden'"><span ng-class="line.visible"></span><span ng-show="line.visible == 'visible'" class="lineNumber">{{line.number}}</span><span ng-show="line.visible == 'visible'" class="line">{{line.content}}</span></pre>
+                                <pre ng-click="addCommentInFromFile(file, line)" ng-repeat="line in file.processed.from" ng-class="line.change" ng-show="line.visible != 'hidden'"><span ng-class="line.visible"></span><span ng-show="line.visible == 'visible'" class="lineNumber">{{line.number}}</span><span ng-show="line.visible == 'visible'" class="line">{{line.content}}</span></pre>
                             </div>
                         </td>
                         <td class="after">
                             <div>
-                                <pre ng-repeat="line in file.processed.to" ng-class="line.change" ng-show="line.visible != 'hidden'"><span ng-class="line.visible"></span><span ng-show="line.visible == 'visible'" class="lineNumber">{{line.number}}</span><span ng-show="line.visible == 'visible'" class="line">{{line.content}}</span></pre>
+                                <pre ng-click="addCommentInToFile(file, line)" ng-repeat="line in file.processed.to" ng-class="line.change" ng-show="line.visible != 'hidden'"><span ng-class="line.visible"></span><span ng-show="line.visible == 'visible'" class="lineNumber">{{line.number}}</span><span ng-show="line.visible == 'visible'" class="line">{{line.content}}</span></pre>
                              </div>
                         </td>
                     </tr>
