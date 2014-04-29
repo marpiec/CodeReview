@@ -17,13 +17,13 @@
         <span class="author">{{ commit.info.authorEmail }}</span>
         <span class="time">{{commit.info.time}}</span>
 
-
-
         <!--author: {{ commit.info.author }} <br />-->
         <!--commited: {{ commit.info.time }} <br />-->
         <!--<a ng-href="#/commit/{{ repositoryId }}/{{ commit.info.id[0] }}">message: {{ commit.info.message }}</a><br />-->
 
-
     </a>
+
+    <a href="#" onclick="return false;" ng-click="loadMoreCommits()" class="loadMoreCommits"
+            ng-show="loadMoreCommitsButtonVisible">Load more commits...</a>
 
 </div>
