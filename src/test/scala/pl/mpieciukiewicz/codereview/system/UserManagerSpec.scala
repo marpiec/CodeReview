@@ -29,6 +29,11 @@ class UserManagerSpec extends FeatureSpecLike with GivenWhenThen with BeforeAndA
     userManager = new UserManager(userStorage, new RandomGenerator, clock, mockPasswordUtil, new NoOpMailSender, userRoleStorage)
   }
 
+
+  def mockPasswordUtil = new PasswordUtil("systemSalt") {
+      override def generateRandomPassword: String = testPassword
+  }
+
   after {
     userStorage.dba.close()
   }
@@ -209,12 +214,6 @@ class UserManagerSpec extends FeatureSpecLike with GivenWhenThen with BeforeAndA
 
     }
 
-  }
-
-  def mockPasswordUtil:PasswordUtil = {
-    new PasswordUtil("systemSalt") {
-      override def generateRandomPassword: String = testPassword
-    }
   }
 
 }
