@@ -14,16 +14,19 @@ import pl.mpieciukiewicz.codereview.utils.email.NoOpMailSender
  */
 class UserManagerSpec extends FeatureSpecLike with GivenWhenThen with BeforeAndAfter {
 
+  val testPassword = "somePassword"
+
   var userManager: UserManager = null
   var userStorage: UserStorage = _
   var userRoleStorage: UserRoleStorage = _
   var clock: SettableStagnantClock = null
+  var passwordUtil:PasswordUtil = null
 
   before {
     clock = new SettableStagnantClock
     userStorage = new UserStorage(createTemporaryDataAccessor, new UniqueMemorySequenceManager)
     userRoleStorage = new UserRoleStorage(createTemporaryDataAccessor, new UniqueMemorySequenceManager)
-    userManager = new UserManager(userStorage, new RandomGenerator, clock, new PasswordUtil("systemSalt"), new NoOpMailSender, userRoleStorage)
+    userManager = new UserManager(userStorage, new RandomGenerator, clock, mockPasswordUtil, new NoOpMailSender, userRoleStorage)
   }
 
   after {
@@ -77,14 +80,14 @@ class UserManagerSpec extends FeatureSpecLike with GivenWhenThen with BeforeAndA
       userManager.registerUser("Marcin", "m.p@g.p")
 
       When("User tries to authenticate with correct name and password")
-      var authenticationResult = userManager.authenticateUser("Marcin", "mySecret", "127.0.0.1")
+      var authenticationResult = userManager.authenticateUser("Marcin", testPassword, "127.0.0.1")
 
       Then("Is successfully registered with correct id")
       assertThat(authenticationResult.isSuccess).isTrue
       assertThat(authenticationResult.get.userName).isEqualTo("Marcin")
 
       When("User tries to authenticate with correct email and password")
-      authenticationResult = userManager.authenticateUser("m.p@g.p", "mySecret", "192.168.0.2")
+      authenticationResult = userManager.authenticateUser("m.p@g.p", testPassword, "192.168.0.2")
 
       Then("Is successfully authenticate with correct id")
       assertThat(authenticationResult.isSuccess).isTrue
@@ -105,7 +108,7 @@ class UserManagerSpec extends FeatureSpecLike with GivenWhenThen with BeforeAndA
       assertThat(authenticationResult.isFailure).isTrue
 
       When("User tries to authenticate with incorrect name or email")
-      authenticationResult = userManager.authenticateUser("John", "mySecret", "192.168.0.2")
+      authenticationResult = userManager.authenticateUser("John", testPassword, "192.168.0.2")
 
       Then("Is denied of registration")
       assertThat(authenticationResult.isFailure).isTrue
@@ -121,7 +124,7 @@ class UserManagerSpec extends FeatureSpecLike with GivenWhenThen with BeforeAndA
       var response = userManager.registerUser("Marcin", "m.p@g.p")
 
       When("User logs in correctly and session id is retrieved")
-      val authenticationResult = userManager.authenticateUser("m.p@g.p", "mySecret", "192.168.0.2")
+      val authenticationResult = userManager.authenticateUser("m.p@g.p", testPassword, "192.168.0.2")
       val sessionId = authenticationResult.get.sessionId
 
       Then("Session info with user id is retrieved when getting it by session id")
@@ -140,7 +143,7 @@ class UserManagerSpec extends FeatureSpecLike with GivenWhenThen with BeforeAndA
     scenario("User logs in and session times out") {
       Given("Registered user, and new session id")
       userManager.registerUser("Marcin", "m.p@g.p")
-      val authenticationResult = userManager.authenticateUser("m.p@g.p", "mySecret", "192.168.0.2")
+      val authenticationResult = userManager.authenticateUser("m.p@g.p", testPassword, "192.168.0.2")
       val sessionId = authenticationResult.get.sessionId
 
       When("15 minutes 01 second passes")
@@ -154,7 +157,7 @@ class UserManagerSpec extends FeatureSpecLike with GivenWhenThen with BeforeAndA
     scenario("User logs in has some activity then session times out") {
       Given("Registered user, and new session id")
       userManager.registerUser("Marcin", "m.p@g.p")
-      val authenticationResult = userManager.authenticateUser("m.p@g.p", "mySecret", "192.168.0.2")
+      val authenticationResult = userManager.authenticateUser("m.p@g.p", testPassword, "192.168.0.2")
       val sessionId = authenticationResult.get.sessionId
 
       When("14 minutes 59 second passes")
@@ -183,7 +186,7 @@ class UserManagerSpec extends FeatureSpecLike with GivenWhenThen with BeforeAndA
     scenario("User logs in, and then some request with the session id occurs from different host") {
       Given("Registered user, and new session id")
       userManager.registerUser("Marcin", "m.p@g.p")
-      val authenticationResult = userManager.authenticateUser("m.p@g.p", "mySecret", "192.168.0.2")
+      val authenticationResult = userManager.authenticateUser("m.p@g.p", testPassword, "192.168.0.2")
       val sessionId = authenticationResult.get.sessionId
 
       When("User has some activity from proper id")
@@ -206,6 +209,12 @@ class UserManagerSpec extends FeatureSpecLike with GivenWhenThen with BeforeAndA
 
     }
 
+  }
+
+  def mockPasswordUtil:PasswordUtil = {
+    new PasswordUtil("systemSalt") {
+      override def generateRandomPassword: String = testPassword
+    }
   }
 
 }
