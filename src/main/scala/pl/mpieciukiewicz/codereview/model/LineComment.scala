@@ -7,9 +7,9 @@ import org.joda.time.DateTime
 
 case class LineComment(commitId: Int,
                        fileId: Int,
+                       beforeOrAfter: BeforeOrAfter,
                        lineNumber: Int,
                        userId: Int,
-                       beforeOrAfter: BeforeOrAfter,
                        time: DateTime,
                        comment: String,
                        @(FirstSubType @field)(classOf[Int]) responseToId: Option[Int],

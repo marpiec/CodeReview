@@ -8,8 +8,8 @@ import org.joda.time.DateTime
 
 case class FileComment(commitId: Int,
                        fileId: Int,
-                       userId: Int,
                        beforeOrAfter: BeforeOrAfter,
+                       userId: Int,
                        time: DateTime,
                        comment: String,
                        @(FirstSubType @field)(classOf[Int]) responseToId: Option[Int],
