@@ -39,4 +39,10 @@ class CommitCommentStorage(val dba: DatabaseAccessor, sequenceManager: SequenceM
   override protected def injectId(entity: CommitComment, id: Int): CommitComment = entity.copy(id = id)
 
   override def loadAll() = super.loadAll()
+
+  def findByCommitId(commitId: Int): List[CommitComment] = {
+    findMultipleBy("commit_id = ?") { preparedStatement =>
+      preparedStatement.setInt(1, commitId)
+    }
+  }
 }

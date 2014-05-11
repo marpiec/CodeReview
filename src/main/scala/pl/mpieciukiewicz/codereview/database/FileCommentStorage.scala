@@ -46,4 +46,10 @@ class FileCommentStorage(val dba: DatabaseAccessor, sequenceManager: SequenceMan
   override protected def injectId(entity: FileComment, id: Int): FileComment = entity.copy(id = id)
 
   override def loadAll() = super.loadAll()
+
+  def findByCommitId(commitId: Int): List[FileComment] = {
+    findMultipleBy("commit_id = ?") { preparedStatement =>
+      preparedStatement.setInt(1, commitId)
+    }
+  }
 }

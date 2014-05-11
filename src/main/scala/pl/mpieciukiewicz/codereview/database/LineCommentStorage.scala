@@ -49,4 +49,10 @@ class LineCommentStorage(val dba: DatabaseAccessor, sequenceManager: SequenceMan
   override protected def injectId(entity: LineComment, id: Int): LineComment = entity.copy(id = id)
 
   override def loadAll() = super.loadAll()
+
+  def findByCommitId(commitId: Int): List[LineComment] = {
+    findMultipleBy("commit_id = ?") { preparedStatement =>
+      preparedStatement.setInt(1, commitId)
+    }
+  }
 }
