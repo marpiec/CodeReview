@@ -3,7 +3,7 @@ package pl.mpieciukiewicz.codereview.system
 import org.scalatest._
 import collection.JavaConverters._
 import org.fest.assertions.api.Assertions._
-import pl.mpieciukiewicz.codereview.database.UserStorage
+import pl.mpieciukiewicz.codereview.database.{UserRoleStorage, UserStorage}
 import pl.mpieciukiewicz.codereview.utils.{RandomGenerator, PasswordUtil}
 import pl.mpieciukiewicz.codereview.utils.clock.SettableStagnantClock
 import pl.mpieciukiewicz.codereview.TestsUtil._
@@ -16,12 +16,14 @@ class UserManagerSpec extends FeatureSpecLike with GivenWhenThen with BeforeAndA
 
   var userManager: UserManager = null
   var userStorage: UserStorage = _
+  var userRoleStorage: UserRoleStorage = _
   var clock: SettableStagnantClock = null
 
   before {
     clock = new SettableStagnantClock
     userStorage = new UserStorage(createTemporaryDataAccessor, new UniqueMemorySequenceManager)
-    userManager = new UserManager(userStorage, new RandomGenerator, clock, new PasswordUtil("systemSalt"), new NoOpMailSender)
+    userRoleStorage = new UserRoleStorage(createTemporaryDataAccessor, new UniqueMemorySequenceManager)
+    userManager = new UserManager(userStorage, new RandomGenerator, clock, new PasswordUtil("systemSalt"), new NoOpMailSender, userRoleStorage)
   }
 
   after {
@@ -38,7 +40,7 @@ class UserManagerSpec extends FeatureSpecLike with GivenWhenThen with BeforeAndA
       Given("User Manager with empty user storage")
 
       When("First user is registered")
-      var registrationResult = userManager.registerUser("Marcin", "m.p@g.p", "mySecret")
+      var registrationResult = userManager.registerUser("Marcin", "m.p@g.p")
 
       Then("One user exists in data storage")
 
@@ -47,7 +49,7 @@ class UserManagerSpec extends FeatureSpecLike with GivenWhenThen with BeforeAndA
       assertThat(userStorage.findByNameOrEmail("Marcin", "").isDefined)
 
       When("Second user is registered")
-      registrationResult = userManager.registerUser("John", "j.s@g.p", "MyPass")
+      registrationResult = userManager.registerUser("John", "j.s@g.p")
 
       Then("Two users exists in data storage")
 
@@ -56,13 +58,13 @@ class UserManagerSpec extends FeatureSpecLike with GivenWhenThen with BeforeAndA
       assertThat(userStorage.findByNameOrEmail("John", "").isDefined)
 
       When("User with the same name as first one is registered")
-      registrationResult = userManager.registerUser("Marcin", "fake.m.p@g.p", "MyOtherSecret")
+      registrationResult = userManager.registerUser("Marcin", "fake.m.p@g.p")
 
       Then("Registration is unsuccessful")
       assertThat(registrationResult).isFalse
 
       When("User with the same email as first one is registered")
-      registrationResult = userManager.registerUser("nicraM", "m.p@g.p", "MyOtherSecret")
+      registrationResult = userManager.registerUser("nicraM", "m.p@g.p")
 
       Then("Registration is unsuccessful")
       assertThat(registrationResult).isFalse
@@ -72,7 +74,7 @@ class UserManagerSpec extends FeatureSpecLike with GivenWhenThen with BeforeAndA
 
     scenario("Correct user authentication") {
       Given("User Manager with one user registered")
-      userManager.registerUser("Marcin", "m.p@g.p", "mySecret")
+      userManager.registerUser("Marcin", "m.p@g.p")
 
       When("User tries to authenticate with correct name and password")
       var authenticationResult = userManager.authenticateUser("Marcin", "mySecret", "127.0.0.1")
@@ -94,7 +96,7 @@ class UserManagerSpec extends FeatureSpecLike with GivenWhenThen with BeforeAndA
 
     scenario("Incorrect user authentication") {
       Given("User Manager with one user registered")
-      userManager.registerUser("Marcin", "m.p@g.p", "mySecret")
+      userManager.registerUser("Marcin", "m.p@g.p")
 
       When("User tries to authenticate with incorrect password")
       var authenticationResult = userManager.authenticateUser("Marcin", "iDontKnow", "127.0.0.1")
@@ -116,7 +118,7 @@ class UserManagerSpec extends FeatureSpecLike with GivenWhenThen with BeforeAndA
 
     scenario("User logs in and logs out") {
       Given("Registered user")
-      var response = userManager.registerUser("Marcin", "m.p@g.p", "mySecret")
+      var response = userManager.registerUser("Marcin", "m.p@g.p")
 
       When("User logs in correctly and session id is retrieved")
       val authenticationResult = userManager.authenticateUser("m.p@g.p", "mySecret", "192.168.0.2")
@@ -137,7 +139,7 @@ class UserManagerSpec extends FeatureSpecLike with GivenWhenThen with BeforeAndA
 
     scenario("User logs in and session times out") {
       Given("Registered user, and new session id")
-      userManager.registerUser("Marcin", "m.p@g.p", "mySecret")
+      userManager.registerUser("Marcin", "m.p@g.p")
       val authenticationResult = userManager.authenticateUser("m.p@g.p", "mySecret", "192.168.0.2")
       val sessionId = authenticationResult.get.sessionId
 
@@ -151,7 +153,7 @@ class UserManagerSpec extends FeatureSpecLike with GivenWhenThen with BeforeAndA
 
     scenario("User logs in has some activity then session times out") {
       Given("Registered user, and new session id")
-      userManager.registerUser("Marcin", "m.p@g.p", "mySecret")
+      userManager.registerUser("Marcin", "m.p@g.p")
       val authenticationResult = userManager.authenticateUser("m.p@g.p", "mySecret", "192.168.0.2")
       val sessionId = authenticationResult.get.sessionId
 
@@ -180,7 +182,7 @@ class UserManagerSpec extends FeatureSpecLike with GivenWhenThen with BeforeAndA
 
     scenario("User logs in, and then some request with the session id occurs from different host") {
       Given("Registered user, and new session id")
-      userManager.registerUser("Marcin", "m.p@g.p", "mySecret")
+      userManager.registerUser("Marcin", "m.p@g.p")
       val authenticationResult = userManager.authenticateUser("m.p@g.p", "mySecret", "192.168.0.2")
       val sessionId = authenticationResult.get.sessionId
 

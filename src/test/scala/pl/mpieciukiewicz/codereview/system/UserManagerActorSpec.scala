@@ -6,26 +6,29 @@ import org.scalatest._
 import collection.JavaConverters._
 import org.fest.assertions.api.Assertions._
 import akka.actor.{ActorSystem, PoisonPill}
-import pl.mpieciukiewicz.codereview.database.UserStorage
+import pl.mpieciukiewicz.codereview.database.{UserRoleStorage, UserStorage}
 import pl.mpieciukiewicz.codereview.utils.{PasswordUtil, RandomGenerator}
 import pl.mpieciukiewicz.codereview.utils.clock.SettableStagnantClock
 import pl.mpieciukiewicz.codereview.TestsUtil._
 import pl.mpieciukiewicz.codereview.system.actor.UserManagerActor
 import pl.mpieciukiewicz.codereview.system.actor.UserManagerActor.{CheckSessionResponse, AuthenticationResult}
+import pl.mpieciukiewicz.codereview.utils.email.NoOpMailSender
 
 /**
  *
  */
 class UserManagerActorSpec extends TestKit(ActorSystem("test")) with FeatureSpecLike with GivenWhenThen with BeforeAndAfter with ImplicitSender with DefaultTimeout {
 
-  var userManager: TestActorRef[UserManagerActor] = null
+  var userManager: TestActorRef[UserManagerActor] = _
   var userStorage: UserStorage = _
-  var clock: SettableStagnantClock = null
+  var userRoleStorage: UserRoleStorage = _
+  var clock: SettableStagnantClock = _
 
   before {
     clock = new SettableStagnantClock
     userStorage = new UserStorage(createTemporaryDataAccessor, new UniqueMemorySequenceManager)
-    userManager = TestActorRef(new UserManagerActor(new UserManager(userStorage, new RandomGenerator, clock, new PasswordUtil("systemSalt"))))
+    userRoleStorage = new UserRoleStorage(createTemporaryDataAccessor, new UniqueMemorySequenceManager)
+    userManager = TestActorRef(new UserManagerActor(new UserManager(userStorage, new RandomGenerator, clock, new PasswordUtil("systemSalt"), new NoOpMailSender, userRoleStorage)))
   }
 
   after {
@@ -43,7 +46,7 @@ class UserManagerActorSpec extends TestKit(ActorSystem("test")) with FeatureSpec
       Given("User Manager with empty user storage")
 
       When("First user is registered")
-      var response = userManager ? UserManagerActor.RegisterUser("Marcin", "m.p@g.p", "mySecret")
+      var response = userManager ? UserManagerActor.RegisterUser("Marcin", "m.p@g.p")
 
       Then("One user exists in data storage")
 
@@ -52,7 +55,7 @@ class UserManagerActorSpec extends TestKit(ActorSystem("test")) with FeatureSpec
       assertThat(userStorage.findByNameOrEmail("Marcin", "").isDefined)
 
       When("Second user is registered")
-      response = userManager ? UserManagerActor.RegisterUser("John", "j.s@g.p", "MyPass")
+      response = userManager ? UserManagerActor.RegisterUser("John", "j.s@g.p")
 
       Then("Two users exists in data storage")
 
@@ -61,13 +64,13 @@ class UserManagerActorSpec extends TestKit(ActorSystem("test")) with FeatureSpec
       assertThat(userStorage.findByNameOrEmail("John", "").isDefined)
 
       When("User with the same name as first one is registered")
-      response = userManager ? UserManagerActor.RegisterUser("Marcin", "fake.m.p@g.p", "MyOtherSecret")
+      response = userManager ? UserManagerActor.RegisterUser("Marcin", "fake.m.p@g.p")
 
       Then("Registration is unsuccessful")
       assertThat(response.value.get.get).isEqualTo(UserManagerActor.RegistrationResult(false))
 
       When("User with the same email as first one is registered")
-      response = userManager ? UserManagerActor.RegisterUser("nicraM", "m.p@g.p", "MyOtherSecret")
+      response = userManager ? UserManagerActor.RegisterUser("nicraM", "m.p@g.p")
 
       Then("Registration is unsuccessful")
       assertThat(response.value.get.get).isEqualTo(UserManagerActor.RegistrationResult(false))
@@ -77,7 +80,7 @@ class UserManagerActorSpec extends TestKit(ActorSystem("test")) with FeatureSpec
 
     scenario("Correct user authentication") {
       Given("User Manager with one user registered")
-      var response = userManager ? UserManagerActor.RegisterUser("Marcin", "m.p@g.p", "mySecret")
+      var response = userManager ? UserManagerActor.RegisterUser("Marcin", "m.p@g.p")
 
       When("User tries to authenticate with correct name and password")
       response = userManager ? UserManagerActor.AuthenticateUser("Marcin", "mySecret", "127.0.0.1")
@@ -101,7 +104,7 @@ class UserManagerActorSpec extends TestKit(ActorSystem("test")) with FeatureSpec
 
     scenario("Incorrect user authentication") {
       Given("User Manager with one user registered")
-      var response = userManager ? UserManagerActor.RegisterUser("Marcin", "m.p@g.p", "mySecret")
+      var response = userManager ? UserManagerActor.RegisterUser("Marcin", "m.p@g.p")
 
       When("User tries to authenticate with incorrect password")
       response = userManager ? UserManagerActor.AuthenticateUser("Marcin", "iDontKnow", "127.0.0.1")
@@ -123,7 +126,7 @@ class UserManagerActorSpec extends TestKit(ActorSystem("test")) with FeatureSpec
 
     scenario("User logs in and logs out") {
       Given("Registered user")
-      var response = userManager ? UserManagerActor.RegisterUser("Marcin", "m.p@g.p", "mySecret")
+      var response = userManager ? UserManagerActor.RegisterUser("Marcin", "m.p@g.p")
 
       When("User logs in correctly and session id is retrieved")
       response = userManager ? UserManagerActor.AuthenticateUser("m.p@g.p", "mySecret", "192.168.0.2")
@@ -146,7 +149,7 @@ class UserManagerActorSpec extends TestKit(ActorSystem("test")) with FeatureSpec
 
     scenario("User logs in and session times out") {
       Given("Registered user, and new session id")
-      var response = userManager ? UserManagerActor.RegisterUser("Marcin", "m.p@g.p", "mySecret")
+      var response = userManager ? UserManagerActor.RegisterUser("Marcin", "m.p@g.p")
       response = userManager ? UserManagerActor.AuthenticateUser("m.p@g.p", "mySecret", "192.168.0.2")
       val sessionId = response.value.get.get.asInstanceOf[AuthenticationResult].sessionInfo.get.sessionId
 
@@ -161,7 +164,7 @@ class UserManagerActorSpec extends TestKit(ActorSystem("test")) with FeatureSpec
 
     scenario("User logs in has some activity then session times out") {
       Given("Registered user, and new session id")
-      var response = userManager ? UserManagerActor.RegisterUser("Marcin", "m.p@g.p", "mySecret")
+      var response = userManager ? UserManagerActor.RegisterUser("Marcin", "m.p@g.p")
       response = userManager ? UserManagerActor.AuthenticateUser("m.p@g.p", "mySecret", "192.168.0.2")
       val sessionId = response.value.get.get.asInstanceOf[AuthenticationResult].sessionInfo.get.sessionId
 
@@ -193,7 +196,7 @@ class UserManagerActorSpec extends TestKit(ActorSystem("test")) with FeatureSpec
 
     scenario("User logs in, and then some request with the session id occurs from different host") {
       Given("Registered user, and new session id")
-      var response = userManager ? UserManagerActor.RegisterUser("Marcin", "m.p@g.p", "mySecret")
+      var response = userManager ? UserManagerActor.RegisterUser("Marcin", "m.p@g.p")
       response = userManager ? UserManagerActor.AuthenticateUser("m.p@g.p", "mySecret", "192.168.0.2")
       val sessionId = response.value.get.get.asInstanceOf[AuthenticationResult].sessionInfo.get.sessionId
 

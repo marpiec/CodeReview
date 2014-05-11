@@ -5,9 +5,9 @@ import scala.annotation.meta.field
 import pl.mpieciukiewicz.codereview.model.constant.BeforeOrAfter
 import org.joda.time.DateTime
 
-case class LineComment(commitId: Int,
+
+case class FileComment(commitId: Int,
                        fileId: Int,
-                       lineNumber: Int,
                        userId: Int,
                        beforeOrAfter: BeforeOrAfter,
                        time: DateTime,

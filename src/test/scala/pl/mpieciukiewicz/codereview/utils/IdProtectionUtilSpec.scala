@@ -11,7 +11,7 @@ class IdProtectionUtilSpec extends FeatureSpec with GivenWhenThen {
     scenario("Encrypts and decrypts identifer") {
 
       Given("Some identifer")
-      val id = UID(12345)
+      val id = 12345
 
       When("Identifier is encrypted")
       val encrypted:String = IdProtectionUtil.encrypt(id)
@@ -20,7 +20,7 @@ class IdProtectionUtilSpec extends FeatureSpec with GivenWhenThen {
       assertThat(encrypted).isEqualTo("u394ah598pej")
 
       When("Identifier is decrypted")
-      val decrypted:UID = IdProtectionUtil.decrypt(encrypted)
+      val decrypted = IdProtectionUtil.decrypt(encrypted)
 
       Then("Identifier is correct")
       assertThat(decrypted).isEqualTo(id)
