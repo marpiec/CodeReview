@@ -1,8 +1,6 @@
-package pl.mpieciukiewicz.codereview.model
+package pl.mpieciukiewicz.codereview.model.persitent
 
 import pl.mpieciukiewicz.codereview.model.constant.ProjectRole
-import pl.marpiec.mpjsons.annotation.FirstSubType
-import scala.annotation.meta.field
 
 /**
  *

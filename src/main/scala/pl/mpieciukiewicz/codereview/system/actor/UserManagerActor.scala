@@ -4,8 +4,8 @@ import akka.actor.Actor
 import pl.mpieciukiewicz.codereview.model.authorization.SessionInfoClientSide
 import scala.util.{Failure, Success}
 import pl.mpieciukiewicz.codereview.system.UserManager
-import pl.mpieciukiewicz.codereview.model.User
 import pl.mpieciukiewicz.codereview.model.client.{SimpleUser, UserWithRole}
+import pl.mpieciukiewicz.codereview.model.persitent.User
 
 
 object UserManagerActor {

@@ -10,9 +10,9 @@ import akka.util.Timeout
 import scala.concurrent.duration._
 import pl.mpieciukiewicz.codereview.system.actor.{ProjectManagerActor, UserManagerActor, RepositoryManagerActor}
 import pl.mpieciukiewicz.codereview.system.actor.UserManagerActor.CheckSessionResponse
-import pl.mpieciukiewicz.codereview.model.UserRole
 import pl.mpieciukiewicz.codereview.model.constant.ProjectRole
 import pl.mpieciukiewicz.codereview.utils.protectedid.IdProtectionUtil
+import pl.mpieciukiewicz.codereview.model.persitent.UserRole
 
 /**
  *

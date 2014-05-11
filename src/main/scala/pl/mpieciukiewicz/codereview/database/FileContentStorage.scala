@@ -1,11 +1,12 @@
 package pl.mpieciukiewicz.codereview.database
 
 import pl.mpieciukiewicz.codereview.database.engine.DatabaseAccessor
-import pl.mpieciukiewicz.codereview.model.{LineChange, FileContent}
 import pl.mpieciukiewicz.codereview.model.constant.FileChangeType
 import java.sql.{ResultSet, Timestamp, PreparedStatement}
 import org.joda.time.DateTime
 import pl.mpieciukiewicz.codereview.utils.json.JsonUtil
+import pl.mpieciukiewicz.codereview.model.persitent.FileContent
+import pl.mpieciukiewicz.codereview.model.client.LineChange
 
 class FileContentStorage(val dba: DatabaseAccessor, sequenceManager: SequenceManager, jsonUtil: JsonUtil) extends SimpleStorage[FileContent](
   dba, sequenceManager, "file_content",

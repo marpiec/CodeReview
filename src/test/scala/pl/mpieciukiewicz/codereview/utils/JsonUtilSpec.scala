@@ -2,9 +2,9 @@ package pl.mpieciukiewicz.codereview.utils
 
 import org.scalatest.{GivenWhenThen, FeatureSpec}
 import org.fest.assertions.api.Assertions._
-import pl.mpieciukiewicz.codereview.model.User
 import pl.mpieciukiewicz.codereview.utils.json.JsonUtil
 import pl.mpieciukiewicz.codereview.model.constant.SystemRole
+import pl.mpieciukiewicz.codereview.model.persitent.User
 
 /**
  *

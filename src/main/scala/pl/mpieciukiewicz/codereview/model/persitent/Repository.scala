@@ -1,4 +1,4 @@
-package pl.mpieciukiewicz.codereview.model
+package pl.mpieciukiewicz.codereview.model.persitent
 
 import org.joda.time.DateTime
 import pl.marpiec.mpjsons.annotation.FirstSubType

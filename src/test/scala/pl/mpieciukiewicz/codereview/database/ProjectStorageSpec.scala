@@ -3,12 +3,12 @@ package pl.mpieciukiewicz.codereview.database
 import org.scalatest.{BeforeAndAfter, GivenWhenThen, FeatureSpec}
 import collection.JavaConverters._
 import org.fest.assertions.api.Assertions._
-import pl.mpieciukiewicz.codereview.model.Project
 import pl.mpieciukiewicz.codereview.database.engine.{DatabaseAccessor, DocumentDataStorage}
 import pl.mpieciukiewicz.codereview.utils.json.JsonUtil
 import pl.mpieciukiewicz.codereview.TestsUtil
 import pl.mpieciukiewicz.codereview.TestsUtil._
-import pl.mpieciukiewicz.codereview.model.Project
+import pl.mpieciukiewicz.codereview.model.persitent.Project
+import pl.mpieciukiewicz.codereview.model.persitent.Project
 
 /**
  *

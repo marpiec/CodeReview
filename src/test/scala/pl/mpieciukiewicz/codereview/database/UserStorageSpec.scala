@@ -3,13 +3,13 @@ package pl.mpieciukiewicz.codereview.database
 import org.scalatest.{BeforeAndAfter, GivenWhenThen, FeatureSpec, FunSuite}
 import collection.JavaConverters._
 import org.fest.assertions.api.Assertions._
-import pl.mpieciukiewicz.codereview.model.User
 import pl.mpieciukiewicz.codereview.database.engine.{DatabaseAccessor, DocumentDataStorage}
 import pl.mpieciukiewicz.codereview.utils.json.JsonUtil
 import pl.mpieciukiewicz.codereview.TestsUtil
 import pl.mpieciukiewicz.codereview.TestsUtil._
-import pl.mpieciukiewicz.codereview.model.User
 import pl.mpieciukiewicz.codereview.model.constant.SystemRole
+import pl.mpieciukiewicz.codereview.model.persitent.User
+import pl.mpieciukiewicz.codereview.model.persitent.User
 
 /**
  *

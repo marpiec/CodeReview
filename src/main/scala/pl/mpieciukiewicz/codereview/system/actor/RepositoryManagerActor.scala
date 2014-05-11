@@ -1,13 +1,14 @@
 package pl.mpieciukiewicz.codereview.system.actor
 
 import akka.actor.Actor
-import pl.mpieciukiewicz.codereview.model.{FileContent, CommitWithFiles, Repository}
 import pl.mpieciukiewicz.codereview.vcs.VcsFileDiff
 import pl.mpieciukiewicz.codereview.system.RepositoryManager
 import pl.mpieciukiewicz.codereview.ioc.ActorProvider
 import pl.mpieciukiewicz.codereview.utils.{Configuration, RandomGenerator}
 import pl.mpieciukiewicz.codereview.web.TaskMonitorWithId
 import pl.mpieciukiewicz.codereview.vcs.git.JGitProgressMonitor
+import pl.mpieciukiewicz.codereview.model.persitent.{Repository, FileContent}
+import pl.mpieciukiewicz.codereview.model.client.CommitWithFiles
 
 object RepositoryManagerActor {
 

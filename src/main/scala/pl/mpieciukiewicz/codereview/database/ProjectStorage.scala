@@ -1,9 +1,8 @@
 package pl.mpieciukiewicz.codereview.database
 
-import pl.mpieciukiewicz.codereview.model.{User, Project, Repository}
-import pl.mpieciukiewicz.codereview.database.engine.{DatabaseAccessor, DocumentDataStorage}
+import pl.mpieciukiewicz.codereview.database.engine.DatabaseAccessor
 import java.sql.{PreparedStatement, ResultSet}
-import pl.mpieciukiewicz.codereview.model.constant.SystemRole
+import pl.mpieciukiewicz.codereview.model.persitent.Project
 
 /**
  *
@@ -26,7 +25,7 @@ class ProjectStorage(val dba: DatabaseAccessor, sequenceManager: SequenceManager
       result.getString(2))
   }
 
-  override def loadAll():List[Project] = {
+  override def loadAll(): List[Project] = {
     super.loadAll()
   }
 

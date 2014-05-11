@@ -1,9 +1,9 @@
 package pl.mpieciukiewicz.codereview.database
 
 import pl.mpieciukiewicz.codereview.database.engine.DatabaseAccessor
-import pl.mpieciukiewicz.codereview.model.Repository
 import org.joda.time.DateTime
 import java.sql.{Timestamp, ResultSet, PreparedStatement}
+import pl.mpieciukiewicz.codereview.model.persitent.Repository
 
 /**
  *

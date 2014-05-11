@@ -1,7 +1,6 @@
 package pl.mpieciukiewicz.codereview.system
 
 import pl.mpieciukiewicz.codereview.database.{UserRoleStorage, UserStorage}
-import pl.mpieciukiewicz.codereview.model.User
 import pl.mpieciukiewicz.codereview.model.authorization.{SessionInfoClientSide, SessionInfo}
 import pl.mpieciukiewicz.codereview.utils.{PasswordUtil, RandomGenerator}
 import org.joda.time.Duration
@@ -11,6 +10,7 @@ import pl.mpieciukiewicz.codereview.model.constant.SystemRole
 import pl.mpieciukiewicz.codereview.utils.email.MailSender
 import pl.mpieciukiewicz.codereview.model.client.{SimpleUser, UserWithRole}
 import pl.mpieciukiewicz.codereview.utils.protectedid.ProtectedId
+import pl.mpieciukiewicz.codereview.model.persitent.User
 
 
 class UserManager(userStorage: UserStorage, randomUtil: RandomGenerator, clock: Clock, passwordUtil: PasswordUtil, mailSender: MailSender,

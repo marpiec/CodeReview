@@ -1,4 +1,4 @@
-package pl.mpieciukiewicz.codereview.model
+package pl.mpieciukiewicz.codereview.model.client
 
 import pl.mpieciukiewicz.codereview.model.constant.LineChangeType
 

@@ -5,8 +5,8 @@ import org.fest.assertions.api.Assertions._
 import org.scalatest.{BeforeAndAfter, GivenWhenThen, FeatureSpec}
 import pl.mpieciukiewicz.codereview.TestsUtil._
 import org.joda.time.DateTime
-import pl.mpieciukiewicz.codereview.model.LineComment
 import pl.mpieciukiewicz.codereview.model.constant.BeforeOrAfter
+import pl.mpieciukiewicz.codereview.model.persitent.LineComment
 
 class LineCommentStorageSpec extends FeatureSpec with GivenWhenThen with BeforeAndAfter {
 

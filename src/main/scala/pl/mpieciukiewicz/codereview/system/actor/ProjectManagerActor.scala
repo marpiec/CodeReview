@@ -2,11 +2,11 @@ package pl.mpieciukiewicz.codereview.system.actor
 
 import pl.mpieciukiewicz.codereview.database.ProjectStorage
 import akka.actor.Actor
-import pl.mpieciukiewicz.codereview.model.Project
 import scala.util.{Failure, Success}
 import pl.mpieciukiewicz.codereview.model.client.ProjectWithRepositories
 import pl.mpieciukiewicz.codereview.system.ProjectManager
 import pl.mpieciukiewicz.codereview.model.constant.ProjectRole
+import pl.mpieciukiewicz.codereview.model.persitent.Project
 
 object ProjectManagerActor {
 

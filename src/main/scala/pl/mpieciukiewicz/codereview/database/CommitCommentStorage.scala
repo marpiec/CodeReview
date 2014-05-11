@@ -3,7 +3,7 @@ package pl.mpieciukiewicz.codereview.database
 import pl.mpieciukiewicz.codereview.database.engine.DatabaseAccessor
 import java.sql.{ResultSet, Timestamp, PreparedStatement}
 import org.joda.time.DateTime
-import pl.mpieciukiewicz.codereview.model.CommitComment
+import pl.mpieciukiewicz.codereview.model.persitent.CommitComment
 
 class CommitCommentStorage(val dba: DatabaseAccessor, sequenceManager: SequenceManager) extends SimpleStorage[CommitComment](
   dba, sequenceManager, "commit",

@@ -1,9 +1,9 @@
 package pl.mpieciukiewicz.codereview.database
 
-import pl.mpieciukiewicz.codereview.model.{User, UserRole, Repository}
-import pl.mpieciukiewicz.codereview.database.engine.{DatabaseAccessor, DocumentDataStorage}
+import pl.mpieciukiewicz.codereview.database.engine.DatabaseAccessor
 import java.sql.{PreparedStatement, ResultSet}
-import pl.mpieciukiewicz.codereview.model.constant.{ProjectRole, SystemRole}
+import pl.mpieciukiewicz.codereview.model.constant.ProjectRole
+import pl.mpieciukiewicz.codereview.model.persitent.UserRole
 
 /**
  *
@@ -26,12 +26,12 @@ class UserRoleStorage(val dba: DatabaseAccessor, sequenceManager: SequenceManage
 
   override protected def mapResultToEntity(result: ResultSet): UserRole = {
     UserRole(result.getInt(1),
-            result.getInt(2),
-            result.getInt(3),
-            ProjectRole.getByName(result.getString(4)))
+      result.getInt(2),
+      result.getInt(3),
+      ProjectRole.getByName(result.getString(4)))
   }
 
-  override def loadAll():List[UserRole] = {
+  override def loadAll(): List[UserRole] = {
     super.loadAll()
   }
 

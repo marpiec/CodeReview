@@ -1,12 +1,12 @@
 package pl.mpieciukiewicz.codereview.database
 
 import org.scalatest.{BeforeAndAfter, GivenWhenThen, FeatureSpec}
-import pl.mpieciukiewicz.codereview.model.Repository
 import pl.mpieciukiewicz.codereview.database.engine.{DocumentDataStorage, DatabaseAccessor}
 import org.joda.time.DateTime
 import collection.JavaConverters._
 import org.fest.assertions.api.Assertions._
 import pl.mpieciukiewicz.codereview.TestsUtil._
+import pl.mpieciukiewicz.codereview.model.persitent.Repository
 
 /**
  *

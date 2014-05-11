@@ -12,16 +12,15 @@ import pl.mpieciukiewicz.codereview.vcs.VcsFileContentModify
 import pl.mpieciukiewicz.codereview.vcs.VcsLineDeleted
 import pl.mpieciukiewicz.codereview.vcs.VcsFileContentDelete
 import scala.Some
-import pl.mpieciukiewicz.codereview.model.Repository
 import pl.mpieciukiewicz.codereview.vcs.VcsLineAdded
 import pl.mpieciukiewicz.codereview.vcs.VcsFileDiff
 import pl.mpieciukiewicz.codereview.vcs.VcsFileContentCopy
 import pl.mpieciukiewicz.codereview.vcs.VcsFileContentAdd
-import pl.mpieciukiewicz.codereview.model.CommitWithFiles
-import pl.mpieciukiewicz.codereview.model.FileContent
 import pl.mpieciukiewicz.codereview.web.TaskProgressMonitor
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
+import pl.mpieciukiewicz.codereview.model.persitent.{Repository, FileContent}
+import pl.mpieciukiewicz.codereview.model.client.{LineChange, CommitWithFiles}
 
 
 class RepositoryManager(repositoryStorage: RepositoryStorage,

@@ -1,7 +1,7 @@
 package pl.mpieciukiewicz.codereview.vcs.git
 
 import org.joda.time.DateTime
-import pl.mpieciukiewicz.codereview.model.Commit
+import pl.mpieciukiewicz.codereview.model.persitent.Commit
 
 /**
  *

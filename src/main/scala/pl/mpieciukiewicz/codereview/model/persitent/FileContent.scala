@@ -1,6 +1,7 @@
-package pl.mpieciukiewicz.codereview.model
+package pl.mpieciukiewicz.codereview.model.persitent
 
 import pl.mpieciukiewicz.codereview.model.constant.FileChangeType
+import pl.mpieciukiewicz.codereview.model.client.LineChange
 
 case class FileContent(id: Int,
                        commitId: Int,

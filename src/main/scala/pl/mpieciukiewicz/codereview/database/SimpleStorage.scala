@@ -2,7 +2,7 @@ package pl.mpieciukiewicz.codereview.database
 
 import java.sql.{PreparedStatement, ResultSet}
 import pl.mpieciukiewicz.codereview.database.engine.DatabaseAccessor
-import pl.mpieciukiewicz.codereview.model.{Project, Commit}
+import pl.mpieciukiewicz.codereview.model.persitent.Project
 
 abstract class SimpleStorage[T](private val da: DatabaseAccessor, private val sm: SequenceManager, tableName:String, columns:List[(String, String)]) {
 

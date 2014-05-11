@@ -2,9 +2,9 @@ package pl.mpieciukiewicz.codereview.database
 
 import pl.mpieciukiewicz.codereview.database.engine.DatabaseAccessor
 import java.sql.{ResultSet, Timestamp, PreparedStatement}
-import pl.mpieciukiewicz.codereview.model.FileComment
 import org.joda.time.DateTime
 import pl.mpieciukiewicz.codereview.model.constant.BeforeOrAfter
+import pl.mpieciukiewicz.codereview.model.persitent.FileComment
 
 class FileCommentStorage(val dba: DatabaseAccessor, sequenceManager: SequenceManager) extends SimpleStorage[FileComment](
   dba, sequenceManager, "commit",
