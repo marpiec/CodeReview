@@ -21,12 +21,15 @@ import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 import pl.mpieciukiewicz.codereview.model.persitent.{Repository, FileContent}
 import pl.mpieciukiewicz.codereview.model.client.{LineChange, CommitWithFiles}
+import org.slf4j.LoggerFactory
 
 
 class RepositoryManager(repositoryStorage: RepositoryStorage,
                         commitStorage: CommitStorage,
                         fileContentStorage: FileContentStorage,
                         randomGenerator: RandomGenerator, config: Configuration, clock: Clock) {
+
+  private val log = LoggerFactory.getLogger(classOf[RepositoryManager])
 
   def addRepository(cloneUrl: String, repositoryName: String, projectId: Int, taskMonitor: TaskProgressMonitor): Int = {
 
@@ -56,6 +59,20 @@ class RepositoryManager(repositoryStorage: RepositoryStorage,
       repoDirName = randomGenerator.generateRepoDirectoryName
     } while (!new File(config.storage.dataDirectory, repoDirName).mkdirs())
     repoDirName
+  }
+
+  def updateAllRepositories() {
+    repositoryStorage.loadAll().foreach {repository =>
+      log.info("Updating " + repository.name)
+      new GitLocalRepositoryManager(config.storage.dataDirectory + repository.localDir).updateRepository()
+    }
+  }
+
+  def updateRepository(repositoryId: Int, taskMonitor: TaskProgressMonitor) {
+    repositoryStorage.findById(repositoryId) match {
+      case Some(repository) => new GitLocalRepositoryManager(config.storage.dataDirectory + repository.localDir).updateRepository()
+      case None => throw new IllegalArgumentException("Repository "+repositoryId+" does not exists!")
+    }
   }
 
 

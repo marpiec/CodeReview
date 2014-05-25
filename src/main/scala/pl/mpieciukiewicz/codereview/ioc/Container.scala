@@ -9,6 +9,7 @@ import pl.mpieciukiewicz.codereview.utils.clock.DefaultTimeZoneClock
 import akka.actor.ActorSystem
 import pl.mpieciukiewicz.codereview.web.ProgressMonitor
 import pl.mpieciukiewicz.codereview.utils.email.{SslMailSender, TLSMailSender}
+import pl.mpieciukiewicz.codereview.StartupInitializer
 
 /**
  *
@@ -57,6 +58,8 @@ class Container {
   val projectManager = new ProjectManager(projectStorage, userRoleStorage, repositoryStorage, userStorage)
   val userManager = new UserManager(userStorage, randomUtil, clock, passwordUtil, mailSender, userRoleStorage)
 
+
+  val startupInitializer = new StartupInitializer(repositoryManager)
 }
 
 object Container {

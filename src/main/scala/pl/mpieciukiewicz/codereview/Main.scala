@@ -20,6 +20,8 @@ object Main {
       new ProxyConfigurator().configure(config)
     }
 
+    Container.instance.startupInitializer.apply
+
     new WebServer(config).start()
   }
 
