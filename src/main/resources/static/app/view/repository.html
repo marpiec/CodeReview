@@ -10,18 +10,14 @@
     </div>
 
 
-    <a ng-repeat="commit in commits" ng-href="#/commit/{{ repositoryId }}/{{ commit.info.id[0] }}" class="commit">
-        <span class="message">{{ commit.info.message }}</span>
-        <span class="filesCount">({{ commit.files.length }} <span ng-show="commit.files.length == 1">file</span><span ng-show="commit.files.length != 1">files</span>)</span>
-        <span class="author">{{ commit.info.author }}</span>
-        <span class="author">{{ commit.info.authorEmail }}</span>
-        <span class="time">{{commit.info.time}}</span>
-
-        <!--author: {{ commit.info.author }} <br />-->
-        <!--commited: {{ commit.info.time }} <br />-->
-        <!--<a ng-href="#/commit/{{ repositoryId }}/{{ commit.info.id[0] }}">message: {{ commit.info.message }}</a><br />-->
-
-    </a>
+    <div class="commits">
+        <a ng-repeat="commit in commits" ng-href="#/commit/{{ repositoryId }}/{{ commit.info.id[0] }}" class="commit">
+            <span class="time"><mp-time-label timestamp="{{ commit.info.time }}"></mp-time-label></span>,
+            <span class="author">{{ commit.info.author }}</span><span class="authorEmail">{{ commit.info.authorEmail }}</span><br />
+            <span class="message">{{ commit.info.message }}</span>,
+            <span class="filesCount">{{ commit.files.length }} <span ng-show="commit.files.length == 1">file</span><span ng-show="commit.files.length != 1">files</span></span>
+        </a>
+    </div>
 
     <a href="#" onclick="return false;" ng-click="loadMoreCommits()" class="loadMoreCommits"
             ng-show="loadMoreCommitsButtonVisible">Load more commits...</a>

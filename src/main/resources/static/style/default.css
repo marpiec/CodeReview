@@ -442,65 +442,68 @@ a {
   right: 0;
   top: 0;
 }
-.repositoryPage .commit {
+.repositoryPage .commits {
   border: 1px solid #cedbe7;
   background-color: #ffffff;
   padding: 5px;
   margin: 20px;
-  text-decoration: none;
   display: block;
-  width: 400px;
-  min-height: 60px;
+}
+.repositoryPage .commit {
+  background-color: #ffffff;
+  padding: 5px;
+  margin: 20px;
+  display: block;
   overflow: hidden;
   font-size: 13px;
+  text-decoration: none;
 }
 .repositoryPage .commit:hover {
+  text-decoration: underline;
   background-color: #fafafa;
 }
 .repositoryPage .commit .message {
-  clear: both;
+  margin-top: 4px;
   font-weight: bold;
 }
 .repositoryPage .commit .filesCount {
+  margin-top: 4px;
   white-space: nowrap;
 }
-.repositoryPage .commit .author {
-  margin-top: 7px;
-  display: block;
+.repositoryPage .commit .authorEmail {
+  visibility: hidden;
 }
 .repositoryPage .commit .time {
-  display: inline-block;
+  font-weight: bold;
 }
 .repositoryPage .loadMoreCommits {
-  border: 1px solid #cedbe7;
   background-color: #ffffff;
   padding: 5px;
   margin: 20px;
-  text-decoration: none;
   display: block;
-  width: 400px;
-  min-height: 60px;
   overflow: hidden;
   font-size: 13px;
+  text-decoration: none;
   font-weight: bold;
   text-align: center;
 }
 .repositoryPage .loadMoreCommits:hover {
+  text-decoration: underline;
   background-color: #fafafa;
 }
 .repositoryPage .loadMoreCommits .message {
-  clear: both;
+  margin-top: 4px;
   font-weight: bold;
 }
 .repositoryPage .loadMoreCommits .filesCount {
+  margin-top: 4px;
   white-space: nowrap;
 }
-.repositoryPage .loadMoreCommits .author {
-  margin-top: 7px;
-  display: block;
+.repositoryPage .loadMoreCommits .authorEmail {
+  visibility: hidden;
 }
 .repositoryPage .loadMoreCommits .time {
-  display: inline-block;
+  font-weight: bold;
 }
 .addRepositoryPage .banner {
   position: absolute;

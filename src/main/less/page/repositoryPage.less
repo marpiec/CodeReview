@@ -1,32 +1,49 @@
 .repositoryPage {
   .defaultPage;
 
+  .commits {
+    border: 1px solid @standard-border-color;
+    background-color: @standard-button-color;
+    padding: 5px;
+    margin: 20px;
+    display: block;
+
+  }
+
   .commit {
-    .standardBox;
 
-
-    width: 400px;
-    min-height: 60px;
+    background-color: @standard-button-color;
+    padding: 5px;
+    margin: 20px;
+    display: block;
     overflow: hidden;
-
     font-size: 13px;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+      background-color: @standard-hover-color;
+    }
 
     .message {
-      clear: both;
+      margin-top: 4px;
       font-weight: bold;
     }
 
     .filesCount {
+      margin-top: 4px;
       white-space: nowrap;
     }
 
     .author {
-      margin-top: 7px;
-      display: block;
+    }
+
+    .authorEmail {
+      visibility: hidden;
     }
 
     .time {
-      display: inline-block;
+      font-weight: bold;
     }
   }
 
